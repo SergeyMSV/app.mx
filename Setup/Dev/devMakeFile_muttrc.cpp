@@ -18,20 +18,11 @@ void MakeFile_muttrc(const std::string& a_path, const std::string& a_hostname, c
 		File << "set realname=" << a_hostname << '\n';
 		File << "set from=" << a_email.From<<'\n';
 		File << "set envelope_from=yes\n";
+		File << "set copy=no\n";//doesn't save copies of letter into file ~/sent
+		File << "set content_type=text/html\n";//default is "text/plain"
 
 		File.close();
 	}
 }
 
 }
-
-/*
-.muttrc
-
-set sendmail="/usr/bin/msmtp"
-set use_from=yes
-set realname="mx6bull"
-set from=navidevices@gmail.com
-#set from=test3287@yandex.ru
-set envelope_from=yes
-*/
