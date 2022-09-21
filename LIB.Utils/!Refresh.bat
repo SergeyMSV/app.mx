@@ -7,4 +7,11 @@ xcopy /Y %LIB_UTILS%\utilsLinux.*
 xcopy /Y %LIB_UTILS%\utilsPath.*
 xcopy /Y %LIB_UTILS%\utilsWeb.*
 
+set ARCH_7z2201="7z2201"
+rmdir /S /Q %ARCH_7z2201%
+mkdir %ARCH_7z2201%
+xcopy /Y /S %LIB_UTILS%\%ARCH_7z2201%\* %ARCH_7z2201%\
+del /Q %ARCH_7z2201%\*_Test.cpp
+rmdir /S /Q %ARCH_7z2201%\C\Util
+
 pause

@@ -159,6 +159,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zAlloc.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zArcIn.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zBuf.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zCrc.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zCrcOpt.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zDec.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zFile.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zStream.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bcj2.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bra.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bra86.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\BraIA64.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\CpuArch.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Delta.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Lzma2Dec.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\LzmaDec.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Ppmd7.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Ppmd7Dec.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\utilsArch_7z2201_simple.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsWeb.cpp" />
@@ -167,6 +186,24 @@
     <ClCompile Include="main_web.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7z.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zAlloc.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zBuf.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zCrc.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zFile.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zTypes.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zVersion.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Bcj2.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Bra.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Compiler.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\CpuArch.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Delta.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Lzma2Dec.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\LzmaDec.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Ppmd.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Ppmd7.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Precomp.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\utilsArch_7z2201_simple.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
