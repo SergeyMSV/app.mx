@@ -11,6 +11,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <7z2201/utilsArch_7z2201_simple.h>
+
 tUpdateList GetUpdateList(const std::string& host, const std::string& target);
 utils::tVectorUInt8 GetUpdate(const std::string& host, const std::string& target);
 
@@ -96,7 +98,13 @@ int main(int argc, char* argv[])
 			return static_cast<int>(utils::tExitCode::EX_OK);
 		}
 
-		std::cout << "UpdateFileZip: " << UpdateFileZip << '\n';
+		utils::arch_7z2201_simple::Decompress(UpdateFileZip);
+
+		std::filesystem::remove(UpdateFileZip);
+
+		std::string CmdCDPathMX = "cd " + DsConfig.GetUpdatePath() + "/mx; ";
+		utils::linux::CmdLine(CmdCDPathMX + "chmod 544 setup.sh");
+		utils::linux::CmdLine(CmdCDPathMX + "./setup.sh");
 	}
 	catch (std::exception& e)
 	{
