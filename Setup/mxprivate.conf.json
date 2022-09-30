@@ -1,0 +1,13 @@
+{
+	"mxsetup": {
+		"email": {
+			"user": "username",
+			"password": "password",
+			"host": "smtp.email.com",
+			"port": "587",
+			"from": "real@email.com",
+			"tls": true,
+			"auth": true
+		}
+	}
+}
