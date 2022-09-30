@@ -6,7 +6,7 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/Dev/**",
                 "${workspaceFolder}/../LIB.Utils/**",
-                "/usr/local/boost_1_77_0_ARM/**"
+                "/usr/local/boost_1_77_0/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/arm-linux-gnueabihf-gcc",

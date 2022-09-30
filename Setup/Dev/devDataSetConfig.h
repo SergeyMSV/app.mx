@@ -21,7 +21,9 @@ struct tEmail
 	bool Auth = false;
 
 	tEmail() = default;
-	explicit tEmail(boost::property_tree::ptree a_PTree);
+	explicit tEmail(const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
 };
 
 struct tConfigFiles
@@ -30,7 +32,9 @@ struct tConfigFiles
 	std::string muttrc;
 
 	tConfigFiles() = default;
-	explicit tConfigFiles(boost::property_tree::ptree a_PTree);
+	explicit tConfigFiles(const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
 };
 
 }
@@ -41,7 +45,7 @@ class tDataSetConfig
 	config::tConfigFiles m_ConfigFiles;
 
 public:
-	explicit tDataSetConfig(const std::string& a_fileName);
+	tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNamePrivate);
 
 	config::tEmail GetEmail() const { return m_Email; }
 	config::tConfigFiles GetConfigFiles() const { return m_ConfigFiles; }

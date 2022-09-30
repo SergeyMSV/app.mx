@@ -1,13 +1,4 @@
 {
-  "email": {
-    "user": "medved",
-    "password": "PrevedMedved!!",
-    "host": "smtp.gmail.com",
-    "port": "587",
-    "from": "medved@gmail.com",
-    "tls": true,
-    "auth": true
-  },
   "config_files": {
     "msmtprc": "/root/.msmtprc",
     "muttrc": "/root/.muttrc"

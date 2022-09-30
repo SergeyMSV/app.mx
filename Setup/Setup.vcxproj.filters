@@ -14,7 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Dev\devDataSet.cpp">
+    <ClCompile Include="Dev\devDataSetConfig.cpp">
       <Filter>Dev</Filter>
     </ClCompile>
     <ClCompile Include="Dev\devMakeFile_msmtprc.cpp">
@@ -35,7 +35,7 @@
       <Filter>LIB.Utils</Filter>
     </ClInclude>
     <ClInclude Include="libConfig.h" />
-    <ClInclude Include="Dev\devDataSet.h">
+    <ClInclude Include="Dev\devDataSetConfig.h">
       <Filter>Dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsPath.h">
@@ -50,5 +50,7 @@
       <Filter>LIB.Utils</Filter>
     </None>
     <None Include="mxsetup.conf.json" />
+    <None Include="mxprivate.conf.json" />
+    <None Include="mxdevice.conf.json" />
   </ItemGroup>
 </Project>

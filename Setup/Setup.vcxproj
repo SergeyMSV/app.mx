@@ -157,7 +157,7 @@
   <ItemGroup>
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
-    <ClCompile Include="Dev\devDataSet.cpp" />
+    <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="Dev\devMakeFile_msmtprc.cpp" />
     <ClCompile Include="Dev\devMakeFile_muttrc.cpp" />
     <ClCompile Include="main.cpp" />
@@ -166,11 +166,13 @@
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
-    <ClInclude Include="Dev\devDataSet.h" />
+    <ClInclude Include="Dev\devDataSetConfig.h" />
     <ClInclude Include="libConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat" />
+    <None Include="mxprivate.conf.json" />
+    <None Include="mxdevice.conf.json" />
     <None Include="mxsetup.conf.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

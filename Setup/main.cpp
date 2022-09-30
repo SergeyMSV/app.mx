@@ -2,7 +2,7 @@
 #include <utilsLinux.h>
 #include <utilsPath.h>
 
-#include <devDataSet.h>
+#include <devDataSetConfig.h>
 
 #include <fstream>
 #include <iostream>
@@ -26,9 +26,10 @@ int main(int argc, char* argv[])
 		if (PathFile.has_extension())
 			PathFile.replace_extension();
 
-		std::string FileNameConf = utils::linux::GetPathConfig(PathFile.string());
+		std::string PathFileConfig = utils::linux::GetPathConfigExc(PathFile.string());
+		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
 
-		dev::tDataSetConfig DsConfig(FileNameConf);
+		dev::tDataSetConfig DsConfig(PathFileConfig, PathFilePrivate);
 
 		dev::config::tEmail Email = DsConfig.GetEmail();
 
