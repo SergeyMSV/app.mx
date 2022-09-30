@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: cpp build active file",
+            "command": "/usr/bin/arm-linux-gnueabihf-g++-10",
+            "args": [
+				"-std=c++2a",
+                "-g",
+				"-Wall",
+				"-I${workspaceFolder}",
+				"-I${workspaceFolder}/Dev",
+				"-I${workspaceFolder}/../LIB.Utils",
+				"-I/usr/local/boost_1_77_0_ARM",
+				"-L/usr/local/boost_1_77_0_ARM/stage/lib",
+				"-L/usr/arm-linux-gnueabihf/lib",
+				"Dev/devDataSetConfig.cpp",
+				"Dev/devMakeFile_msmtprc.cpp",
+				"Dev/devMakeFile_muttrc.cpp",
+				"main.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+                "-o",
+                "${workspaceFolder}/mxsetup",
+				"-lpthread"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
