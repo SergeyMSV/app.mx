@@ -1,0 +1,8 @@
+{
+	"mxnavi": {
+		"email": {
+			"to": "real@email.to",
+			"period": 600
+		}
+	}
+}

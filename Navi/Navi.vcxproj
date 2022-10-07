@@ -173,6 +173,8 @@
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat" />
     <None Include="mxnavi.conf.json" />
+    <None Include="mxprivate.conf.json" />
+    <None Include="mxdevice.conf.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
