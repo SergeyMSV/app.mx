@@ -50,5 +50,7 @@
       <Filter>LIB.Utils</Filter>
     </None>
     <None Include="mxnavi.conf.json" />
+    <None Include="mxdevice.conf.json" />
+    <None Include="mxprivate.conf.json" />
   </ItemGroup>
 </Project>
