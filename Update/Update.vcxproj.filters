@@ -14,6 +14,9 @@
     <Filter Include="LIB.Utils\7z2201\C">
       <UniqueIdentifier>{d1806f43-2956-4d23-a724-c1df1605a66c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LIB.Share">
+      <UniqueIdentifier>{f431439b-05a7-40d0-bb94-3daf849511d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -87,6 +90,9 @@
     <ClCompile Include="..\LIB.Utils\7z2201\C\Ppmd7Dec.c">
       <Filter>LIB.Utils\7z2201\C</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Utils\utilsBase.h">
@@ -159,6 +165,9 @@
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\7z2201\C\Precomp.h">
       <Filter>LIB.Utils\7z2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareConfig.h">
+      <Filter>LIB.Share</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

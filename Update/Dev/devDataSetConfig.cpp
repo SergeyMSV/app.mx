@@ -10,13 +10,7 @@ namespace dev
 namespace config
 {
 
-tDevice::tDevice(boost::property_tree::ptree pTree)
-{
-	Type = pTree.get<std::string>("device.type");
-	Version = utils::tVersion(pTree.get<std::string>("firmware.version"));
-}
-
-tUpdateServer::tUpdateServer(boost::property_tree::ptree pTree)
+tUpdateServer::tUpdateServer(const boost::property_tree::ptree& pTree)
 {
 	Host = pTree.get<std::string>("server.host");
 	Target = pTree.get<std::string>("server.target");
@@ -35,7 +29,7 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 
 	boost::property_tree::ptree PTreeDevice;
 	boost::property_tree::json_parser::read_json(fileNameDevice, PTreeDevice);
-	m_Device = config::tDevice(PTreeDevice);
+	m_Device = share_config::tDevice(PTreeDevice);
 }
 
 }

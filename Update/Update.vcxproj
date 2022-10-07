@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\LIB.Utils;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\LIB.Utils;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\LIB.Utils;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\LIB.Utils;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
     <ClCompile Include="..\LIB.Utils\7z2201\C\7zAlloc.c" />
     <ClCompile Include="..\LIB.Utils\7z2201\C\7zArcIn.c" />
     <ClCompile Include="..\LIB.Utils\7z2201\C\7zBuf.c" />
@@ -186,6 +187,7 @@
     <ClCompile Include="main_web.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\LIB.Share\shareConfig.h" />
     <ClInclude Include="..\LIB.Utils\7z2201\C\7z.h" />
     <ClInclude Include="..\LIB.Utils\7z2201\C\7zAlloc.h" />
     <ClInclude Include="..\LIB.Utils\7z2201\C\7zBuf.h" />
