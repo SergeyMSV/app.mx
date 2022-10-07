@@ -1,8 +1,4 @@
 {
-  "email": {
-    "to": "email@gmail.com",
-    "period": 60
-  },
   "gnss": {
     "path": "/tmpram",
     "prefix": "mxgnss_",

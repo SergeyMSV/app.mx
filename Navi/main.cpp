@@ -31,19 +31,21 @@ std::string GetHTMLTableDevice(const std::string& styleCol1)
 	return Table;
 }
 
-std::string GetHTMLTableSystem(const std::string& styleCol1)
+std::string GetHTMLTableSystem(const std::string& styleCol1, const dev::config::tDevice& dsConfigDevice)
 {
 	std::stringstream Table;
-	Table << "<table>";
+	Table << "<table border=\"1\">";
 	Table << "<tr><td " << styleCol1 << "><b>SYSTEM</b></td></tr>";
+	Table << "<tr><td>Model</td><td>" << dsConfigDevice.Type << "</td></tr>";
+	Table << "<tr><td>Version</td><td>" << dsConfigDevice.Version.ToString() << "</td></tr>";
 	utils::linux::tCpuInfo CpuInfo = utils::linux::GetCpuInfo();
 	Table << "<tr><td>CPU model</td><td>" << CpuInfo.ModelName << "</td></tr>";
 	Table << std::fixed;
 	Table.precision(2);
 	Table << "<tr><td>BogoMIPS</td><td>" << CpuInfo.BogoMIPS << "</td></tr>";
 	Table << "<tr><td>Hardware</td><td>" << CpuInfo.Hardware << "</td></tr>";
-	Table << "<tr><td>Firmware</td><td>" << utils::linux::CmdLine("uname -a") << "</td></tr>";
-	Table << "<tr><td>Linux</td><td>" << utils::linux::CmdLine("cat /proc/version") << "</td></tr>";
+	Table << "<tr><td>Linux</td><td>" << utils::linux::CmdLine("uname -a") << "</td></tr>";
+	Table << "<tr><td>Linux build</td><td>" << utils::linux::CmdLine("cat /proc/version") << "</td></tr>";
 	Table << "<tr><td>HW clock</td><td>" << utils::linux::CmdLine("hwclock -r") << "</td></tr>";
 	Table << "</table>";
 	return Table.str();
@@ -58,22 +60,25 @@ int main(int argc, char* argv[])
 		if (PathFile.has_extension())
 			PathFile.replace_extension();
 
-		std::string FileNameConf = utils::linux::GetPathConfig(PathFile.string());
+		std::string PathFileConfig = utils::linux::GetPathConfigExc(PathFile.string());
+		std::string PathFileDevice = utils::linux::GetPathConfigExc("mxdevice");
+		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
 
 		utils::tTimePeriod TimePeriod;
 
 		while (true)
 		{
-			const dev::tDataSetConfig DsConfig(FileNameConf);
+			const dev::tDataSetConfig DsConfig(PathFileConfig, PathFileDevice, PathFilePrivate);
 
-			const dev::config::tEmail Email = DsConfig.GetEmail();
-			const dev::config::tGNSS Gnss = DsConfig.GetGNSS();
-			const dev::config::tPicture Picture = DsConfig.GetPicture();
+			const dev::config::tDevice ConfDevice = DsConfig.GetDevice();
+			const dev::config::tEmail ConfEmail = DsConfig.GetEmail();
+			const dev::config::tGNSS ConfGnss = DsConfig.GetGNSS();
+			const dev::config::tPicture ConfPicture = DsConfig.GetPicture();
 
-			if (Email.IsWrong() || Gnss.IsWrong() || Picture.IsWrong())
+			if (ConfEmail.IsWrong() || ConfGnss.IsWrong() || ConfPicture.IsWrong())
 				return static_cast<int>(utils::tExitCode::EX_CONFIG);
 			
-			TimePeriod.Set(Email.Period);
+			TimePeriod.Set(ConfEmail.Period);
 
 			if (!TimePeriod.IsReady())
 			{
@@ -81,17 +86,19 @@ int main(int argc, char* argv[])
 				continue;
 			}
 
-			utils::RemoveFilesOutdated(Gnss.Path, Gnss.Prefix, Gnss.QtyMax);
-			auto GnssList = utils::GetFilesLatest(Gnss.Path, Gnss.Prefix, Gnss.QtyMax);
+			utils::RemoveFilesOutdated(ConfGnss.Path, ConfGnss.Prefix, ConfGnss.QtyMax);
+			auto GnssList = utils::GetFilesLatest(ConfGnss.Path, ConfGnss.Prefix, ConfGnss.QtyMax);
+			utils::linux::CorrPaths(GnssList);
 
-			utils::RemoveFilesOutdated(Picture.Path, Picture.Prefix, Picture.QtyMax);
-			auto PictureList = utils::GetFilesLatest(Picture.Path, Picture.Prefix, Picture.QtyMax);
+			utils::RemoveFilesOutdated(ConfPicture.Path, ConfPicture.Prefix, ConfPicture.QtyMax);
+			auto PictureList = utils::GetFilesLatest(ConfPicture.Path, ConfPicture.Prefix, ConfPicture.QtyMax);
+			utils::linux::CorrPaths(PictureList);
 
 			dev::tDataSetGNSS DsGNSS{};
 			try
 			{
 				if (!GnssList.empty())
-					DsGNSS = dev::tDataSetGNSS(utils::linux::GetPath(GnssList.back()));
+					DsGNSS = dev::tDataSetGNSS(GnssList.back());
 			}
 			catch (...) {}//JSON error
 
@@ -109,7 +116,7 @@ int main(int argc, char* argv[])
 			Cmd += "</td></tr>";
 
 			Cmd += "<tr><td>";
-			Cmd += GetHTMLTableSystem("width=\"100\"");
+			Cmd += GetHTMLTableSystem("width=\"100\"", ConfDevice);
 			Cmd += "</td></tr>";
 			Cmd += "</table>";
 			Cmd += "<body></html>\"";
@@ -121,7 +128,7 @@ int main(int argc, char* argv[])
 				Cmd += "\"";
 			}
 			Cmd += " -s \"" + utils::linux::CmdLine("hostname") + ": Schedule Snapshot Recording\"";
-			Cmd += " -- " + Email.To;
+			Cmd += " -- " + ConfEmail.To;
 
 			int ResCode = 0;
 
