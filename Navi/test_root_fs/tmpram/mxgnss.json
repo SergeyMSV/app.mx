@@ -1,0 +1,157 @@
+{
+ "utc": "29.08.22 12.02.56.000",
+ "valid": "1",
+ "latitude": "55.924737",
+ "longitude": "37.753495",
+ "altitude": "0.000000",
+ "speed": "0.00",
+ "course": "101.56",
+ "satellite": [
+  {
+   "id": "3",
+   "elevation": "77",
+   "azimuth": "277",
+   "snr": "19"
+  },
+  {
+   "id": "1",
+   "elevation": "48",
+   "azimuth": "192",
+   "snr": "16"
+  },
+  {
+   "id": "31",
+   "elevation": "46",
+   "azimuth": "96",
+   "snr": "21"
+  },
+  {
+   "id": "22",
+   "elevation": "39",
+   "azimuth": "65",
+   "snr": "36"
+  },
+  {
+   "id": "4",
+   "elevation": "39",
+   "azimuth": "229",
+   "snr": "11"
+  },
+  {
+   "id": "21",
+   "elevation": "28",
+   "azimuth": "180",
+   "snr": "17"
+  },
+  {
+   "id": "19",
+   "elevation": "23",
+   "azimuth": "307",
+   "snr": "18"
+  },
+  {
+   "id": "17",
+   "elevation": "23",
+   "azimuth": "278",
+   "snr": "18"
+  },
+  {
+   "id": "40",
+   "elevation": "22",
+   "azimuth": "149",
+   "snr": "0"
+  },
+  {
+   "id": "32",
+   "elevation": "13",
+   "azimuth": "62",
+   "snr": "0"
+  },
+  {
+   "id": "25",
+   "elevation": "11",
+   "azimuth": "40",
+   "snr": "35"
+  },
+  {
+   "id": "12",
+   "elevation": "7",
+   "azimuth": "4",
+   "snr": "0"
+  },
+  {
+   "id": "6",
+   "elevation": "6",
+   "azimuth": "325",
+   "snr": "0"
+  },
+  {
+   "id": "9",
+   "elevation": "5",
+   "azimuth": "238",
+   "snr": "0"
+  },
+  {
+   "id": "67",
+   "elevation": "63",
+   "azimuth": "56",
+   "snr": "43"
+  },
+  {
+   "id": "68",
+   "elevation": "57",
+   "azimuth": "275",
+   "snr": "0"
+  },
+  {
+   "id": "83",
+   "elevation": "51",
+   "azimuth": "240",
+   "snr": "0"
+  },
+  {
+   "id": "84",
+   "elevation": "32",
+   "azimuth": "327",
+   "snr": "26"
+  },
+  {
+   "id": "76",
+   "elevation": "30",
+   "azimuth": "43",
+   "snr": "44"
+  },
+  {
+   "id": "77",
+   "elevation": "28",
+   "azimuth": "100",
+   "snr": "0"
+  },
+  {
+   "id": "82",
+   "elevation": "19",
+   "azimuth": "198",
+   "snr": "19"
+  },
+  {
+   "id": "66",
+   "elevation": "12",
+   "azimuth": "73",
+   "snr": "16"
+  },
+  {
+   "id": "69",
+   "elevation": "8",
+   "azimuth": "260",
+   "snr": "14"
+  },
+  {
+   "id": "75",
+   "elevation": "3",
+   "azimuth": "355",
+   "snr": "0"
+  }
+ ],
+ "jamming": [
+ ]
+}
