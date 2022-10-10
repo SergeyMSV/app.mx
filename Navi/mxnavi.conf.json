@@ -1,0 +1,16 @@
+{
+  "email": {
+    "to": "email@gmail.com",
+    "period": 60
+  },
+  "gnss": {
+    "path": "/tmpram",
+    "prefix": "mxgnss_",
+    "qtyMax": 2
+  },
+  "picture": {
+    "path": "/tmpram",
+    "prefix": "cam_",
+    "qtyMax": 2
+  }
+}
