@@ -81,10 +81,19 @@ int main(int argc, char* argv[])
 				continue;
 			}
 
+			utils::RemoveFilesOutdated(Gnss.Path, Gnss.Prefix, Gnss.QtyMax);
+			auto GnssList = utils::GetFilesLatest(Gnss.Path, Gnss.Prefix, Gnss.QtyMax);
+
 			utils::RemoveFilesOutdated(Picture.Path, Picture.Prefix, Picture.QtyMax);
 			auto PictureList = utils::GetFilesLatest(Picture.Path, Picture.Prefix, Picture.QtyMax);
 
-			dev::tDataSetGNSS DsGNSS(utils::linux::GetPath(Gnss.Path));
+			dev::tDataSetGNSS DsGNSS{};
+			try
+			{
+				if (!GnssList.empty())
+					DsGNSS = dev::tDataSetGNSS(utils::linux::GetPath(GnssList.back()));
+			}
+			catch (...) {}//JSON error
 
 			std::string Cmd;
 			Cmd = "echo ";

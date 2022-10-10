@@ -19,14 +19,16 @@ bool tEmail::IsWrong() const
 	return To.empty() || Period == 0; //[TBD] check if email is correct
 }
 
-tGNSS::tGNSS(boost::property_tree::ptree a_PTree)
+tGNSS::tGNSS(boost::property_tree::ptree pTree)
 {
-	Path = a_PTree.get<std::string>("gnss.path");
+	Path = pTree.get<std::string>("gnss.path");
+	Prefix = pTree.get<std::string>("gnss.prefix");
+	QtyMax = pTree.get<uint8_t>("gnss.qtyMax");
 }
 
 bool tGNSS::IsWrong() const
 {
-	return Path.empty();
+	return Path.empty() || Prefix.empty() || QtyMax == 0;;
 }
 
 tPicture::tPicture(boost::property_tree::ptree pTree)
