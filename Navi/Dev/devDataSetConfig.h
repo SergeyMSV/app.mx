@@ -24,6 +24,8 @@ struct tEmail
 struct tGNSS
 {
 	std::string Path;
+	std::string Prefix;
+	uint8_t QtyMax = 0;
 
 	tGNSS() = default;
 	explicit tGNSS(boost::property_tree::ptree pTree);

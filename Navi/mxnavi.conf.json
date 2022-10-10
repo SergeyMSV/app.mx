@@ -4,7 +4,9 @@
     "period": 60
   },
   "gnss": {
-    "path": "/tmpram/mxgnss.json"
+    "path": "/tmpram",
+    "prefix": "mxgnss_",
+    "qtyMax": 2
   },
   "picture": {
     "path": "/tmpram",

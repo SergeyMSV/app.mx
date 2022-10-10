@@ -14,7 +14,7 @@ struct tDataSetGNSS
 {
 	struct tSatellite
 	{
-		utils::tGNSSCode GNSS;
+		utils::tGNSSCode GNSS = utils::tGNSSCode::Unknown;
 		uint8_t ID = 0;
 		uint8_t Elevation = 0;
 		uint16_t Azimuth = 0;
