@@ -1,0 +1,5 @@
+set sendmail="/usr/bin/msmtp"
+set use_from=yes
+set realname=mxXbull
+set from=email@gmail.com
+set envelope_from=yes
