@@ -6,6 +6,9 @@
 #include <devDataSetConfig.h>
 #include <devDataSetGNSS.h>
 
+#include <shareConfig.h>
+#include <shareHTML.h>
+
 #include <filesystem>
 #include <iostream>
 #include <sstream>
@@ -13,43 +16,6 @@
 
 //$ echo "Hello this is the body message, we are sending email with attachement using mutt and msmtp" | mutt -a "/home/sergey/cam.jpg" -a "/home/sergey/cam_2.jpg" -s "this is the subject of the message" --satellite4@yandex.ru
 //$ cat ~/email/attached_file.txt | mutt -a "/home/sergey/cam.jpg" -a "/home/sergey/cam_2.jpg" -s "this is the subject of the message" --satellite4@yandex.ru
-
-std::string GetHTMLTableDevice(const std::string& styleCol1)
-{
-	std::string Table;
-	Table += "<table>";
-	Table += "<tr><td " + styleCol1 + "><b>DEVICE</b></td><td>" + utils::linux::CmdLine("hostname") + "</td></tr>";
-	Table += "<tr><td>IP Address</td><td>" + utils::linux::CmdLine("ip address | grep 'inet ' | grep -v 127.0.0.1 | cut -d\\t -f2 | cut -d/ -f1 | awk '{print $1}'") + "</td></tr>";
-
-	std::string Uptime = utils::linux::GetUptimeString();
-	Table += "<tr><td>Uptime</td><td>" + Uptime + "</td></tr>";
-	Table += "<tr><td>Load average</td><td>" + utils::linux::CmdLine("cat /proc/loadavg") + "</td></tr>";
-	Table += "<tr><td>Date</td><td>" + utils::linux::CmdLine("date") + "</td></tr>";
-
-	Table += "</table>";
-
-	return Table;
-}
-
-std::string GetHTMLTableSystem(const std::string& styleCol1, const dev::config::tDevice& dsConfigDevice)
-{
-	std::stringstream Table;
-	Table << "<table border=\"1\">";
-	Table << "<tr><td " << styleCol1 << "><b>SYSTEM</b></td></tr>";
-	Table << "<tr><td>Model</td><td>" << dsConfigDevice.Type << "</td></tr>";
-	Table << "<tr><td>Version</td><td>" << dsConfigDevice.Version.ToString() << "</td></tr>";
-	utils::linux::tCpuInfo CpuInfo = utils::linux::GetCpuInfo();
-	Table << "<tr><td>CPU model</td><td>" << CpuInfo.ModelName << "</td></tr>";
-	Table << std::fixed;
-	Table.precision(2);
-	Table << "<tr><td>BogoMIPS</td><td>" << CpuInfo.BogoMIPS << "</td></tr>";
-	Table << "<tr><td>Hardware</td><td>" << CpuInfo.Hardware << "</td></tr>";
-	Table << "<tr><td>Linux</td><td>" << utils::linux::CmdLine("uname -a") << "</td></tr>";
-	Table << "<tr><td>Linux build</td><td>" << utils::linux::CmdLine("cat /proc/version") << "</td></tr>";
-	Table << "<tr><td>HW clock</td><td>" << utils::linux::CmdLine("hwclock -r") << "</td></tr>";
-	Table << "</table>";
-	return Table.str();
-}
 
 int main(int argc, char* argv[])
 {
@@ -70,7 +36,7 @@ int main(int argc, char* argv[])
 		{
 			const dev::tDataSetConfig DsConfig(PathFileConfig, PathFileDevice, PathFilePrivate);
 
-			const dev::config::tDevice ConfDevice = DsConfig.GetDevice();
+			const share_config::tDevice ConfDevice = DsConfig.GetDevice();
 			const dev::config::tEmail ConfEmail = DsConfig.GetEmail();
 			const dev::config::tGNSS ConfGnss = DsConfig.GetGNSS();
 			const dev::config::tPicture ConfPicture = DsConfig.GetPicture();
@@ -108,7 +74,7 @@ int main(int argc, char* argv[])
 
 			Cmd += "<table width=\"400\">";
 			Cmd += "<tr><td>";
-			Cmd += GetHTMLTableDevice("width=\"100\"");
+			Cmd += share::GetHTMLTableDevice("width=\"100\"");
 			Cmd += "</td></tr>";
 
 			Cmd += "<tr><td>";
@@ -116,7 +82,7 @@ int main(int argc, char* argv[])
 			Cmd += "</td></tr>";
 
 			Cmd += "<tr><td>";
-			Cmd += GetHTMLTableSystem("width=\"100\"", ConfDevice);
+			Cmd += share::GetHTMLTableSystem("width=\"100\"", ConfDevice);
 			Cmd += "</td></tr>";
 			Cmd += "</table>";
 			Cmd += "<body></html>\"";
