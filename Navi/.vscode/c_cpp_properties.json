@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/Dev/**",
+				"${workspaceFolder}/../LIB.Share/**",
                 "${workspaceFolder}/../LIB.Utils/**",
                 "/usr/local/boost_1_77_0/**"
             ],
