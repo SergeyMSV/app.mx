@@ -8,6 +8,9 @@
     <Filter Include="Dev">
       <UniqueIdentifier>{791890f4-242d-4c51-ad0b-b33f611c9cf8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LIB.Share">
+      <UniqueIdentifier>{31810bfb-741c-497b-9bf9-c5eebbcf4a40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -22,6 +25,12 @@
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp">
       <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareHTML.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp">
+      <Filter>LIB.Share</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +52,12 @@
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsLinux.h">
       <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareHTML.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareConfig.h">
+      <Filter>LIB.Share</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
