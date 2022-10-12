@@ -69,13 +69,13 @@ int main(int argc, char* argv[])
 			Cmd = "echo ";
 			Cmd += "\"<html><head><style>table{ border: 0; cellspacing: 0; cellpadding: 0; } td{ padding: 0px 20px 0px 0px; }</style></head><body>";
 
+			Cmd += "<tr><td>";
+			Cmd += DsGNSS.GetHTMLTable("width=\"100\"");
+			Cmd += "</td></tr>";
+
 			Cmd += "<table width=\"400\">";
 			Cmd += "<tr><td>";
 			Cmd += share::GetHTMLTableDevice("width=\"100\"");
-			Cmd += "</td></tr>";
-
-			Cmd += "<tr><td>";
-			Cmd += DsGNSS.GetHTMLTable("width=\"100\"");
 			Cmd += "</td></tr>";
 
 			Cmd += "<tr><td>";

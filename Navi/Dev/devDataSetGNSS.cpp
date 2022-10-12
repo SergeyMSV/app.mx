@@ -1,5 +1,7 @@
 #include "devDataSetGNSS.h"
 
+#include <shareHTML.h>
+
 #include <sstream>
 
 #include <boost/property_tree/json_parser.hpp>
@@ -68,25 +70,27 @@ tDataSetGNSS::tDataSetGNSS(const std::string& a_fileName)
 
 std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 {
+	std::string StyleHeader = share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader);
+
 	std::stringstream Table;
 	Table << "<table>";
 
 	Table << "<tr><td><b>GNSS</b></td></tr>";
 	Table << "<tr><td>";
 	Table << "<table>";	
-	Table << "<tr><td " + styleCol1 + ">UTC</td><td>" + UTC + "</td></tr>";
-	Table << "<tr><td>Valid</td><td>";
+	Table << "<tr><td " << styleCol1 << StyleHeader << ">UTC</td><td>" << UTC << "</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Valid</td><td>";
 	Table << Valid ? "A" : "V";
 	Table << "</td></tr>";
 
 	Table << std::fixed;
 	Table.precision(6);
-	Table << "<tr><td>Latitude</td><td>" << Latitude << "</td></tr>";
-	Table << "<tr><td>Longitude</td><td>" << Longitude << "</td></tr>";
-	Table << "<tr><td>Altitude</td><td>" << Altitude << "</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Latitude</td><td>" << Latitude << "</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Longitude</td><td>" << Longitude << "</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Altitude</td><td>" << Altitude << "</td></tr>";
 	Table.precision(2);
-	Table << "<tr><td>Speed</td><td>" << Speed << " kn (" << Speed * 1.852 << " km/h)</td></tr>";
-	Table << "<tr><td>Course</td><td>" << Course << "</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Speed</td><td>" << Speed << " kn (" << Speed * 1.852 << " km/h)</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Course</td><td>" << Course << "</td></tr>";
 	Table << "</table>";
 
 	Table << "</td></tr>";
@@ -113,15 +117,17 @@ std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 
 std::string tDataSetGNSS::GetHTMLTableSatellitesHor(utils::tGNSSCode codeGNSS) const
 {
+	std::string StyleHeader = share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader);
+
 	std::string Table;
 	Table += "<table>";
 
 	std::string StrID = codeGNSS == utils::tGNSSCode::GPS || codeGNSS == utils::tGNSSCode::WAAS ? "PRN" : "ID";
 
-	std::string Row1 = "<tr><td>" + StrID + "</td>";
-	std::string Row2 = "<tr><td>Elevation</td>";
-	std::string Row3 = "<tr><td>Azimuth</td>";
-	std::string Row4 = "<tr><td>SNR</td>";
+	std::string Row1 = "<tr><td" + StyleHeader + ">" + StrID + "</td>";
+	std::string Row2 = "<tr><td" + StyleHeader + ">Elevation</td>";
+	std::string Row3 = "<tr><td" + StyleHeader + ">Azimuth</td>";
+	std::string Row4 = "<tr><td" + StyleHeader + ">SNR</td>";
 
 	for (auto& i : Satellites)
 	{
@@ -151,24 +157,24 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesHor(utils::tGNSSCode codeGNSS) c
 
 std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) const
 {
-	std::string Table;
-	Table += "<table>";
+	std::stringstream Table;
+	Table << "<table>";
 
 	std::string StrID = codeGNSS == utils::tGNSSCode::GPS || codeGNSS == utils::tGNSSCode::WAAS ? "PRN" : "ID";
 
-	Table += "<tr align = \"center\"><td width=\"50\">" + StrID + "</td><td>Elevation</td><td>Azimuth</td><td>SNR</td></tr>";
+	Table << "<tr align = \"center\" "<< share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader) <<"><td width=\"50\">" << StrID << "</td><td>Elevation</td><td>Azimuth</td><td>SNR</td></tr>";
 
 	for (auto& i : Satellites)
 	{
 		if (i.GNSS != codeGNSS)
 			continue;
 
-		Table += "<tr align = \"center\"><td>" + std::to_string(i.ID) + "</td><td>" + std::to_string(i.Elevation) + "</td><td>" + std::to_string(i.Azimuth) + "</td><td>" + std::to_string(i.SNR) + "</td></tr>";
+		Table << "<tr align = \"center\"><td>" << std::to_string(i.ID) << "</td><td>" << std::to_string(i.Elevation) << "</td><td>" << std::to_string(i.Azimuth) << "</td><td>" << std::to_string(i.SNR) << "</td></tr>";
 	}
 
-	Table += "</table>";
+	Table << "</table>";
 
-	return Table;
+	return Table.str();
 }
 
 }
