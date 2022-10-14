@@ -1,0 +1,8 @@
+{
+  "ram": {
+    "free_diff": 10240,
+    "used_diff": 5120,
+    "period": 10,
+    "qty": 10
+  }
+}

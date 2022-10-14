@@ -1,0 +1,3 @@
+LABEL=ROOTFS   /        auto   errors=remount-ro               0  1
+LABEL=BOOT     /boot    auto   defaults                        0  0
+tmpfs          /tmpram  tmpfs  nosuid,nodev,noatime,size=16M   0  0

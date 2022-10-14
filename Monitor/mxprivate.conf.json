@@ -1,0 +1,8 @@
+{
+	"mxmonitor": {
+		"email": {
+			"to": "real2@email.to",
+			"period_minimum": 600
+		}
+	}
+}
