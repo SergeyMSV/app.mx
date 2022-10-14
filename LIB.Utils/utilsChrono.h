@@ -31,12 +31,17 @@ std::uint32_t GetDuration(std::chrono::time_point<T> timeStart, std::chrono::tim
 class tTimePeriod
 {
 	uint32_t m_Period = 0;//in seconds
+	const bool m_Sync = false;
+
 	utils::tTimePoint m_StartTime = utils::tClock::now();
 
 public:
-	tTimePeriod() = default;
-	explicit tTimePeriod(uint32_t period)
-		:m_Period(period)
+	tTimePeriod() = delete;
+	explicit tTimePeriod(bool sync)
+		:m_Sync(sync)
+	{}
+	tTimePeriod(bool sync, uint32_t period)
+		:m_Sync(sync), m_Period(period)
 	{}
 
 	bool Set(uint32_t period)
@@ -51,9 +56,23 @@ public:
 
 	bool IsReady()
 	{
-		if (m_Period == 0 || m_StartTime > utils::tClock::now())
+		auto TimeNow = utils::tClock::now();
+
+		if (m_Period == 0 || m_StartTime > TimeNow)
 			return false;
-		m_StartTime += std::chrono::seconds(m_Period);
+
+		if (m_Sync)
+		{
+			while (m_StartTime <= TimeNow)
+			{
+				m_StartTime += std::chrono::seconds(m_Period);
+			}
+		}
+		else
+		{
+			m_StartTime = TimeNow + std::chrono::seconds(m_Period);
+		}
+		
 		return true;
 	}
 };
