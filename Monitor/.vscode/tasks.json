@@ -1,0 +1,89 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: cpp build active file ARM",
+            "command": "/usr/bin/arm-linux-gnueabihf-g++-10",
+            "args": [
+                "-std=c++2a",
+                "-g",
+                "-Wall",
+                "-I${workspaceFolder}",
+                "-I${workspaceFolder}/Dev",
+				"-I${workspaceFolder}/../LIB.Share",
+                "-I${workspaceFolder}/../LIB.Utils",
+                "-I/usr/local/boost_1_77_0_ARM",
+                "-L/usr/local/boost_1_77_0_ARM/stage/lib",
+                "-L/usr/arm-linux-gnueabihf/lib",
+                "Dev/devDataSetConfig.cpp",
+				"Dev/devMonitorMemory.cpp",
+                "main.cpp",
+				"${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+				"${workspaceFolder}/../LIB.Share/shareHTML.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+                "-o",
+                "${workspaceFolder}/mxmonitor",
+                "-lpthread"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++ build active file",
+            "command": "/usr/bin/g++-11",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-std=c++2a",
+                "-g",
+                "-Wall",
+                "-I${workspaceFolder}",
+                "-I${workspaceFolder}/Dev",
+				"-I${workspaceFolder}/../LIB.Share",
+                "-I${workspaceFolder}/../LIB.Utils",
+                "-I/usr/local/boost_1_77_0",
+                "-L/usr/local/boost_1_77_0/stage/lib",
+                "Dev/devDataSetConfig.cpp",
+				"Dev/devMonitorMemory.cpp",
+                "main.cpp",
+				"${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+				"${workspaceFolder}/../LIB.Share/shareHTML.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+                "-o",
+                "${workspaceFolder}/mxmonitor_dbg",
+                "-lpthread"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "compiler: /usr/bin/g++",
+			"dependsOn":[
+				"copy_config_dbg"
+			]
+        },
+		{
+			"label": "copy_config_dbg",
+			"command": "cp",
+			"args": [
+				"-f",
+				"${workspaceFolder}/../../mxmonitor_dbg.conf.json",
+				"."
+			]
+		}
+    ]
+}
