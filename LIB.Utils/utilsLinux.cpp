@@ -95,7 +95,6 @@ std::string UptimeToString(double uptime)
 	SStr << std::setfill('0') << std::setw(2) << Utime_Hour << ":";
 	SStr << std::setfill('0') << std::setw(2) << Utime_Min << ":";
 	SStr << std::setfill('0') << std::setw(2) << Utime_Sec;
-	SStr << " (" << static_cast<int>(uptime / 3600) << " h " << Utime_Min << " min)";
 
 	return SStr.str();
 }
