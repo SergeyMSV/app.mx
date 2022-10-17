@@ -67,21 +67,12 @@ int main(int argc, char* argv[])
 
 			std::string Cmd;
 			Cmd = "echo ";
-			Cmd += "\"<html><head><style>table{ border: 0; cellspacing: 0; cellpadding: 0; } td{ padding: 0px 20px 0px 0px; }</style></head><body>";
+			Cmd += "\"<html><head><style>table{ border: 0; cellspacing: 0; cellpadding: 0; } td{ padding: 0px 10px 0px 10px; }</style></head><body>";
 
-			Cmd += "<tr><td>";
-			Cmd += DsGNSS.GetHTMLTable("width=\"100\"");
-			Cmd += "</td></tr>";
+			Cmd += DsGNSS.GetHTMLTable("width=\"70\"");
 
-			Cmd += "<table width=\"400\">";
-			Cmd += "<tr><td>";
-			Cmd += share::GetHTMLTableDevice("width=\"100\"");
-			Cmd += "</td></tr>";
+			Cmd += share::GetHTMLTableSystemShort("width=\"80\"", ConfDevice);
 
-			Cmd += "<tr><td>";
-			Cmd += share::GetHTMLTableSystem("width=\"100\"", ConfDevice);
-			Cmd += "</td></tr>";
-			Cmd += "</table>";
 			Cmd += "<body></html>\"";
 			Cmd += " | mutt ";
 			for (auto& i : PictureList)

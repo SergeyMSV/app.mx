@@ -31,7 +31,7 @@ struct tDataSetGNSS
 		uint8_t GetGNSSSatelliteID(uint8_t satIDRaw) const;
 	};
 
-	std::string UTC;
+	std::string UTC = "00.00.00 00.00.00.000";
 	bool Valid = false;
 	double Latitude = 0;
 	double Longitude = 0;
@@ -52,6 +52,8 @@ public:
 private:
 	std::string GetHTMLTableSatellitesHor(utils::tGNSSCode codeGNSS) const;
 	std::string GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) const;
+
+	std::string ToString(utils::tGNSSCode codeGNSS) const;
 };
 
 }
