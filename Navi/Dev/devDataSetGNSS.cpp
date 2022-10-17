@@ -73,12 +73,10 @@ std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 	std::string StyleHeader = share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader);
 
 	std::stringstream Table;
-	Table << "<table>";
 
-	Table << "<tr><td><b>GNSS</b></td></tr>";
-	Table << "<tr><td>";
-	Table << "<table>";	
-	Table << "<tr><td " << styleCol1 << StyleHeader << ">UTC</td><td>" << UTC << "</td></tr>";
+	Table << "<table>";
+	Table << "<tr><td " << styleCol1 << "><b>GNSS</b></td></tr>";
+	Table << "<tr><td " << StyleHeader << ">UTC</td><td>" << UTC << "</td></tr>";
 	Table << "<tr><td" << StyleHeader << ">Valid</td><td>";
 	Table << Valid ? "A" : "V";
 	Table << "</td></tr>";
@@ -93,24 +91,9 @@ std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 	Table << "<tr><td" << StyleHeader << ">Course</td><td>" << Course << "</td></tr>";
 	Table << "</table>";
 
-	Table << "</td></tr>";
-
-	Table << "<tr><td><b>GPS</b></td></tr>";
-	Table << "<tr><td>";
 	Table << GetHTMLTableSatellitesVert(utils::tGNSSCode::GPS);
-	Table << "</td></tr>";
-
-	Table << "<tr><td><b>GLONASS</b></td></tr>";
-	Table << "<tr><td>";
 	Table << GetHTMLTableSatellitesVert(utils::tGNSSCode::GLONASS);
-	Table << "</td></tr>";
-
-	Table << "<tr><td><b>WAAS</b></td></tr>";
-	Table << "<tr><td>";
 	Table << GetHTMLTableSatellitesVert(utils::tGNSSCode::WAAS);
-	Table << "</td></tr>";
-
-	Table << "</td></tr></table>";
 
 	return Table.str();
 }
@@ -162,9 +145,11 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) 
 	std::stringstream Table;
 	Table << "<table>";
 
+	Table << "<tr><td colspan=\"5\"><b>" << ToString(codeGNSS) << "</b></td></tr>";
+	
 	std::string StrID = codeGNSS == utils::tGNSSCode::GPS || codeGNSS == utils::tGNSSCode::WAAS ? "PRN" : "ID";
 
-	Table << "<tr align = \"center\" "<< share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader) <<"><td width=\"50\">" << StrID << "</td><td>Elevation</td><td>Azimuth</td><td>SNR</td></tr>";
+	Table << "<tr align = \"center\" "<< share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader) <<"><td width=\"30\">" << StrID << "</td><td>Elv</td><td>Azm</td><td>SNR</td><td width=\"45\">Type</td></tr>";
 
 	for (auto& i : Satellites)
 	{
@@ -174,12 +159,30 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) 
 		Table << "<tr align = \"center\"";
 		if (i.SNR > 0)
 			Table << StyleSatUsed;
-		Table << "><td>" << std::to_string(i.ID) << "</td><td>" << std::to_string(i.Elevation) << "</td><td>" << std::to_string(i.Azimuth) << "</td><td>" << std::to_string(i.SNR) << "</td></tr>";
+		Table << "><td>"
+			<< std::to_string(i.ID) << "</td><td>"
+			<< std::to_string(i.Elevation) << "</td><td>"
+			<< std::to_string(i.Azimuth) << "</td><td>"
+			<< std::to_string(i.SNR) << "</td><td>"
+			<< "IIR-M_W"//[TBD]
+			<< "</td></tr>";
 	}
 
 	Table << "</table>";
 
 	return Table.str();
+}
+
+std::string tDataSetGNSS::ToString(utils::tGNSSCode codeGNSS) const
+{
+	switch (codeGNSS)
+	{
+	case utils::tGNSSCode::GLONASS: return "GLONASS";
+	case utils::tGNSSCode::GPS: return "GPS";
+	case utils::tGNSSCode::WAAS: return "WAAS";
+	}
+
+	return "UNKNOWN";
 }
 
 }
