@@ -157,6 +157,8 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesHor(utils::tGNSSCode codeGNSS) c
 
 std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) const
 {
+	std::string StyleSatUsed = share::GetHTMLBgColour(share::tHTMLFieldStatus::Norm);
+
 	std::stringstream Table;
 	Table << "<table>";
 
@@ -169,7 +171,10 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) 
 		if (i.GNSS != codeGNSS)
 			continue;
 
-		Table << "<tr align = \"center\"><td>" << std::to_string(i.ID) << "</td><td>" << std::to_string(i.Elevation) << "</td><td>" << std::to_string(i.Azimuth) << "</td><td>" << std::to_string(i.SNR) << "</td></tr>";
+		Table << "<tr align = \"center\"";
+		if (i.SNR > 0)
+			Table << StyleSatUsed;
+		Table << "><td>" << std::to_string(i.ID) << "</td><td>" << std::to_string(i.Elevation) << "</td><td>" << std::to_string(i.Azimuth) << "</td><td>" << std::to_string(i.SNR) << "</td></tr>";
 	}
 
 	Table << "</table>";

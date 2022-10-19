@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 		std::string PathFileDevice = utils::linux::GetPathConfigExc("mxdevice");
 		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
 
-		utils::tTimePeriod TimePeriod;
+		utils::tTimePeriod TimePeriod(true);
 
 		while (true)
 		{
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 
 			if (!TimePeriod.IsReady())
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				std::this_thread::sleep_for(std::chrono::milliseconds(500));
 				continue;
 			}
 
