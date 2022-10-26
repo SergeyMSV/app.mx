@@ -21,22 +21,10 @@ void SendEMail(const dev::tDataSetConfig& config, const dev::tMonitorMemory& mem
 {
 	std::string Cmd;
 	Cmd = "echo ";
-	Cmd += "\"<html><head><style>table{ border: 0; cellspacing: 0; cellpadding: 0; } td{ padding: 0px 20px 0px 0px; }</style></head><body>";
+	Cmd += "\"<html><head><style>table{ border: 0; cellspacing: 0; cellpadding: 0; } td{ padding: 0px 10px 0px 10px; }</style></head><body>";
 
-	Cmd += "<table width=\"400\">";
-
-	Cmd += "<tr><td>";
-	Cmd += mem.GetHTMLTable("width=\"100\"");
-	Cmd += "</td></tr>";
-
-	Cmd += "<tr><td>";
-	Cmd += share::GetHTMLTableDevice("width=\"100\"");
-	Cmd += "</td></tr>";
-
-	Cmd += "<tr><td>";
-	Cmd += share::GetHTMLTableSystem("width=\"100\"", config.GetDevice());
-	Cmd += "</td></tr>";
-	Cmd += "</table>";
+	Cmd += mem.GetHTMLTable("width=\"80\"");
+	Cmd += share::GetHTMLTableSystem("width=\"80\"", config.GetDevice());
 	Cmd += "<body></html>\"";
 	Cmd += " | mutt ";
 	Cmd += " -s \"" + utils::linux::CmdLine("hostname") + ": Schedule Snapshot Recording\"";
