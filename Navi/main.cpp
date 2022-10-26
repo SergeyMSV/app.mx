@@ -83,7 +83,10 @@ int main(int argc, char* argv[])
 				if (!SpyOutGPSList.empty())
 					DsGNSS.SetStateGPS(SpyOutGPSList.back());
 			}
-			catch (...) {}//JSON error
+			catch (const std::exception& e)//JSONcat  error
+			{
+				std::cerr << "[ERR-JSON] " << e.what() << "\n";
+			}
 
 			std::string Cmd;
 			Cmd = "echo ";
