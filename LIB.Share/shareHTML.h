@@ -20,7 +20,7 @@ enum class tHTMLFieldStatus
 
 std::string GetHTMLBgColour(tHTMLFieldStatus status);
 
-std::string GetHTMLTableDevice(const std::string& styleCol1);
 std::string GetHTMLTableSystem(const std::string& styleCol1, const share_config::tDevice& dsConfigDevice);
+std::string GetHTMLTableSystemShort(const std::string& styleCol1, const share_config::tDevice& dsConfigDevice);
 
 }
