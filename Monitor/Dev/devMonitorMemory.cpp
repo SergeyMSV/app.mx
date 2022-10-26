@@ -63,21 +63,12 @@ std::string tMonitorMemory::GetHTMLTable(const std::string& styleCol1) const
 
 	std::stringstream Table;
 	Table << "<table>";
-
-	Table << "<tr><td " + styleCol1 + "><b>MEMORY</b></td></tr>";
-
-	Table << "<tr><td>";
-	Table << "<table>";
-	Table << "<tr><td" << StyleHeader << ">RAM Total, kB</td><td>" << m_MemTotal << "</td></tr>";
+	Table << "<tr><td colspan=\"2\"><b>STAT</b></td></tr>";
+	Table << "<tr><td " << styleCol1 << StyleHeader << ">RAM Total</td><td>" << m_MemTotal << " kB</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Load avg</td><td>" << utils::linux::CmdLine("cat /proc/loadavg") << "</td></tr>";
 	Table << "</table>";
-	Table << "</td></tr>";
 
-	Table << "<tr><td><b>FREE (in kB)</b></td></tr>";
-	Table << "<tr><td>";
 	Table << GetHTMLTableMemFree();
-	Table << "</td></tr>";
-
-	Table << "</td></tr></table>";
 
 	return Table.str();
 }
@@ -177,9 +168,13 @@ void tMonitorMemory::GetMemFree(const tDataSetConfig& config)
 
 std::string tMonitorMemory::GetHTMLTableMemFree() const
 {
+	std::time_t TimeNowRaw = std::time(nullptr);
+	tm TimeNow = *std::gmtime(&TimeNowRaw);//gmtime may not be thread-safe. 
+
 	std::stringstream Table;
 	Table << "<table>";
-	Table << "<tr align = \"center\"" << share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader) <<"><td>Time</td><td>Free</td><td>Used</td><td>Buff</td><td>Avail.</td></tr>";
+	Table << "<tr><td colspan=\"5\"><b>MEMORY (in kB)</b></td></tr>";
+	Table << "<tr align = \"center\"" << share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader) <<"><td>Time</td><td>Free</td><td>Used</td><td>Buff</td><td>Avail</td></tr>";
 	for (auto& i : m_MemFree)
 	{
 		tm Time = *std::gmtime(&i.Time);//gmtime may not be thread-safe. 
@@ -197,7 +192,15 @@ std::string tMonitorMemory::GetHTMLTableMemFree() const
 		}
 
 		Table << "<tr align = \"center\">";
-		Table << "<td>" << std::put_time(&Time, "%T") << "</td>";
+		Table << "<td>";
+		if (Time.tm_mday == TimeNow.tm_mday)
+		{
+			Table << std::put_time(&Time, "%T") << "</td>";
+		}
+		else
+		{
+			Table << std::put_time(&Time, "%D") << "</td>";
+		}		
 		Table << "<td" << share::GetHTMLBgColour(StatFree) << ">" << i.Free << "</td>";
 		Table << "<td" << share::GetHTMLBgColour(StatUsed) << ">" << i.Used << "</td>";
 		Table << "<td>" << i.BuffCache << "</td>";
