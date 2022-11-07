@@ -19,6 +19,9 @@ struct tDataSetGNSS
 		uint8_t Elevation = 0;
 		uint16_t Azimuth = 0;
 		uint8_t SNR = 0;
+		std::string Type;
+		uint16_t COSMOS = 0;
+		uint16_t NORAD = 0;
 
 		tSatellite() = default;
 		explicit tSatellite(boost::property_tree::ptree a_PTree);
@@ -46,6 +49,9 @@ public:
 
 	bool operator == (const tDataSetGNSS&) const = default;
 	bool operator != (const tDataSetGNSS&) const = default;
+
+	void SetStateGLO(const std::string& fileName);
+	void SetStateGPS(const std::string& fileName);
 
 	std::string GetHTMLTable(const std::string& styleCol1) const;
 

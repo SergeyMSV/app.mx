@@ -29,6 +29,8 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
 	m_GNSS = config::tGNSS(PTreeConfig);
 	m_Picture = config::tPicture(PTreeConfig);
+	m_SpyOutGLO = config::tSpyOutGLO(PTreeConfig);
+	m_SpyOutGPS = config::tSpyOutGPS(PTreeConfig);
 
 	boost::property_tree::ptree PTreeDevice;
 	boost::property_tree::json_parser::read_json(fileNameDevice, PTreeDevice);
