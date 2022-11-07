@@ -11,6 +11,9 @@
     <Filter Include="Dev">
       <UniqueIdentifier>{59634b88-191d-4c3f-b606-d7533dbde411}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LIB.Share">
+      <UniqueIdentifier>{6733c7c4-0969-4945-a479-9adc5c1b5df9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -38,7 +41,7 @@
     <ClCompile Include="..\Lib.Module\modGnss.cpp">
       <Filter>Lib.Module</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\devSettings.cpp">
+    <ClCompile Include="Dev\devDataSetConfig.cpp">
       <Filter>Dev</Filter>
     </ClCompile>
     <ClCompile Include="..\Lib.Module\modGnssReceiver.cpp">
@@ -83,6 +86,9 @@
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp">
       <Filter>Lib.Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Lib.Utils\utilsBase.h">
@@ -126,7 +132,7 @@
     <ClInclude Include="..\Lib.Module\modGnss.h">
       <Filter>Lib.Module</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\devSettings.h">
+    <ClInclude Include="Dev\devDataSetConfig.h">
       <Filter>Dev</Filter>
     </ClInclude>
     <ClInclude Include="..\Lib.Module\modGnssReceiver.h">
@@ -144,12 +150,15 @@
     <ClInclude Include="..\LIB.Utils\utilsLinux.h">
       <Filter>Lib.Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareConfig.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="mxgnss.conf" />
+    <Xml Include="mxgnss.conf.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat">

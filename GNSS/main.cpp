@@ -1,8 +1,8 @@
 #include <devConfig.h>
 
+#include <devDataSetConfig.h>
 #include <devGNSS.h>
 #include <devLog.h>
-#include <devSettings.h>
 #include <devShell.h>
 
 #include <utilsLinux.h>
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 		if (FileNameConf.empty())
 			throw std::runtime_error{"config file is not found"};
 
-		dev::g_Settings = dev::tSettings(FileNameConf);
+		dev::g_Settings = dev::tDataSetConfig(FileNameConf);
 	}
 	catch (std::exception & e)
 	{
@@ -149,8 +149,9 @@ int main(int argc, char* argv[])
 		Thread_Shell = std::thread(dev::ThreadFunShell);
 	////////////////////////////////
 
-	utils::RemoveFilesOutdated(dev::g_Settings.Output.Path, dev::g_Settings.Output.Prefix, dev::g_Settings.Output.QtyMax);
-	utils::RemoveFilesOutdated(dev::g_Settings.Output.Path, g_FileNameTempPrefix + dev::g_Settings.Output.Prefix, 0);
+	dev::config::tOutGNSS OutGNSS = dev::g_Settings.GetOutGNSS();
+	utils::RemoveFilesOutdated(OutGNSS.Path, OutGNSS.Prefix, OutGNSS.QtyMax);
+	utils::RemoveFilesOutdated(OutGNSS.Path, g_FileNameTempPrefix + OutGNSS.Prefix, 0);
 
 	////////////////////////////////
 

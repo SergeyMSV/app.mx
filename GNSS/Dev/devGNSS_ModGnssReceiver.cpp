@@ -1,6 +1,6 @@
 #include "devGNSS.h"
 #include "devDataSet.h"
-#include "devSettings.h"
+#include "devDataSetConfig.h"
 
 #include <utilsPath.h>
 
@@ -23,7 +23,7 @@ tGNSS::tModGnssReceiver::~tModGnssReceiver()
 
 mod::tGnssTaskScript tGNSS::tModGnssReceiver::GetTaskScript(const std::string& id, bool userTaskScript)
 {
-	return g_Settings.GetTaskScript(id, userTaskScript);
+	return g_Settings.GetTaskScript(id);
 }
 
 mod::tGnssSettingsNMEA tGNSS::tModGnssReceiver::GetSettingsNMEA()
@@ -33,9 +33,11 @@ mod::tGnssSettingsNMEA tGNSS::tModGnssReceiver::GetSettingsNMEA()
 
 void tGNSS::tModGnssReceiver::OnChanged(const mod::tGnssDataSet& value)
 {
+	config::tOutGNSS OutGNSS = g_Settings.GetOutGNSS();
+
 	std::string DTStr = utils::GetDateTime();
-	std::string Path = g_Settings.Output.Path + "/";
-	std::string FileName = g_Settings.Output.Prefix + DTStr + ".json";
+	std::string Path = OutGNSS.Path + "/";
+	std::string FileName = OutGNSS.Prefix + DTStr + ".json";
 	std::string FileNameFull = Path + FileName;
 	std::string FileNameTemp = Path + g_FileNameTempPrefix + FileName + ".tmp";
 	std::fstream File = std::fstream(FileNameTemp, std::ios::out);
@@ -51,7 +53,7 @@ void tGNSS::tModGnssReceiver::OnChanged(const mod::tGnssDataSet& value)
 	
 	std::rename(FileNameTemp.c_str(), FileNameFull.c_str());
 
-	utils::RemoveFilesOutdated(g_Settings.Output.Path, g_Settings.Output.Prefix, g_Settings.Output.QtyMax);
+	utils::RemoveFilesOutdated(OutGNSS.Path, OutGNSS.Prefix, OutGNSS.QtyMax);
 
 	m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightYellow, value.ToJSON());
 }

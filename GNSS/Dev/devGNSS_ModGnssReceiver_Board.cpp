@@ -1,11 +1,11 @@
 #include "devGNSS.h"
-#include "devSettings.h"
+#include "devDataSetConfig.h"
 
 namespace dev
 {
 
 tGNSS::tModGnssReceiver::tBoard::tBoard(tModGnssReceiver* obj, boost::asio::io_context& io)
-	:m_pObj(obj), tSerialPort(io, g_Settings.SerialPort.ID, g_Settings.SerialPort.BR)
+	:m_pObj(obj), tSerialPort(io, g_Settings.GetSerialPortGNSS().ID, g_Settings.GetSerialPortGNSS().BR)
 {
 
 }
