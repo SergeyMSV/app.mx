@@ -1,5 +1,6 @@
 #include "devDataSetGNSS.h"
 
+#include <shareGNSS.h>
 #include <shareHTML.h>
 
 #include <sstream>
@@ -49,10 +50,10 @@ uint8_t tDataSetGNSS::tSatellite::GetGNSSSatelliteID(uint8_t satIDRaw) const
 	return 0xFF;
 }
 
-tDataSetGNSS::tDataSetGNSS(const std::string& a_fileName)
+tDataSetGNSS::tDataSetGNSS(const std::string& fileName)
 {
 	boost::property_tree::ptree PTree;
-	boost::property_tree::json_parser::read_json(a_fileName, PTree);
+	boost::property_tree::json_parser::read_json(fileName, PTree);
 
 	UTC = PTree.get<std::string>("utc");
 	Valid = PTree.get<bool>("valid");
@@ -65,6 +66,59 @@ tDataSetGNSS::tDataSetGNSS(const std::string& a_fileName)
 	for (auto& sat : PTree.get_child("satellite"))
 	{
 		Satellites.emplace_back(sat.second);
+	}
+}
+
+void tDataSetGNSS::SetStateGLO(const std::string& fileName)
+{
+	boost::property_tree::ptree PTree;
+	boost::property_tree::json_parser::read_json(fileName, PTree);
+
+	for (auto& sat : PTree.get_child("glonass"))
+	{
+		share_gnss::tSatDesc SatDesc(sat.second);
+		if (SatDesc.Status != 1)
+			continue;
+
+		auto FindSat = [&SatDesc](const tSatellite& value)
+		{
+			return
+				value.GNSS == utils::tGNSSCode::GLONASS &&
+				value.ID == SatDesc.Slot;
+		};
+
+		auto Iter = std::find_if(Satellites.begin(), Satellites.end(), FindSat);
+		if (Iter == Satellites.end())
+			continue;
+
+		Iter->Type = SatDesc.TypeKA;
+		Iter->COSMOS = SatDesc.COSMOS;
+		Iter->NORAD = SatDesc.NORAD;
+	}
+}
+
+void tDataSetGNSS::SetStateGPS(const std::string& fileName)
+{
+	boost::property_tree::ptree PTree;
+	boost::property_tree::json_parser::read_json(fileName, PTree);
+
+	for (auto& sat : PTree.get_child("gps"))
+	{
+		share_gnss::tSatDesc SatDesc(sat.second);
+
+		auto FindSat = [&SatDesc](const tSatellite& value)
+		{
+			return
+				value.GNSS == utils::tGNSSCode::GPS &&
+				value.ID == SatDesc.PRN;
+		};
+
+		auto Iter = std::find_if(Satellites.begin(), Satellites.end(), FindSat);
+		if (Iter == Satellites.end())
+			continue;
+
+		Iter->Type = SatDesc.TypeKA;
+		Iter->NORAD = SatDesc.NORAD;
 	}
 }
 
@@ -148,13 +202,19 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) 
 	Table << "<tr><td colspan=\"5\"><b>" << ToString(codeGNSS) << "</b></td></tr>";
 	
 	std::string StrID = codeGNSS == utils::tGNSSCode::GPS || codeGNSS == utils::tGNSSCode::WAAS ? "PRN" : "ID";
+	std::string StrSatID = codeGNSS == utils::tGNSSCode::GPS || codeGNSS == utils::tGNSSCode::WAAS ? "NRD" : "CSM";
 
-	Table << "<tr align = \"center\" "<< share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader) <<"><td width=\"30\">" << StrID << "</td><td>Elv</td><td>Azm</td><td>SNR</td><td width=\"45\">Type</td></tr>";
+	Table << "<tr align = \"center\" " << share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader) << "><td width=\"30\">" << StrID << "</td>";
+	Table << "<td>Elv</td><td>Azm</td><td>SNR</td>";
+	Table << "<td width=\"45\">Type</td>";
+	Table << "<td width=\"55\">" << StrSatID << "</td></tr>";
 
 	for (auto& i : Satellites)
 	{
 		if (i.GNSS != codeGNSS)
 			continue;
+
+		uint16_t CsmNrd = codeGNSS == utils::tGNSSCode::GLONASS ? i.COSMOS : i.NORAD;
 
 		Table << "<tr align = \"center\"";
 		if (i.SNR > 0)
@@ -164,8 +224,8 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) 
 			<< std::to_string(i.Elevation) << "</td><td>"
 			<< std::to_string(i.Azimuth) << "</td><td>"
 			<< std::to_string(i.SNR) << "</td><td>"
-			<< "IIR-M_W"//[TBD]
-			<< "</td></tr>";
+			<< i.Type << "</td><td>"
+			<< (CsmNrd ? std::to_string(CsmNrd) : "") << "</td></tr>";
 	}
 
 	Table << "</table>";

@@ -17,6 +17,14 @@
 //$ echo "Hello this is the body message, we are sending email with attachement using mutt and msmtp" | mutt -a "/home/sergey/cam.jpg" -a "/home/sergey/cam_2.jpg" -s "this is the subject of the message" --satellite4@yandex.ru
 //$ cat ~/email/attached_file.txt | mutt -a "/home/sergey/cam.jpg" -a "/home/sergey/cam_2.jpg" -s "this is the subject of the message" --satellite4@yandex.ru
 
+std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf)
+{
+	utils::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
+	auto List = utils::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
+	utils::linux::CorrPaths(List);
+	return List;
+}
+
 int main(int argc, char* argv[])
 {
 	try
@@ -39,9 +47,15 @@ int main(int argc, char* argv[])
 			const share_config::tDevice ConfDevice = DsConfig.GetDevice();
 			const dev::config::tEmail ConfEmail = DsConfig.GetEmail();
 			const dev::config::tGNSS ConfGnss = DsConfig.GetGNSS();
-			const dev::config::tPicture ConfPicture = DsConfig.GetPicture();
+			const dev::config::tPicture ConfPict = DsConfig.GetPicture();
+			const dev::config::tSpyOutGLO ConfSpyOutGLO = DsConfig.GetSpyOutGLO();
+			const dev::config::tSpyOutGPS ConfSpyOutGPS = DsConfig.GetSpyOutGPS();
 
-			if (ConfEmail.IsWrong() || ConfGnss.IsWrong() || ConfPicture.IsWrong())
+			if (ConfEmail.IsWrong() ||
+				ConfGnss.IsWrong() ||
+				ConfPict.IsWrong() ||
+				ConfSpyOutGLO.IsWrong() ||
+				ConfSpyOutGPS.IsWrong())
 				return static_cast<int>(utils::tExitCode::EX_CONFIG);
 			
 			TimePeriod.Set(ConfEmail.Period);
@@ -52,19 +66,22 @@ int main(int argc, char* argv[])
 				continue;
 			}
 
-			utils::RemoveFilesOutdated(ConfGnss.Path, ConfGnss.Prefix, ConfGnss.QtyMax);
-			auto GnssList = utils::GetFilesLatest(ConfGnss.Path, ConfGnss.Prefix, ConfGnss.QtyMax);
-			utils::linux::CorrPaths(GnssList);
-
-			utils::RemoveFilesOutdated(ConfPicture.Path, ConfPicture.Prefix, ConfPicture.QtyMax);
-			auto PictureList = utils::GetFilesLatest(ConfPicture.Path, ConfPicture.Prefix, ConfPicture.QtyMax);
-			utils::linux::CorrPaths(PictureList);
+			auto GnssList = GetFilePaths(ConfGnss);
+			auto PictList = GetFilePaths(ConfPict);
+			auto SpyOutGLOList = GetFilePaths(ConfSpyOutGLO);
+			auto SpyOutGPSList = GetFilePaths(ConfSpyOutGPS);
 
 			dev::tDataSetGNSS DsGNSS{};
 			try
 			{
 				if (!GnssList.empty())
 					DsGNSS = dev::tDataSetGNSS(GnssList.back());
+
+				if (!SpyOutGLOList.empty())
+					DsGNSS.SetStateGLO(SpyOutGLOList.back());
+
+				if (!SpyOutGPSList.empty())
+					DsGNSS.SetStateGPS(SpyOutGPSList.back());
 			}
 			catch (...) {}//JSON error
 
@@ -78,7 +95,7 @@ int main(int argc, char* argv[])
 
 			Cmd += "<body></html>\"";
 			Cmd += " | mutt ";
-			for (auto& i : PictureList)
+			for (auto& i : PictList)
 			{
 				Cmd += " -a \"";
 				Cmd += i;
@@ -97,7 +114,7 @@ int main(int argc, char* argv[])
 
 			if (ResCode == 0)//[TBD] check it
 			{
-				for (auto& i : PictureList)
+				for (auto& i : PictList)
 				{
 					std::error_code ErrCode;
 					std::filesystem::remove(i, ErrCode);
