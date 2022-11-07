@@ -32,6 +32,9 @@
     <ClCompile Include="..\LIB.Share\shareConfig.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareGNSS.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Utils\utilsBase.h">
@@ -57,6 +60,9 @@
       <Filter>LIB.Share</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Share\shareConfig.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareGNSS.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
   </ItemGroup>

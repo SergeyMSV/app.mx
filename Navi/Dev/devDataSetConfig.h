@@ -25,7 +25,7 @@ struct tEmail
 	bool IsWrong() const;
 };
 
-struct tGNSS : share_config::tOutFile
+struct tGNSS : public share_config::tOutFile
 {
 	tGNSS() = default;
 	explicit tGNSS(const boost::property_tree::ptree& pTree)
@@ -33,11 +33,27 @@ struct tGNSS : share_config::tOutFile
 	{}
 };
 
-struct tPicture : share_config::tOutFile
+struct tPicture : public share_config::tOutFile
 {
 	tPicture() = default;
 	explicit tPicture(const boost::property_tree::ptree& pTree)
 		:share_config::tOutFile("picture", pTree)
+	{}
+};
+
+struct tSpyOutGLO : public share_config::tOutFile
+{
+	tSpyOutGLO() = default;
+	explicit tSpyOutGLO(const boost::property_tree::ptree& pTree)
+		:share_config::tOutFile("mxspy_out_glo", pTree)
+	{}
+};
+
+struct tSpyOutGPS : public share_config::tOutFile
+{
+	tSpyOutGPS() = default;
+	explicit tSpyOutGPS(const boost::property_tree::ptree& pTree)
+		:share_config::tOutFile("mxspy_out_gps", pTree)
 	{}
 };
 
@@ -49,6 +65,8 @@ class tDataSetConfig
 	config::tEmail m_Email;
 	config::tGNSS m_GNSS;
 	config::tPicture m_Picture;
+	config::tSpyOutGLO m_SpyOutGLO;
+	config::tSpyOutGPS m_SpyOutGPS;
 
 public:
 	tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNameDevice, const std::string& fileNamePrivate);
@@ -57,6 +75,8 @@ public:
 	config::tEmail GetEmail() const { return m_Email; }
 	config::tGNSS GetGNSS() const { return m_GNSS; }
 	config::tPicture GetPicture() const { return m_Picture; }
+	config::tSpyOutGLO GetSpyOutGLO() const { return m_SpyOutGLO; }
+	config::tSpyOutGPS GetSpyOutGPS() const { return m_SpyOutGPS; }
 };
 
 }
