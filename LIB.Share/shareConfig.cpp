@@ -26,4 +26,19 @@ bool tOutFile::IsWrong() const
 	return Path.empty() || Prefix.empty() || QtyMax == 0;
 }
 
+tSerialPort::tSerialPort(const std::string& baseName, const boost::property_tree::ptree& pTree)
+{
+	ID = pTree.get<std::string>(baseName + ".id");
+	BR = pTree.get<uint32_t>(baseName + ".br");
+
+#if defined(_WIN32)
+	ID = pTree.get<std::string>(baseName + ".id_win");
+#endif
+}
+
+bool tSerialPort::IsWrong() const
+{
+	return ID.empty() || BR == 0;
+}
+
 }

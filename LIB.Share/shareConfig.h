@@ -28,4 +28,15 @@ struct tOutFile
 	bool IsWrong() const;
 };
 
+struct tSerialPort
+{
+	std::string ID;
+	std::uint32_t BR = 0;
+
+	tSerialPort() = default;
+	tSerialPort(const std::string & baseName, const boost::property_tree::ptree & pTree);
+
+	bool IsWrong() const;
+};
+
 }
