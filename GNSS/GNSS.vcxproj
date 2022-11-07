@@ -87,7 +87,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Lib.Utils;..\Lib.Module;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Lib.Utils;..\LIB.Share;..\Lib.Module;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -97,7 +97,7 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy $(TargetName).conf $(OutDir)</Command>
+      <Command>copy $(TargetName).conf.json $(OutDir)</Command>
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>
@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Lib.Utils;..\Lib.Module;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Lib.Utils;..\LIB.Share;..\Lib.Module;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -120,7 +120,7 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy $(TargetName).conf $(OutDir)</Command>
+      <Command>copy $(TargetName).conf.json $(OutDir)</Command>
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>
@@ -135,7 +135,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Lib.Utils;..\Lib.Module;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Lib.Utils;..\LIB.Share;..\Lib.Module;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -147,7 +147,7 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy $(TargetName).conf $(OutDir)</Command>
+      <Command>copy $(TargetName).conf.json $(OutDir)</Command>
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>
@@ -162,7 +162,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Lib.Utils;..\Lib.Module;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Lib.Utils;..\LIB.Share;..\Lib.Module;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -174,7 +174,7 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy $(TargetName).conf $(OutDir)</Command>
+      <Command>copy $(TargetName).conf.json $(OutDir)</Command>
     </PreBuildEvent>
     <PreLinkEvent>
       <Command>
@@ -193,12 +193,13 @@
     <ClCompile Include="..\Lib.Module\modGnssReceiver_State_CmdGPI.cpp" />
     <ClCompile Include="..\Lib.Module\modGnssReceiver_State_CmdGPO.cpp" />
     <ClCompile Include="..\Lib.Module\modGnssReceiver_State_CmdREQ.cpp" />
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\Lib.Utils\utilsLog.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPacketNMEAType.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="..\Lib.Utils\utilsShell.cpp" />
-    <ClCompile Include="Dev\devSettings.cpp" />
+    <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="Dev\devGNSS.cpp" />
     <ClCompile Include="Dev\devGNSS_ModGnssReceiver.cpp" />
     <ClCompile Include="Dev\devGNSS_ModGnssReceiver_Board.cpp" />
@@ -210,6 +211,7 @@
   <ItemGroup>
     <ClInclude Include="..\Lib.Module\modGnss.h" />
     <ClInclude Include="..\Lib.Module\modGnssReceiver.h" />
+    <ClInclude Include="..\LIB.Share\shareConfig.h" />
     <ClInclude Include="..\Lib.Utils\utilsBase.h" />
     <ClInclude Include="..\Lib.Utils\utilsCRC.h" />
     <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
@@ -223,7 +225,7 @@
     <ClInclude Include="..\LIB.Utils\utilsSerialPort.h" />
     <ClInclude Include="..\Lib.Utils\utilsShell.h" />
     <ClInclude Include="devConfig.h" />
-    <ClInclude Include="Dev\devSettings.h" />
+    <ClInclude Include="Dev\devDataSetConfig.h" />
     <ClInclude Include="Dev\devGNSS.h" />
     <ClInclude Include="Dev\devLog.h" />
     <ClInclude Include="Dev\devDataSet.h" />
@@ -234,7 +236,7 @@
     <Text Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="mxgnss.conf" />
+    <Xml Include="mxgnss.conf.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Module\!Refresh.bat" />
