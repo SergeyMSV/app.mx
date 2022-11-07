@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Dev/**",
+				"${workspaceFolder}/../LIB.Share/**",
+                "${workspaceFolder}/../LIB.Utils/**",
+                "/usr/local/boost_1_77_0/**",
+				"/usr/local/openssl-3.0.5/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc-11",
+            "cStandard": "c11",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

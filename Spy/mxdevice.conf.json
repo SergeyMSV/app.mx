@@ -1,0 +1,8 @@
+{
+	"device": {
+		"type": "MXType01"
+	},
+	"firmware": {
+		"version": "0.0.1"
+	}
+}
