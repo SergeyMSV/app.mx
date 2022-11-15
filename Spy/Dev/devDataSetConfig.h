@@ -20,6 +20,8 @@ struct tSpyGNSS
 	std::string TargetGLO;
 	std::string TargetGPS;
 	uint32_t Period = 0;//in seconds, min limit set in c_tor
+	uint32_t RepPeriod = 0;//in seconds, min limit set in c_tor
+	uint32_t RepQty = 0;
 
 	tSpyGNSS() = default;
 	explicit tSpyGNSS(boost::property_tree::ptree pTree);
