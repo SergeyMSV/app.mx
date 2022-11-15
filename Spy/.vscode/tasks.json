@@ -1,97 +1,99 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "type": "shell",
-            "label": "C/C++: cpp build active file ARM",
-            "command": "/usr/bin/arm-linux-gnueabihf-g++-10",
-            "args": [
-                "-std=c++2a",
-                "-g",
-                "-Wall",
-                "-I${workspaceFolder}",
-                "-I${workspaceFolder}/Dev",
-				"-I${workspaceFolder}/../LIB.Share",
-                "-I${workspaceFolder}/../LIB.Utils",
-                "-I/usr/local/boost_1_77_0_ARM",
-				"-L/usr/local/openssl-3.0.5_ARM",
-				"-I/usr/local/openssl-3.0.5_ARM/include",
-                "-L/usr/arm-linux-gnueabihf/lib",
-                "Dev/devDataSetConfig.cpp",
-                "main.cpp",
-				"main_GNSS.cpp",
-				"${workspaceFolder}/../LIB.Share/shareConfig.cpp",
-				"${workspaceFolder}/../LIB.Share/shareGNSS.cpp",
-				"${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
-				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
-				"${workspaceFolder}/../LIB.Utils/utilsWeb.cpp",
-                "-o",
-                "${workspaceFolder}/mxspy",
-                "-lpthread",
-                "-lcrypto",
-				"-lssl"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        {
-            "type": "cppbuild",
-            "label": "C/C++: g++ build active file",
-            "command": "/usr/bin/g++-11",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-std=c++2a",
-                "-g",
-                "-Wall",
-                "-I${workspaceFolder}",
-                "-I${workspaceFolder}/Dev",
-				"-I${workspaceFolder}/../LIB.Share",
-                "-I${workspaceFolder}/../LIB.Utils",
-                "-I/usr/local/boost_1_77_0",
-				"-L/usr/local/openssl-3.0.5",
-				"-I/usr/local/openssl-3.0.5/include",
-                "Dev/devDataSetConfig.cpp",
-                "main.cpp",
-				"main_GNSS.cpp",
-				"${workspaceFolder}/../LIB.Share/shareConfig.cpp",
-				"${workspaceFolder}/../LIB.Share/shareGNSS.cpp",
-				"${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
-				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
-				"${workspaceFolder}/../LIB.Utils/utilsWeb.cpp",
-                "-o",
-                "${workspaceFolder}/mxspy_dbg",
-                "-lpthread",
-                "-lcrypto",
-				"-lssl"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build",
-            "detail": "compiler: /usr/bin/g++",
-			"dependsOn":[
-				"copy_config_dbg"
-			]
-        },
-		{
-			"label": "copy_config_dbg",
-			"command": "cp",
-			"args": [
-				"-f",
-				"${workspaceFolder}/../../mxspy_dbg.conf.json",
-				"."
-			]
-		}
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "C/C++: cpp build active file ARM",
+      "command": "/usr/bin/arm-linux-gnueabihf-g++-10",
+      "args": [
+        "-std=c++2a",
+        "-g",
+        "-Wall",
+        "-I${workspaceFolder}",
+        "-I${workspaceFolder}/Dev",
+        "-I${workspaceFolder}/../LIB.Share",
+        "-I${workspaceFolder}/../LIB.Utils",
+        "-I/usr/local/boost_1_77_0_ARM",
+        "-L/usr/local/openssl-3.0.5_ARM",
+        "-I/usr/local/openssl-3.0.5_ARM/include",
+        "-L/usr/arm-linux-gnueabihf/lib",
+        "Dev/devDataSetConfig.cpp",
+        "main.cpp",
+        "main_GNSS.cpp",
+        "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+        "${workspaceFolder}/../LIB.Share/shareGNSS.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsChrono.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsWeb.cpp",
+        "-o",
+        "${workspaceFolder}/mxspy",
+        "-lpthread",
+        "-lcrypto",
+        "-lssl"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "cppbuild",
+      "label": "C/C++: g++ build active file",
+      "command": "/usr/bin/g++-11",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-std=c++2a",
+        "-g",
+        "-Wall",
+        "-I${workspaceFolder}",
+        "-I${workspaceFolder}/Dev",
+        "-I${workspaceFolder}/../LIB.Share",
+        "-I${workspaceFolder}/../LIB.Utils",
+        "-I/usr/local/boost_1_77_0",
+        "-L/usr/local/openssl-3.0.5",
+        "-I/usr/local/openssl-3.0.5/include",
+        "Dev/devDataSetConfig.cpp",
+        "main.cpp",
+        "main_GNSS.cpp",
+        "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+        "${workspaceFolder}/../LIB.Share/shareGNSS.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsChrono.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsWeb.cpp",
+        "-o",
+        "${workspaceFolder}/mxspy_dbg",
+        "-lpthread",
+        "-lcrypto",
+        "-lssl"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": "build",
+      "detail": "compiler: /usr/bin/g++",
+      "dependsOn": [
+        "copy_config_dbg"
+      ]
+    },
+    {
+      "label": "copy_config_dbg",
+      "command": "cp",
+      "args": [
+        "-f",
+        "${workspaceFolder}/../../mxspy_dbg.conf.json",
+        "."
+      ]
+    }
+  ]
 }
