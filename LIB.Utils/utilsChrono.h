@@ -31,50 +31,51 @@ std::uint32_t GetDuration(std::chrono::time_point<T> timeStart, std::chrono::tim
 class tTimePeriod
 {
 	uint32_t m_Period = 0;//in seconds
-	const bool m_Sync = false;
 
 	utils::tTimePoint m_StartTime = utils::tClock::now();
 
+protected:
+	const bool m_Sync = false;
+
 public:
 	tTimePeriod() = delete;
-	explicit tTimePeriod(bool sync)
-		:m_Sync(sync)
-	{}
-	tTimePeriod(bool sync, uint32_t period)
-		:m_Sync(sync), m_Period(period)
-	{}
+	explicit tTimePeriod(bool sync);
+	tTimePeriod(bool sync, uint32_t period, bool postpone);
 
-	bool Set(uint32_t period)
-	{
-		if (m_Period == period)
-			return false;
+	void Set(uint32_t period, bool postpone);
+	bool IsReady();
 
-		m_Period = period;
-		m_StartTime = utils::tClock::now();
-		return true;
-	}
+	uint32_t GetPeriod() const { return m_Period; }
 
-	bool IsReady()
-	{
-		auto TimeNow = utils::tClock::now();
+protected:
+	bool IsReady(const tTimePoint& timePointNow);
 
-		if (m_Period == 0 || m_StartTime > TimeNow)
-			return false;
+	utils::tTimePoint GetStartTime(const tTimePoint& timePointNow, const utils::tTimePoint& startTime, uint32_t period) const;
+	utils::tTimePoint GetStartTime() const { return m_StartTime; }
+};
 
-		if (m_Sync)
-		{
-			while (m_StartTime <= TimeNow)
-			{
-				m_StartTime += std::chrono::seconds(m_Period);
-			}
-		}
-		else
-		{
-			m_StartTime = TimeNow + std::chrono::seconds(m_Period);
-		}
-		
-		return true;
-	}
+class tTimePeriodCount : private tTimePeriod
+{
+	uint32_t m_RepPeriod = 0;//in seconds
+	int m_RepQty = 0;
+	int m_RepQtyCount = 0;
+
+	utils::tTimePoint m_RepStartTime = GetStartTime();
+
+public:
+	explicit tTimePeriodCount(bool sync);
+	tTimePeriodCount(bool sync, uint32_t period, uint32_t repPeriod, int repQty, bool postpone);
+
+	void Set(uint32_t period, uint32_t repPeriod, int repQty, bool postpone);
+	bool IsReady();
+	void Complete();
+
+	uint32_t GetPeriod() const { return tTimePeriod::GetPeriod(); }
+	uint32_t GetRepPeriod() const { return m_RepPeriod; }
+	int GetRepQty() const { return m_RepQty; }
+
+private:
+	void SetRep(uint32_t repPeriod, int repQty);
 };
 
 }
