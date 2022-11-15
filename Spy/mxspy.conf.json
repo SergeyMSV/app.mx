@@ -3,7 +3,10 @@
     "host": "glonass-iac.ru",
     "target_glo": "/glonass/sostavOG/sostavOG_calc.php?lang=en&sort=point",
     "target_gps": "/gps/sostavOG/sostavOG_calc.php?lang=en",
-    "period": 86400
+    "period": 86400,
+    "_comment_rep": "if first request failed it tries again rep_qty times with rep_period",
+    "rep_period": 300,
+    "rep_qty": 2
   },
   "out_glo": {
     "path": "/tmpram",

@@ -33,6 +33,9 @@
     <ClCompile Include="..\LIB.Share\shareGNSS.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsChrono.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Utils\utilsBase.h">
