@@ -16,6 +16,8 @@ tSpyGNSS::tSpyGNSS(boost::property_tree::ptree pTree)
 	TargetGLO = pTree.get<std::string>("gnss.target_glo");
 	TargetGPS = pTree.get<std::string>("gnss.target_gps");
 	Period = pTree.get<uint32_t>("gnss.period");
+	RepPeriod = pTree.get<uint32_t>("gnss.rep_period");
+	RepQty = pTree.get<uint32_t>("gnss.rep_qty");
 }
 
 bool tSpyGNSS::IsWrong()
