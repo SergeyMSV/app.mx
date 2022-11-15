@@ -55,7 +55,8 @@ int main(int argc, char* argv[])
 				ConfSpyOutGPS.IsWrong())
 				return static_cast<int>(utils::tExitCode::EX_CONFIG);
 			
-			TimePeriod.Set(ConfEmail.Period);
+			if (TimePeriod.GetPeriod() != ConfEmail.Period)
+				TimePeriod.Set(ConfEmail.Period, true);
 
 			if (!TimePeriod.IsReady())
 			{
