@@ -158,6 +158,7 @@
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
     <ClCompile Include="..\LIB.Share\shareGNSS.cpp" />
     <ClCompile Include="..\LIB.Share\shareHTML.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsChrono.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
