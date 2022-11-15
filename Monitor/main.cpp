@@ -61,8 +61,11 @@ int main(int argc, char* argv[])
 			if (DsConfig.GetEmail().IsWrong())
 				return static_cast<int>(utils::tExitCode::EX_CONFIG);
 
-			TimePeriod.Set(DsConfig.GetEmail().PeriodMinimum);
-			TimePeriodMem.Set(DsConfig.GetBoardRAM().Period);
+			if (TimePeriod.GetPeriod() != DsConfig.GetEmail().PeriodMinimum)
+				TimePeriod.Set(DsConfig.GetEmail().PeriodMinimum, false);
+
+			if (TimePeriodMem.GetPeriod() != DsConfig.GetBoardRAM().Period)
+				TimePeriodMem.Set(DsConfig.GetBoardRAM().Period, false);
 
 			if (TimePeriodMem.IsReady())
 				MonitorMemory.Control(DsConfig);
