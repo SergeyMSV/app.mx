@@ -11,6 +11,9 @@
     <Filter Include="LIB.Share">
       <UniqueIdentifier>{d37b2e28-dc9d-4e2c-ac18-2a7294cbb227}</UniqueIdentifier>
     </Filter>
+    <Filter Include=".vscode">
+      <UniqueIdentifier>{af67cae4-84b4-40fb-a7f3-bf2ab4636bc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -70,5 +73,15 @@
     <None Include="mxmonitor.conf.json" />
     <None Include="mxdevice.conf.json" />
     <None Include="mxprivate.conf.json" />
+    <None Include=".vscode\c_cpp_properties.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\launch.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\tasks.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include="Monitor.code-workspace" />
   </ItemGroup>
 </Project>

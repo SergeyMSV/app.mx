@@ -11,6 +11,9 @@
     <Filter Include="LIB.Share">
       <UniqueIdentifier>{31810bfb-741c-497b-9bf9-c5eebbcf4a40}</UniqueIdentifier>
     </Filter>
+    <Filter Include=".vscode">
+      <UniqueIdentifier>{33cef651-f2a5-48de-a35d-821ed88bca8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -76,5 +79,15 @@
     <None Include="mxnavi.conf.json" />
     <None Include="mxdevice.conf.json" />
     <None Include="mxprivate.conf.json" />
+    <None Include=".vscode\c_cpp_properties.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\launch.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\tasks.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include="Navi.code-workspace" />
   </ItemGroup>
 </Project>
