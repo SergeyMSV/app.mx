@@ -41,11 +41,10 @@ class tDataSetConfig
 	config::tOutGNSS m_OutGNSS;
 	config::tSerialPortGNSS m_SerialPort;
 
-private:
 	std::string m_ConfigFileName;
 
 public:
-	tDataSetConfig() {}
+	tDataSetConfig() = default;
 	explicit tDataSetConfig(const std::string& fileNameConfig);
 
 	config::tOutGNSS GetOutGNSS() const { return m_OutGNSS; }
