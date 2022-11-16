@@ -7,6 +7,7 @@ xcopy /Y %LIB_UTILS%\utilsCRC.*
 xcopy /Y %LIB_UTILS%\utilsLinux.*
 xcopy /Y %LIB_UTILS%\utilsLog.*
 xcopy /Y %LIB_UTILS%\utilsPacket.*
+xcopy /Y %LIB_UTILS%\utilsPacketCameraVC0706.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEA.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayload.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayloadPTWS.*
