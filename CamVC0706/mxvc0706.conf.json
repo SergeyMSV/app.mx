@@ -1,0 +1,27 @@
+{
+	"device": {
+		"model": "Vimicro VC0706"
+	},
+	"serial_port_ctrl": {
+		"id_win": "COM1",
+		"id": "/dev/ttyUSB1",
+		"br": 115200
+	},
+	"serial_port_data": {
+		"id_win": "",
+		"id": "/dev/ttyUSB2",
+		"br": 921600
+	},
+	"camera": {
+		"resolution": "640x480",
+		"check_presence_period_ms": 1000,
+		"image_period_ms": 5000,
+		"image_chunk_size": 32768,
+		"image_chunk_delay_from_req_us": 50000
+	},
+	"out": {
+		"path": "/tmpram",
+		"prefix": "mxcam_",
+		"qtyMax": 10
+	}
+}
