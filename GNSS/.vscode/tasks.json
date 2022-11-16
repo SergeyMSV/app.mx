@@ -1,30 +1,30 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "type": "shell",
-            "label": "C/C++: cpp build active file",
-            "command": "/usr/bin/arm-linux-gnueabihf-g++-10",
-            "args": [
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "C/C++: cpp build active file",
+			"command": "/usr/bin/arm-linux-gnueabihf-g++-10",
+			"args": [
 				"-std=c++2a",
-                "-g",
+				"-g",
 				"-Wall",
 				"-I${workspaceFolder}",
 				"-I${workspaceFolder}/Dev",
 				"-I${workspaceFolder}/../LIB.Module",
 				"-I${workspaceFolder}/../LIB.Share",
-				"-I${workspaceFolder}/../LIB.Utils",				
+				"-I${workspaceFolder}/../LIB.Utils",
 				"-I/usr/local/boost_1_77_0_ARM",
 				"-L/usr/local/boost_1_77_0_ARM/stage/lib",
 				"-L/usr/arm-linux-gnueabihf/lib",
-				"Dev/devDataSet.cpp",
-				"Dev/devDataSetConfig.cpp",
-				"Dev/devGNSS.cpp",
-				"Dev/devGNSS_ModGnssReceiver.cpp",
-				"Dev/devGNSS_ModGnssReceiver_Board.cpp",
-				"Dev/devLog.cpp",
-				"Dev/devShell.cpp",
-                "main.cpp",
+				"${workspaceFolder}/Dev/devDataSet.cpp",
+				"${workspaceFolder}/Dev/devDataSetConfig.cpp",
+				"${workspaceFolder}/Dev/devGNSS.cpp",
+				"${workspaceFolder}/Dev/devGNSS_ModGnssReceiver.cpp",
+				"${workspaceFolder}/Dev/devGNSS_ModGnssReceiver_Board.cpp",
+				"${workspaceFolder}/Dev/devLog.cpp",
+				"${workspaceFolder}/Dev/devShell.cpp",
+				"${workspaceFolder}/main.cpp",
 				"${workspaceFolder}/../LIB.Module/modGnss.cpp",
 				"${workspaceFolder}/../LIB.Module/modGnssReceiver.cpp",
 				"${workspaceFolder}/../LIB.Module/modGnssReceiver_State.cpp",
@@ -42,46 +42,46 @@
 				"${workspaceFolder}/../LIB.Utils/utilsPacketNMEAType.cpp",
 				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
 				"${workspaceFolder}/../LIB.Utils/utilsShell.cpp",
-                "-o",
-                "${workspaceFolder}/mxgnss",
+				"-o",
+				"${workspaceFolder}/mxgnss",
 				"-lpthread",
 				"-lboost_filesystem"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-		 {
-            "type": "cppbuild",
-            "label": "C/C++: g++ build active file",
-            "command": "/usr/bin/g++-11",
-            "args": [
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++ build active file",
+			"command": "/usr/bin/g++-11",
+			"args": [
 				"-fdiagnostics-color=always",
 				"-std=c++2a",
-                "-g",
+				"-g",
 				"-Wall",
 				"-I${workspaceFolder}",
 				"-I${workspaceFolder}/Dev",
 				"-I${workspaceFolder}/../LIB.Module",
 				"-I${workspaceFolder}/../LIB.Share",
-				"-I${workspaceFolder}/../LIB.Utils",				
+				"-I${workspaceFolder}/../LIB.Utils",
 				"-I/usr/local/boost_1_77_0",
 				"-L/usr/local/boost_1_77_0/stage/lib",
-				"Dev/devDataSet.cpp",
-				"Dev/devDataSetConfig.cpp",
-				"Dev/devGNSS.cpp",
-				"Dev/devGNSS_ModGnssReceiver.cpp",
-				"Dev/devGNSS_ModGnssReceiver_Board.cpp",
-				"Dev/devLog.cpp",
-				"Dev/devShell.cpp",
-                "main.cpp",
+				"${workspaceFolder}/Dev/devDataSet.cpp",
+				"${workspaceFolder}/Dev/devDataSetConfig.cpp",
+				"${workspaceFolder}/Dev/devGNSS.cpp",
+				"${workspaceFolder}/Dev/devGNSS_ModGnssReceiver.cpp",
+				"${workspaceFolder}/Dev/devGNSS_ModGnssReceiver_Board.cpp",
+				"${workspaceFolder}/Dev/devLog.cpp",
+				"${workspaceFolder}/Dev/devShell.cpp",
+				"${workspaceFolder}/main.cpp",
 				"${workspaceFolder}/../LIB.Module/modGnss.cpp",
 				"${workspaceFolder}/../LIB.Module/modGnssReceiver.cpp",
 				"${workspaceFolder}/../LIB.Module/modGnssReceiver_State.cpp",
@@ -99,24 +99,24 @@
 				"${workspaceFolder}/../LIB.Utils/utilsPacketNMEAType.cpp",
 				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
 				"${workspaceFolder}/../LIB.Utils/utilsShell.cpp",
-                "-o",
-                "${workspaceFolder}/mxgnss_dbg",
+				"-o",
+				"${workspaceFolder}/mxgnss_dbg",
 				"-lpthread"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-			"dependsOn":[
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOn": [
 				"copy_config_dbg"
 			]
-        },
+		},
 		{
 			"label": "copy_config_dbg",
 			"command": "cp",
@@ -126,5 +126,5 @@
 				"."
 			]
 		}
-    ]
+	]
 }

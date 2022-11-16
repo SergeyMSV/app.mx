@@ -14,6 +14,9 @@
     <Filter Include="LIB.Share">
       <UniqueIdentifier>{6733c7c4-0969-4945-a479-9adc5c1b5df9}</UniqueIdentifier>
     </Filter>
+    <Filter Include=".vscode">
+      <UniqueIdentifier>{a831bde1-3e37-402c-a7e7-0b767b21691a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -167,5 +170,15 @@
     <None Include="..\LIB.Module\!Refresh.bat">
       <Filter>Lib.Module</Filter>
     </None>
+    <None Include=".vscode\c_cpp_properties.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\launch.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\tasks.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include="GNSS.code-workspace" />
   </ItemGroup>
 </Project>
