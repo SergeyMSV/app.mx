@@ -1,0 +1,122 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "C/C++: cpp build active file",
+			"command": "/usr/bin/arm-linux-gnueabihf-g++-10",
+			"args": [
+				"-std=c++2a",
+				"-g",
+				"-Wall",
+				"-I${workspaceFolder}",
+				"-I${workspaceFolder}/Dev",
+				"-I${workspaceFolder}/../LIB.Module",
+				"-I${workspaceFolder}/../LIB.Share",
+				"-I${workspaceFolder}/../LIB.Utils",
+				"-I/usr/local/boost_1_77_0_ARM",
+				"-L/usr/arm-linux-gnueabihf/lib",
+				"${workspaceFolder}/Dev/devDataSet.cpp",
+				"${workspaceFolder}/Dev/devDataSetConfig.cpp",
+				"${workspaceFolder}/Dev/devCamera.cpp",
+				"${workspaceFolder}/Dev/devCamera_ModCamera.cpp",
+				"${workspaceFolder}/Dev/devCamera_ModCamera_Board.cpp",
+				"${workspaceFolder}/Dev/devLog.cpp",
+				"${workspaceFolder}/Dev/devShell.cpp",
+				"${workspaceFolder}/main.cpp",
+				"${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsLog.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsPacketCameraVC0706.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsShell.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_State.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateError.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateHalt.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateOperation.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateOperationImage.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateStart.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateStop.cpp",
+				"-o",
+				"${workspaceFolder}/mxvc0706",
+				"-lpthread"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++ build active file",
+			"command": "/usr/bin/g++-11",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-std=c++2a",
+				"-g",
+				"-Wall",
+				"-I${workspaceFolder}",
+				"-I${workspaceFolder}/Dev",
+				"-I${workspaceFolder}/../LIB.Module",
+				"-I${workspaceFolder}/../LIB.Share",
+				"-I${workspaceFolder}/../LIB.Utils",
+				"-I/usr/local/boost_1_77_0_ARM",
+				"-L/usr/arm-linux-gnueabihf/lib",
+				"${workspaceFolder}/Dev/devDataSet.cpp",
+				"${workspaceFolder}/Dev/devDataSetConfig.cpp",
+				"${workspaceFolder}/Dev/devCamera.cpp",
+				"${workspaceFolder}/Dev/devCamera_ModCamera.cpp",
+				"${workspaceFolder}/Dev/devCamera_ModCamera_Board.cpp",
+				"${workspaceFolder}/Dev/devLog.cpp",
+				"${workspaceFolder}/Dev/devShell.cpp",
+				"${workspaceFolder}/main.cpp",
+				"${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsLog.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsPacketCameraVC0706.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+				"${workspaceFolder}/../LIB.Utils/utilsShell.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_State.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateError.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateHalt.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateOperation.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateOperationImage.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateStart.cpp",
+				"${workspaceFolder}/../LIB.Module/modCameraVC0706_StateStop.cpp",
+				"-o",
+				"${workspaceFolder}/mxvc0706_dbg",
+				"-lpthread"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOn": [
+				"copy_config_dbg"
+			]
+		},
+		{
+			"label": "copy_config_dbg",
+			"command": "cp",
+			"args": [
+				"-f",
+				"${workspaceFolder}/../../mxvc0706_dbg.conf.json",
+				"."
+			]
+		}
+	]
+}
