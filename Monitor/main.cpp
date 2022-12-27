@@ -27,7 +27,7 @@ void SendEMail(const dev::tDataSetConfig& config, const dev::tMonitorMemory& mem
 	Cmd += share::GetHTMLTableSystem("width=\"80\"", config.GetDevice());
 	Cmd += "<body></html>\"";
 	Cmd += " | mutt ";
-	Cmd += " -s \"" + utils::linux::CmdLine("hostname") + ": Schedule Snapshot Recording\"";
+	Cmd += " -s \"" + utils::linux::CmdLine("hostname") + ": monitor\"";
 	Cmd += " -- " + config.GetEmail().To;
 
 	int ResCode = 0;
