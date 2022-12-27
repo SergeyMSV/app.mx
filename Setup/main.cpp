@@ -4,10 +4,9 @@
 
 #include <devDataSetConfig.h>
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
-
-#include <boost/filesystem.hpp>
 
 namespace dev
 {
