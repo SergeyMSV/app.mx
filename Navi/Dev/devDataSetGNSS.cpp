@@ -131,8 +131,8 @@ std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 	Table << "<table>";
 	Table << "<tr><td " << styleCol1 << "><b>GNSS</b></td></tr>";
 	Table << "<tr><td " << StyleHeader << ">UTC</td><td>" << UTC << "</td></tr>";
-	Table << "<tr><td" << StyleHeader << ">Valid</td><td>";
-	Table << Valid ? "A" : "V";
+	Table << "<tr><td" << StyleHeader << ">Status</td><td>";
+	Table << (Valid ? "+" : "-");
 	Table << "</td></tr>";
 
 	Table << std::fixed;
