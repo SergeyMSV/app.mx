@@ -19,6 +19,7 @@
         "${workspaceFolder}/Dev/devMakeFile_msmtprc.cpp",
         "${workspaceFolder}/Dev/devMakeFile_muttrc.cpp",
         "${workspaceFolder}/main.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
         "-o",
         "${workspaceFolder}/mxsetup",
