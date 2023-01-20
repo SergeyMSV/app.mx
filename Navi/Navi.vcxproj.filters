@@ -41,6 +41,9 @@
     <ClCompile Include="..\LIB.Utils\utilsChrono.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareUtils.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Utils\utilsBase.h">
@@ -69,6 +72,9 @@
       <Filter>LIB.Share</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Share\shareGNSS.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareUtils.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
   </ItemGroup>
