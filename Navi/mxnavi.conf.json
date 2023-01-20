@@ -18,5 +18,11 @@
     "path": "/tmpram",
     "prefix": "mxspygps_",
     "qtyMax": 2
+  },
+  "log": {
+    "path": "/tmpram",
+    "prefix": "mxnavi_",
+    "capacity": 102400,
+    "qtyMax": 2
   }
 }
