@@ -28,6 +28,16 @@ struct tOutFile
 	bool IsWrong() const;
 };
 
+struct tOutFileCap : public tOutFile
+{
+	uint32_t Capacity = 0;
+
+	tOutFileCap() = default;
+	tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
+};
+
 struct tSerialPort
 {
 	std::string ID;
