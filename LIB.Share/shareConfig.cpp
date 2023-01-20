@@ -26,6 +26,17 @@ bool tOutFile::IsWrong() const
 	return Path.empty() || Prefix.empty() || QtyMax == 0;
 }
 
+tOutFileCap::tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree)
+	:tOutFile(baseName, pTree)
+{
+	Capacity = pTree.get<uint32_t>(baseName + ".capacity");
+}
+
+bool tOutFileCap::IsWrong() const
+{
+	return tOutFile::IsWrong() || Capacity == 0;
+}
+
 tSerialPort::tSerialPort(const std::string& baseName, const boost::property_tree::ptree& pTree)
 {
 	ID = pTree.get<std::string>(baseName + ".id");
