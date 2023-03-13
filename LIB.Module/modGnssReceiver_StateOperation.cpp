@@ -95,7 +95,7 @@ void SetDataSetNMEA_RMC(const T& packRMC, tGnssDataSet& dataSet)
 	SetParam(dataSet.Course, packRMC.Course, dataSet.Check_Position);
 }
 
-void tGnssReceiver::tStateOperation::OnReceived(const tPacketNMEA_Template& value)
+bool tGnssReceiver::tStateOperation::OnReceived(const tPacketNMEA_Template& value)
 {
 	const std::string Payload = value.GetPayloadValue();
 
@@ -168,8 +168,9 @@ void tGnssReceiver::tStateOperation::OnReceived(const tPacketNMEA_Template& valu
 		m_pObj->OnChanged(m_DataSet);
 
 		ChangeState(new tStateOperation(m_pObj));
-		return;
+		return true;
 	}
+	return false;
 }
 
 }
