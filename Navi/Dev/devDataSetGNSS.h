@@ -60,6 +60,8 @@ private:
 	std::string GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) const;
 
 	std::string ToString(utils::tGNSSCode codeGNSS) const;
+
+	std::string GetSatellitesQty(utils::tGNSSCode codeGNSS) const;
 };
 
 }
