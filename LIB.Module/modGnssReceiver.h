@@ -1,12 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // modGnssReceiver.h
-//
-// Standard ISO/IEC 114882, C++11
-//
-// |   version  |    release    | Description
-// |------------|---------------|---------------------------------
-// |      1     |   2020 03 03  |
-// |            |               | 
+// 2020-03-03
+// Standard ISO/IEC 114882, C++14
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -156,7 +151,7 @@ class tGnssReceiver
 		virtual void OnTaskScriptFailed(const std::string& msg) {};//ChangeState
 
 		virtual bool Go() { return true; }//ChangeState
-		virtual void OnReceived(const tPacketNMEA_Template& value);// {}//ChangeState
+		virtual bool OnReceived(const tPacketNMEA_Template& value);// {}//ChangeState
 
 		void ChangeState(tState* state) { m_pObj->ChangeState(state); }
 	};
@@ -214,7 +209,7 @@ class tGnssReceiver
 		void OnTaskScriptFailed(const std::string& msg) override;
 
 		bool Go() override;
-		void OnReceived(const tPacketNMEA_Template& value) override;
+		bool OnReceived(const tPacketNMEA_Template& value) override;
 	};
 
 	class tStateStart :public tState
