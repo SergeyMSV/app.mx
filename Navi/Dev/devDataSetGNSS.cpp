@@ -129,7 +129,7 @@ std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 	std::stringstream Table;
 
 	Table << "<table>";
-	Table << "<tr><td " << styleCol1 << "><b>GNSS</b></td><td>" << (Valid ? "valid" : "invalid") << "</td></tr>";
+	Table << "<tr><td " << styleCol1 << "><b>GNSS</b></td><td><b>" << (Valid ? "valid" : "invalid") << "</b></td></tr>";
 	Table << "<tr><td " << StyleHeader << ">UTC</td><td>" << UTC << "</td></tr>";
 	Table << "</td></tr>";
 
@@ -190,6 +190,12 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesHor(utils::tGNSSCode codeGNSS) c
 	return Table;
 }
 
+static std::string str_toupper(std::string s)
+{
+	std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::toupper(c); });
+	return s;
+}
+
 std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) const
 {
 	std::string StyleSatUsed = share::GetHTMLBgColour(share::tHTMLFieldStatus::Norm);
@@ -197,7 +203,8 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) 
 	std::stringstream Table;
 	Table << "<table>";
 
-	Table << "<tr><td colspan=\"5\"><b>" << ToString(codeGNSS) << "</b></td></tr>";
+	Table << "<tr><td colspan=\"3\"><b>" << ToString(codeGNSS) << "</b></td><td colspan=\"2\">";
+	Table << GetSatellitesQty(codeGNSS) << "</td></tr>";
 	
 	std::string StrID = codeGNSS == utils::tGNSSCode::GPS || codeGNSS == utils::tGNSSCode::WAAS ? "PRN" : "ID";
 	std::string StrSatID = codeGNSS == utils::tGNSSCode::GPS || codeGNSS == utils::tGNSSCode::WAAS ? "NRD" : "CSM";
@@ -222,7 +229,7 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) 
 			<< std::to_string(i.Elevation) << "</td><td>"
 			<< std::to_string(i.Azimuth) << "</td><td>"
 			<< std::to_string(i.SNR) << "</td><td>"
-			<< i.Type << "</td><td>"
+			<< str_toupper(i.Type) << "</td><td>"
 			<< (CsmNrd ? std::to_string(CsmNrd) : "") << "</td></tr>";
 	}
 
@@ -241,6 +248,24 @@ std::string tDataSetGNSS::ToString(utils::tGNSSCode codeGNSS) const
 	}
 
 	return "UNKNOWN";
+}
+
+std::string tDataSetGNSS::GetSatellitesQty(utils::tGNSSCode codeGNSS) const
+{
+	int Qty = 0;
+	int QtyUsed = 0;
+	for (auto& sat : Satellites)
+	{
+		if (sat.GNSS != codeGNSS)
+			continue;
+		++Qty;
+		if (sat.SNR > 0)
+			++QtyUsed;
+	}
+
+	if (Qty == 0 && QtyUsed == 0)
+		return {};
+	return std::to_string(QtyUsed) + " (" + std::to_string(Qty) + ")";
 }
 
 }
