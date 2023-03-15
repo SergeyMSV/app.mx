@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// modGnss.h
+// modGnss
 // 2020-04-28
 // Standard ISO/IEC 114882, C++11
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,6 +109,8 @@ struct tGnssDataSet
 	std::deque<tGNSS_Satellite> Satellite;
 	std::map<int, double> Jamming;
 
+	std::string ModeIndicator;
+
 	tGnssDataSet() = default;
 
 	std::tm GetDateTime() const;
@@ -127,6 +129,7 @@ struct tGnssDataSet
 		Stream << std::setw(2 + SizeFractTime + 1) << Second;
 
 		Stream << " " << (Valid ? 'A' : 'V');
+		Stream << " " << ModeIndicator;
 
 		Stream.precision(SizeFract);
 		Stream << " " << std::setw(2 + SizeFract + 1) << Latitude;
@@ -156,7 +159,8 @@ struct tGnssDataSet
 		Stream.precision(SizeFractTime);
 		Stream << std::setw(2 + SizeFractTime + 1) << Second;
 		Stream << "\",\n";
-		Stream << " \"valid\": " << (Valid ? '1' : '0') << ",\n";
+		Stream << " \"valid\": \"" << (Valid ? 'A' : 'V') << "\",\n";
+		Stream << " \"mode_indicator\": \"" << ModeIndicator << "\",\n";
 
 		Stream.precision(SizeFractPosition);
 		Stream << " \"latitude\": " << Latitude << ",\n";

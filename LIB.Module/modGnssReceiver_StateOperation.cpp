@@ -89,6 +89,8 @@ void SetDataSetNMEA_RMC(const T& packRMC, tGnssDataSet& dataSet)
 	SetParam(dataSet.Longitude, packRMC.Longitude, dataSet.Check_Position);
 	SetParam(dataSet.Speed, packRMC.Speed, dataSet.Check_Position);
 	SetParam(dataSet.Course, packRMC.Course, dataSet.Check_Position);
+
+	dataSet.ModeIndicator = packRMC.ModeIndicator.ToString();
 }
 
 bool tGnssReceiver::tStateOperation::OnReceived(const tPacketNMEA_Template& value)
