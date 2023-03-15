@@ -1,6 +1,6 @@
 {
   "serial_port": {
-    "id_win": "COM5",
+    "id_win": "COM3",
     "id": "/dev/ttyUSB0",
     "br": 9600
   },
