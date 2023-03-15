@@ -56,13 +56,14 @@ tDataSetGNSS::tDataSetGNSS(const std::string& fileName)
 	boost::property_tree::json_parser::read_json(fileName, PTree);
 
 	UTC = PTree.get<std::string>("utc");
-	Valid = PTree.get<bool>("valid");
+	std::string ValidStr = PTree.get<std::string>("valid");
+	Valid = ValidStr == "1" || ValidStr == "A";
 	Latitude = PTree.get<double>("latitude");
 	Longitude = PTree.get<double>("longitude");
 	Altitude = PTree.get<double>("altitude");
 	Speed = PTree.get<double>("speed");
 	Course = PTree.get<double>("course");
-
+	ModeIndicator = PTree.get<std::string>("mode_indicator");
 	for (auto& sat : PTree.get_child("satellite"))
 	{
 		Satellites.emplace_back(sat.second);
@@ -129,7 +130,7 @@ std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 	std::stringstream Table;
 
 	Table << "<table>";
-	Table << "<tr><td " << styleCol1 << "><b>GNSS</b></td><td><b>" << (Valid ? "valid" : "invalid") << "</b></td></tr>";
+	Table << "<tr><td " << styleCol1 << "><b>GNSS</b></td><td><b>" << (Valid ? "valid" : "invalid") << "</b> ("<< ModeIndicator <<")</td></tr>";
 	Table << "<tr><td " << StyleHeader << ">UTC</td><td>" << UTC << "</td></tr>";
 	Table << "</td></tr>";
 
