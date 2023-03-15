@@ -10,6 +10,7 @@
 #include <utilsLog.h>
 #include <utilsPacketNMEA.h>
 #include <utilsPacketNMEAPayload.h>
+#include <utilsPacketNMEAPayloadPTWS.h>
 
 #include <atomic>
 #include <chrono>
@@ -27,10 +28,11 @@ typedef utils::packet_NMEA::tPayloadRMC<13, 3, 4, 4> tMsgRMC_Ft4;
 typedef utils::packet_NMEA::tPayloadRMC<13, 3, 6, 6> tMsgRMC_Ft6;
 typedef utils::packet_NMEA::tPayloadGSV tMsgGSV;
 
+using tClock = std::chrono::steady_clock;
+
 class tGnssReceiver
 {
 	using tDevStatus = utils::tDevStatus;
-	using tClock = std::chrono::steady_clock;//C++11
 
 	class tStateError;
 
@@ -306,10 +308,32 @@ private:
 
 	void ClearReceivedData();
 
-	void SetStrTimePeriod(std::stringstream& stream, const std::chrono::time_point<tClock>& timePoint) const;
-	void SetStrBaudrate(std::stringstream& stream, const std::chrono::time_point<tClock>& timePoint, std::size_t sizeBytes) const;
-
 	void ChangeState(tState* state);
+};
+
+class tGnssReceiverPacketLog
+{
+	utils::tLog* m_pLog = nullptr;
+
+	std::chrono::time_point<tClock>& m_StartTime;
+	std::string m_MsgTime;
+
+public:
+	tGnssReceiverPacketLog() = delete;
+	tGnssReceiverPacketLog(utils::tLog* log, std::chrono::time_point<tClock>& startTime);
+	~tGnssReceiverPacketLog();
+
+	void OnReceived(size_t size);
+	void OnReceived(const std::string& id, const tMsgGSV& msg);
+	void OnReceived(const std::string& id, const tMsgRMC_Ft4& msg);
+	void OnReceived(const std::string& id, const tMsgRMC_Ft6& msg);
+	void OnReceived(const std::string& id, const utils::packet_NMEA::tPayloadPTWS_JAM_SIGNAL_VAL& msg);
+	void OnReceived(const std::string& id);
+
+private:
+	void Write(utils::tLogColour colour, std::string msg);
+	std::string GetTimePeriodString(const std::chrono::time_point<tClock>& timePoint) const;
+	std::string GetBaudrateString(const std::chrono::time_point<tClock>& timePoint, std::size_t sizeBytes) const;
 };
 
 }
