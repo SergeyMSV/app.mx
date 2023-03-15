@@ -53,7 +53,7 @@ bool tGnssReceiver::tState::operator()()
 			if (m_pCmd && m_pCmd->OnReceived(Packet))//ChangeState
 				return true;
 
-			if(OnReceived(Packet))//ChangeState
+			if (OnReceived(Packet))//ChangeState
 				return true;
 		}
 	}

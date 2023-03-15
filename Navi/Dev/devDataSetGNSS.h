@@ -42,6 +42,7 @@ struct tDataSetGNSS
 	double Speed = 0;
 	double Course = 0;
 	std::deque<tSatellite> Satellites;
+	std::string ModeIndicator;
 
 public:
 	tDataSetGNSS() = default;
