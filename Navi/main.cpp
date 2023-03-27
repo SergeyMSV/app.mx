@@ -67,6 +67,11 @@ int main(int argc, char* argv[])
 			share::tLogFile LogFile(ConfLog);
 			LogFile.Write("Start");
 			
+			share::RemoveFilesOutdated(ConfGnss);
+			share::RemoveFilesOutdated(ConfPict);
+			share::RemoveFilesOutdated(ConfSpyOutGLO);
+			share::RemoveFilesOutdated(ConfSpyOutGPS);
+
 			auto GnssList = share::GetFilePaths(ConfGnss);
 			auto PictList = share::GetFilePaths(ConfPict);
 			auto SpyOutGLOList = share::GetFilePaths(ConfSpyOutGLO);
@@ -105,6 +110,12 @@ int main(int argc, char* argv[])
 			Cmd += " | mutt ";
 			for (auto& i : PictList)
 			{
+				auto PathTemp = share::GetFilePathTemp(i);
+				if (PathTemp == std::nullopt)
+					continue;
+				std::filesystem::rename(i, *PathTemp);
+				i = PathTemp->string();
+
 				Cmd += " -a \"";
 				Cmd += i;
 				Cmd += "\"";
@@ -121,6 +132,11 @@ int main(int argc, char* argv[])
 			ResCode = system(Cmd.c_str());
 #endif
 			LogFile.Write("ResCode: " + std::to_string(ResCode));
+
+			for (auto& i : PictList)
+			{
+				std::filesystem::remove(i);
+			}
 		}
 	}
 	catch (const std::exception& e)

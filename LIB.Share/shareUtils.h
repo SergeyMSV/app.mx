@@ -5,6 +5,8 @@
 #include "shareConfig.h"
 
 #include <deque>
+#include <filesystem>
+#include <optional>
 #include <string>
 
 namespace share
@@ -28,5 +30,7 @@ private:
 };
 
 std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf);
+void RemoveFilesOutdated(const share_config::tOutFile& conf);
+std::optional<std::filesystem::path> GetFilePathTemp(std::filesystem::path filePath);
 
 }
