@@ -142,7 +142,6 @@ int main(int argc, char* argv[])
 	catch (const std::exception& e)
 	{
 		std::cerr << "[ERR] " << e.what() << "\n";
-
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}
 
