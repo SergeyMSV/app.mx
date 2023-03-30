@@ -87,7 +87,7 @@
       "command": "cp",
       "args": [
         "-f",
-        "${workspaceFolder}/../../mxnavi_dbg.conf.json",
+        "/home/sergey/git/mxnavi_dbg.conf.json",
         "."
       ]
     }
