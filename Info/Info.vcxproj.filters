@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="LIB.Utils">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Dev">
+      <UniqueIdentifier>{791890f4-242d-4c51-ad0b-b33f611c9cf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB.Share">
+      <UniqueIdentifier>{f431439b-05a7-40d0-bb94-3daf849511d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include=".vscode">
+      <UniqueIdentifier>{8b50b84a-f3cc-4114-9af6-89556996e760}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="libConfig.h" />
+    <ClInclude Include="devConfig.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LIB.Utils\!Refresh.bat">
+      <Filter>LIB.Utils</Filter>
+    </None>
+    <None Include="mxdevice.conf.json" />
+    <None Include="mxspy.conf.json" />
+    <None Include=".vscode\c_cpp_properties.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\launch.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\tasks.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include="Info.code-workspace" />
+  </ItemGroup>
+</Project>
