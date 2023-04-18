@@ -38,6 +38,8 @@ tLogFile::tLogFile(const share_config::tOutFileCap& conf)
 		File << DTStr;
 
 	File.close();
+
+	share::RemoveFilesOutdated(conf);
 }
 
 tLogFile::~tLogFile()
