@@ -12,16 +12,16 @@
 namespace share
 {
 
-class tLogFile
+class tLogFileLine
 {
 	std::string m_FilePath;
 
 public:
-	tLogFile() = delete;
-	explicit tLogFile(const share_config::tOutFileCap& conf);
-	tLogFile(const tLogFile&) = delete;
-	tLogFile(const tLogFile&&) = delete;
-	~tLogFile();
+	tLogFileLine() = delete;
+	explicit tLogFileLine(const share_config::tOutFileCap& conf);
+	tLogFileLine(const tLogFileLine&) = delete;
+	tLogFileLine(const tLogFileLine&&) = delete;
+	~tLogFileLine();
 	
 	void Write(const std::string& msg);
 
