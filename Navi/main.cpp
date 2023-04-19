@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 				continue;
 			}
 
-			share::tLogFile LogFile(ConfLog);
+			share::tLogFileLine LogFile(ConfLog);
 			LogFile.Write("Start");
 			
 			share::RemoveFilesOutdated(ConfGnss);

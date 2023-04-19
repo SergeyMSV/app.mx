@@ -9,7 +9,7 @@
 namespace share
 {
 
-tLogFile::tLogFile(const share_config::tOutFileCap& conf)
+tLogFileLine::tLogFileLine(const share_config::tOutFileCap& conf)
 {
 	auto LogList = GetFilePaths(conf);
 	m_FilePath = LogList.empty() ? "" : LogList.back();
@@ -42,17 +42,17 @@ tLogFile::tLogFile(const share_config::tOutFileCap& conf)
 	share::RemoveFilesOutdated(conf);
 }
 
-tLogFile::~tLogFile()
+tLogFileLine::~tLogFileLine()
 {
 	WriteData("\n");
 }
 	
-void tLogFile::Write(const std::string& msg)
+void tLogFileLine::Write(const std::string& msg)
 {
 	WriteData(" " + msg + ';');
 }
 
-void tLogFile::WriteData(const std::string& msg)
+void tLogFileLine::WriteData(const std::string& msg)
 {
 	std::fstream File = std::fstream(m_FilePath, std::ios::app);
 	if (File.good())
