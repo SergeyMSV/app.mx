@@ -144,8 +144,8 @@ int main(int argc, char* argv[])
 				});
 
 
-			//[#] 500ms * 20 = 10000ms => 10s waits for sending email
-			for (int i = 0; i < 20; ++i)
+			//[#] 500ms * 120 = 60000ms => 60s it waits for sending email
+			for (int i = 0; i < 120; ++i)
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(500));
 				if (ThreadSystem_ExitOK)
