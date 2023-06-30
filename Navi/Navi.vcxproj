@@ -160,6 +160,7 @@
     <ClCompile Include="..\LIB.Share\shareHTML.cpp" />
     <ClCompile Include="..\LIB.Share\shareUtils.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsChrono.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsFile.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="..\LIB.Share\shareUtils.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsChrono.h" />
+    <ClInclude Include="..\LIB.Utils\utilsFile.h" />
     <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
     <ClInclude Include="Dev\devDataSetConfig.h" />

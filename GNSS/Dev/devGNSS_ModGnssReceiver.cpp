@@ -2,6 +2,7 @@
 #include "devDataSet.h"
 #include "devDataSetConfig.h"
 
+#include <utilsFile.h>
 #include <utilsPath.h>
 
 #include <cstdio>
@@ -53,7 +54,7 @@ void tGNSS::tModGnssReceiver::OnChanged(const mod::tGnssDataSet& value)
 	
 	std::rename(FileNameTemp.c_str(), FileNameFull.c_str());
 
-	utils::RemoveFilesOutdated(OutGNSS.Path, OutGNSS.Prefix, OutGNSS.QtyMax);
+	utils::file::RemoveFilesOutdated(OutGNSS.Path, OutGNSS.Prefix, OutGNSS.QtyMax);
 
 	//m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightYellow, value.ToJSON());
 }
