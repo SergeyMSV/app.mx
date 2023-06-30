@@ -17,24 +17,13 @@
 #include <sstream>
 #include <thread>
 
-std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf)
-{
-	utils::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
-	auto List = utils::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
-	utils::linux::CorrPaths(List);
-	return List;
-}
-
 int main(int argc, char* argv[])
 {
 	try
 	{
-		const std::filesystem::path Path{ argv[0] };
-		std::filesystem::path PathFile = Path.filename();
-		if (PathFile.has_extension())
-			PathFile.replace_extension();
+		const std::string AppName = utils::GetAppNameMain(argv[0]);
 
-		std::string PathFileConfig = utils::linux::GetPathConfigExc(PathFile.string());
+		std::string PathFileConfig = utils::linux::GetPathConfigExc(AppName);
 		std::string PathFileDevice = utils::linux::GetPathConfigExc("mxdevice");
 		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
 

@@ -167,6 +167,7 @@
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsChrono.h" />
+    <ClInclude Include="..\LIB.Utils\utilsFile.h" />
     <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
     <ClInclude Include="..\LIB.Utils\utilsLog.h" />
     <ClInclude Include="..\LIB.Utils\utilsPacket.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\LIB.Module\modCameraVC0706_StateStart.cpp" />
     <ClCompile Include="..\LIB.Module\modCameraVC0706_StateStop.cpp" />
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsFile.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLog.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPacketCameraVC0706.cpp" />

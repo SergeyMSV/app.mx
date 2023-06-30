@@ -5,6 +5,7 @@
 #include <cerrno>
 #include <cstdio>
 
+#include <deque>
 #include <fstream>
 #include <iomanip>
 #include <sstream>

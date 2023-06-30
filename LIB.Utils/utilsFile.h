@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// utilsPath.h
+// utilsFile.h
 // 2022-04-20
 // Standard ISO/IEC 114882, C++20
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -7,16 +7,16 @@
 
 #include <ctime>
 
+#include <deque>
 #include <string>
 
 namespace utils
 {
+	namespace file
+	{
 
-std::string GetDateTime(tm a_DateTime);
-std::string GetDateTime();
-tm GetDateTime(const std::string& a_value);
+std::deque<std::string> GetFilesLatest(const std::string& path, const std::string& prefix, size_t qtyFilesLatest);
+void RemoveFilesOutdated(const std::string& path, const std::string& prefix, size_t qtyFilesLatest);
 
-std::string GetAppName(const std::string& path);
-std::string GetAppNameMain(const std::string& path);
-
+	}
 }

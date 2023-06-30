@@ -1,6 +1,7 @@
 #include "devCamera.h"
 #include "devDataSetConfig.h"
 
+#include <utilsFile.h>
 #include <utilsPath.h>
 
 namespace dev
@@ -96,7 +97,7 @@ void tCamera::tModCamera::OnImageComplete()
 
 	config::tOutPicture OutPicture = g_Settings.GetOutPicture();
 
-	utils::RemoveFilesOutdated(OutPicture.Path, OutPicture.Prefix, OutPicture.QtyMax);
+	utils::file::RemoveFilesOutdated(OutPicture.Path, OutPicture.Prefix, OutPicture.QtyMax);
 
 	m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightBlue, "Image: Complete");
 }
