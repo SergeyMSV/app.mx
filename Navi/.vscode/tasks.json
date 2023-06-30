@@ -24,6 +24,7 @@
         "${workspaceFolder}/../LIB.Share/shareHTML.cpp",
         "${workspaceFolder}/../LIB.Share/shareUtils.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsChrono.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsFile.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
         "-o",
@@ -64,6 +65,7 @@
         "${workspaceFolder}/../LIB.Share/shareHTML.cpp",
         "${workspaceFolder}/../LIB.Share/shareUtils.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsChrono.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsFile.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
         "-o",
@@ -77,19 +79,7 @@
         "$gcc"
       ],
       "group": "build",
-      "detail": "compiler: /usr/bin/g++",
-      "dependsOn": [
-        "copy_config_dbg"
-      ]
-    },
-    {
-      "label": "copy_config_dbg",
-      "command": "cp",
-      "args": [
-        "-f",
-        "${workspaceFolder}/../../mxnavi_dbg.conf.json",
-        "."
-      ]
+      "detail": "compiler: /usr/bin/g++"
     }
   ]
 }

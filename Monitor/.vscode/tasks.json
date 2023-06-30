@@ -73,18 +73,7 @@
         "$gcc"
       ],
       "group": "build",
-      "detail": "compiler: /usr/bin/g++",
-      "dependsOn": [
-        "copy_config_dbg"
-      ]
-    },
-    {
-      "label": "copy_config_dbg",
-      "command": "cp",
-      "args": [
-        "-f",
-        "${workspaceFolder}/../../mxmonitor_dbg.conf.json",
-        "."
+      "detail": "compiler: /usr/bin/g++"
       ]
     }
   ]

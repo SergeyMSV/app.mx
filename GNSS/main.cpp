@@ -5,6 +5,7 @@
 #include <devLog.h>
 #include <devShell.h>
 
+#include <utilsFile.h>
 #include <utilsLinux.h>
 #include <utilsPath.h>
 
@@ -123,12 +124,9 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		const std::filesystem::path Path{ argv[0] };
-		std::filesystem::path PathFile = Path.filename();
-		if (PathFile.has_extension())
-			PathFile.replace_extension();
+		const std::string AppName = utils::GetAppNameMain(argv[0]);
 
-		std::string FileNameConf = utils::linux::GetPathConfig(PathFile.string());
+		std::string FileNameConf = utils::linux::GetPathConfig(AppName);
 		if (FileNameConf.empty())
 			throw std::runtime_error{"config file is not found"};
 
@@ -150,8 +148,8 @@ int main(int argc, char* argv[])
 	////////////////////////////////
 
 	dev::config::tOutGNSS OutGNSS = dev::g_Settings.GetOutGNSS();
-	utils::RemoveFilesOutdated(OutGNSS.Path, OutGNSS.Prefix, OutGNSS.QtyMax);
-	utils::RemoveFilesOutdated(OutGNSS.Path, g_FileNameTempPrefix + OutGNSS.Prefix, 0);
+	utils::file::RemoveFilesOutdated(OutGNSS.Path, OutGNSS.Prefix, OutGNSS.QtyMax);
+	utils::file::RemoveFilesOutdated(OutGNSS.Path, g_FileNameTempPrefix + OutGNSS.Prefix, 0);
 
 	////////////////////////////////
 
