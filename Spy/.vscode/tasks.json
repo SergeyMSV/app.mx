@@ -23,6 +23,7 @@
         "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
         "${workspaceFolder}/../LIB.Share/shareGNSS.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsChrono.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsFile.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsWeb.cpp",
@@ -65,6 +66,7 @@
         "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
         "${workspaceFolder}/../LIB.Share/shareGNSS.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsChrono.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsFile.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsWeb.cpp",
@@ -81,19 +83,7 @@
         "$gcc"
       ],
       "group": "build",
-      "detail": "compiler: /usr/bin/g++",
-      "dependsOn": [
-        "copy_config_dbg"
-      ]
-    },
-    {
-      "label": "copy_config_dbg",
-      "command": "cp",
-      "args": [
-        "-f",
-        "${workspaceFolder}/../../mxspy_dbg.conf.json",
-        "."
-      ]
+      "detail": "compiler: /usr/bin/g++"
     }
   ]
 }

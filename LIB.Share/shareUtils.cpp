@@ -1,5 +1,6 @@
 #include "shareUtils.h"
 
+#include <utilsFile.h>
 #include <utilsLinux.h>
 #include <utilsPath.h>
 
@@ -70,15 +71,15 @@ std::string GetFileNamePrefixTemp(std::string prefix)
 
 std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf)
 {
-	auto List = utils::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
+	auto List = utils::file::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
 	utils::linux::CorrPaths(List);
 	return List;
 }
 
 void RemoveFilesOutdated(const share_config::tOutFile& conf)
 {
-	utils::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
-	utils::RemoveFilesOutdated(conf.Path, GetFileNamePrefixTemp(conf.Prefix), 0);
+	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
+	utils::file::RemoveFilesOutdated(conf.Path, GetFileNamePrefixTemp(conf.Prefix), 0);
 }
 
 std::optional<std::filesystem::path> GetFilePathTemp(std::filesystem::path filePath)

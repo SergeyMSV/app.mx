@@ -86,6 +86,9 @@
     <ClInclude Include="..\LIB.Share\shareConfig.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsFile.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp">
       <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsFile.cpp">
+      <Filter>LIB.Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
