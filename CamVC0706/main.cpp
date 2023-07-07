@@ -42,21 +42,19 @@ void Thread_CAM_Handler(std::promise<bool>& promise)
 
 		std::thread Thread_IO([&]() { IO.run(); });
 
-		bool Thread_Dev_Exists = true;
-		bool Thread_Dev_ExistOnError = false;
+		std::atomic<bool> Thread_Dev_Exists = true;
+		std::atomic<bool> Thread_Dev_ExitOnError = false;
 		std::thread Thread_Dev([&]()
 			{
 				try
 				{
-					//if (g_DataSetMainControl.Thread_CAM_State == tDataSetMainControl::tStateCAM::Exit)//[TBD] TEST
-					//	Thread_Dev_Exists = false;
 					Dev();
 					Thread_Dev_Exists = false;
 					const std::string ErrMsg = Dev.GetLastErrorMsg();
 					if (!ErrMsg.empty())
 					{
 						std::cerr << ErrMsg << "\n";
-						Thread_Dev_ExistOnError = true;
+						Thread_Dev_ExitOnError = true;
 					}
 				}
 				catch (...)
@@ -99,7 +97,7 @@ void Thread_CAM_Handler(std::promise<bool>& promise)
 		Thread_IO.join();
 
 		if (!Thread_Dev_Exists)
-			promise.set_value(Thread_Dev_ExistOnError);
+			promise.set_value(Thread_Dev_ExitOnError);
 	}
 	catch (...)
 	{
