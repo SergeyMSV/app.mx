@@ -40,8 +40,8 @@ void Thread_GNSS_Handler(std::promise<bool>& promise)
 
 		std::thread Thread_IO([&]() { IO.run(); });
 
-		bool Thread_Dev_Exists = true;
-		bool Thread_Dev_ExitOnError = false;
+		std::atomic<bool> Thread_Dev_Exists = true;
+		std::atomic<bool> Thread_Dev_ExitOnError = false;
 		std::thread Thread_Dev([&]()
 			{
 				try
