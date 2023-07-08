@@ -61,14 +61,6 @@ void tLogFileLine::WriteData(const std::string& msg)
 	File.close();
 }
 
-std::string GetFileNamePrefixTemp(std::string prefix)
-{
-	if (prefix.empty())
-		return {};
-	prefix[0] = 'X';
-	return prefix;
-}
-
 std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf)
 {
 	auto List = utils::file::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
@@ -79,19 +71,6 @@ std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf)
 void RemoveFilesOutdated(const share_config::tOutFile& conf)
 {
 	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
-	utils::file::RemoveFilesOutdated(conf.Path, GetFileNamePrefixTemp(conf.Prefix), 0);
-}
-
-std::optional<std::filesystem::path> GetFilePathTemp(std::filesystem::path filePath)
-{
-	if (!filePath.has_filename())
-		return {};
-	std::string FileName = filePath.filename().string();
-	if (FileName.size() < 2)
-		return {};
-	FileName = GetFileNamePrefixTemp(FileName);
-	filePath.replace_filename(FileName);
-	return filePath;
 }
 
 }
