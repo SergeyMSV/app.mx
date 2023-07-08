@@ -31,6 +31,7 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	m_Picture = config::tPicture(PTreeConfig);
 	m_SpyOutGLO = config::tSpyOutGLO(PTreeConfig);
 	m_SpyOutGPS = config::tSpyOutGPS(PTreeConfig);
+	m_OutPicture = config::tOutPicture(PTreeConfig);
 	m_Log = config::tLog(PTreeConfig);
 
 	boost::property_tree::ptree PTreeDevice;
