@@ -1,22 +1,23 @@
 {
   "gnss": {
     "path": "/tmpram",
-    "prefix": "mxgnss_",
-    "qtyMax": 2
+    "prefix": "mxgnss_"
   },
   "picture": {
     "path": "/tmpram",
-    "prefix": "cam_",
-    "qtyMax": 2
+    "prefix": "mxcam_"
   },
   "mxspy_out_glo": {
     "path": "/tmpram",
-    "prefix": "mxspyglo_",
-    "qtyMax": 2
+    "prefix": "mxspyglo_"
   },
   "mxspy_out_gps": {
     "path": "/tmpram",
-    "prefix": "mxspygps_",
+    "prefix": "mxspygps_"
+  },
+  "out_pic": {
+    "path": "/tmpram",
+    "prefix": "pic_",
     "qtyMax": 2
   },
   "log": {
