@@ -18,12 +18,12 @@ tOutFile::tOutFile(const std::string& baseName, const boost::property_tree::ptre
 	std::string PathRaw = pTree.get<std::string>(baseName + ".path");
 	Path = utils::linux::GetPath(PathRaw);
 	Prefix = pTree.get<std::string>(baseName + ".prefix");
-	QtyMax = pTree.get<uint8_t>(baseName + ".qtyMax");
+	QtyMax = pTree.get<uint8_t>(baseName + ".qtyMax", 0);
 }
 
 bool tOutFile::IsWrong() const
 {
-	return Path.empty() || Prefix.empty() || QtyMax == 0;
+	return Path.empty() || Prefix.empty();
 }
 
 tOutFileCap::tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree)

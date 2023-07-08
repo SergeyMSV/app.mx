@@ -1,5 +1,6 @@
 #include <utilsBase.h>
 #include <utilsChrono.h>
+#include <utilsFile.h>
 #include <utilsLinux.h>
 #include <utilsPath.h>
 
@@ -8,7 +9,6 @@
 
 #include <shareConfig.h>
 #include <shareHTML.h>
-#include <shareUtils.h>
 #include <shareUtils.h>
 
 #include <filesystem>
@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
 			const dev::config::tPicture ConfPict = DsConfig.GetPicture();
 			const dev::config::tSpyOutGLO ConfSpyOutGLO = DsConfig.GetSpyOutGLO();
 			const dev::config::tSpyOutGPS ConfSpyOutGPS = DsConfig.GetSpyOutGPS();
+			const dev::config::tOutPicture OutPicture = DsConfig.GetOutPicture();
 			const dev::config::tLog ConfLog = DsConfig.GetLog();
 
 			if (ConfEmail.IsWrong() ||
@@ -61,13 +62,28 @@ int main(int argc, char* argv[])
 			share::tLogFileLine LogFile(ConfLog);
 			LogFile.Write("Start");
 			
-			share::RemoveFilesOutdated(ConfGnss);
-			share::RemoveFilesOutdated(ConfPict);
-			share::RemoveFilesOutdated(ConfSpyOutGLO);
-			share::RemoveFilesOutdated(ConfSpyOutGPS);
+			utils::file::RemoveFilesWithPrefix(OutPicture.Path, OutPicture.Prefix); // Remove all possible abandoned files.
 
 			auto GnssList = share::GetFilePaths(ConfGnss);
-			auto PictList = share::GetFilePaths(ConfPict);
+
+			std::vector<std::string> PictListTemp;
+			{
+				auto PictList = share::GetFilePaths(ConfPict);
+
+				for (auto i = PictList.crbegin(); i != PictList.crend(); ++i)
+				{
+					auto FileNameNew = utils::file::ReplaceFileNamePrefix(*i, ConfPict.Prefix, OutPicture.Prefix);
+					if (!FileNameNew.has_value())
+						continue;
+
+					if (std::filesystem::copy_file(*i, *FileNameNew))
+						PictListTemp.push_back(*FileNameNew);
+
+					if (OutPicture.QtyMax == PictListTemp.size())
+						break;
+				}
+			}
+
 			auto SpyOutGLOList = share::GetFilePaths(ConfSpyOutGLO);
 			auto SpyOutGPSList = share::GetFilePaths(ConfSpyOutGPS);
 
@@ -102,14 +118,8 @@ int main(int argc, char* argv[])
 
 			Cmd += "<body></html>\"";
 			Cmd += " | mutt ";
-			for (auto& i : PictList)
+			for (auto& i : PictListTemp)
 			{
-				auto PathTemp = share::GetFilePathTemp(i);
-				if (PathTemp == std::nullopt)
-					continue;
-				std::filesystem::rename(i, *PathTemp);
-				i = PathTemp->string();
-
 				Cmd += " -a \"";
 				Cmd += i;
 				Cmd += "\"";
@@ -158,7 +168,7 @@ int main(int argc, char* argv[])
 
 			// Do not try to remove them in case of trouble with the "system" thread.
 			// They will be removed at next start of this application.
-			for (auto& i : PictList)
+			for (auto& i : PictListTemp)
 				std::filesystem::remove(i);
 		}
 	}
