@@ -57,6 +57,14 @@ struct tSpyOutGPS : public share_config::tOutFile
 	{}
 };
 
+struct tOutPicture : public share_config::tOutFile
+{
+	tOutPicture() = default;
+	explicit tOutPicture(boost::property_tree::ptree pTree)
+		:share_config::tOutFile("out_pic", pTree)
+	{}
+};
+
 struct tLog : public share_config::tOutFileCap
 {
 	tLog() = default;
@@ -75,6 +83,7 @@ class tDataSetConfig
 	config::tPicture m_Picture;
 	config::tSpyOutGLO m_SpyOutGLO;
 	config::tSpyOutGPS m_SpyOutGPS;
+	config::tOutPicture m_OutPicture;
 	config::tLog m_Log;
 
 public:
@@ -86,6 +95,7 @@ public:
 	config::tPicture GetPicture() const { return m_Picture; }
 	config::tSpyOutGLO GetSpyOutGLO() const { return m_SpyOutGLO; }
 	config::tSpyOutGPS GetSpyOutGPS() const { return m_SpyOutGPS; }
+	config::tOutPicture GetOutPicture() const { return m_OutPicture; }
 	config::tLog GetLog() const { return m_Log; }
 };
 
