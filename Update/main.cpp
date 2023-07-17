@@ -12,6 +12,7 @@
 #include <sstream>
 
 #include <7z2201/utilsArch_7z2201_simple.h>
+#include <openssl/sha.h>
 
 tUpdateList GetUpdateList(const std::string& host, const std::string& target);
 utils::tVectorUInt8 GetUpdate(const std::string& host, const std::string& target);
@@ -32,16 +33,16 @@ std::string GetUpdateFile(const dev::tDataSetConfig& dsConfig)
 	tUpdateList UpdateList = GetUpdateList(UpdateServer.Host, UpdateServer.Target + UpdateServer.TargetList);
 
 	for (auto& i : UpdateList)
-		std::cout << "List: " << i.first << " " << i.second << '\n';
+		std::cout << "List: " << i.Head << " " << i.RefValue << " " << i.SHA256 << '\n';
 
-	auto UpdateItem = std::find_if(UpdateList.begin(), UpdateList.end(), [&](const tUpdatePair& item) { return item.first.find(DeviceType) != std::string::npos; });
+	auto UpdateItem = std::find_if(UpdateList.begin(), UpdateList.end(), [&](const tUpdateItem& item) { return item.Head.find(DeviceType) != std::string::npos; });
 	if (UpdateItem == UpdateList.end())
 		return {};
 
-	std::cout << "Update: " << UpdateItem->first << " " << UpdateItem->second << '\n';
+	std::cout << "Update: " << UpdateItem->Head << " " << UpdateItem->RefValue << " " << UpdateItem->SHA256 << '\n';
 
-	size_t VersionPos = UpdateItem->first.find_last_of('_') + 1;
-	utils::tVersion Version(UpdateItem->first.substr(VersionPos));
+	size_t VersionPos = UpdateItem->Head.find_last_of('_') + 1;
+	utils::tVersion Version(UpdateItem->Head.substr(VersionPos));
 	std::cout << "Version: " << Version.ToString() << " - ";
 	if (!(Version > dsConfig.GetDevice().Version))
 	{
@@ -50,11 +51,26 @@ std::string GetUpdateFile(const dev::tDataSetConfig& dsConfig)
 	}
 	std::cout << "accepted\n";
 
-	utils::tVectorUInt8 UpdateData = GetUpdate(UpdateServer.Host, UpdateServer.Target + UpdateItem->second);
+	utils::tVectorUInt8 UpdateData = GetUpdate(UpdateServer.Host, UpdateServer.Target + UpdateItem->RefValue);
 	if (UpdateData.empty())
 		return {};
 
-	std::cout << "Update data size: " << std::to_string(UpdateData.size()) << '\n';
+	std::vector<uint8_t> Sha256Out(SHA256_DIGEST_LENGTH);
+	SHA256((uint8_t*)UpdateData.data(), UpdateData.size(), Sha256Out.data());
+
+	std::stringstream SStrSHA256;
+	std::for_each(Sha256Out.cbegin(), Sha256Out.cend(), [&SStrSHA256](uint8_t data) { SStrSHA256 << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(data); });
+	std::cout << "SHA256: ";
+	if (SStrSHA256.str() != UpdateItem->SHA256)
+	{
+		std::cout << "rejected\n";
+		std::cout << "Right: " << UpdateItem->SHA256 << '\n';
+		std::cout << "Calc:  " << SStrSHA256.str() << '\n';
+		return {};
+	}
+	std::cout << "accepted\n";
+
+	std::cout << "Update data size: " << std::to_string(UpdateData.size()) << " B\n";
 
 	std::string Path = dsConfig.GetUpdatePath();
 
@@ -63,7 +79,7 @@ std::string GetUpdateFile(const dev::tDataSetConfig& dsConfig)
 
 	std::filesystem::create_directory(Path);
 
-	Path = AddPath(Path, UpdateItem->first);
+	Path = AddPath(Path, UpdateItem->Head);
 
 	std::fstream File(Path, std::ios::binary | std::ios::out);
 	if (!File.good())

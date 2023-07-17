@@ -6,5 +6,10 @@
 #include <string>
 #include <utility>
 	
-using tUpdatePair = std::pair<std::string, std::string>;
-using tUpdateList = std::deque<tUpdatePair>;
+struct tUpdateItem
+{
+	std::string Head;
+	std::string RefValue;
+	std::string SHA256;
+};
+using tUpdateList = std::deque<tUpdateItem>;
