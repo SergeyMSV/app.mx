@@ -11,34 +11,57 @@ tUpdateList GetUpdateList(const std::string& host, const std::string& target)
 	if (!DataRcvd.has_value())
 		throw std::runtime_error("the update-server is not available");
 
-	using tUpdatePair = std::pair<std::string, std::string>;
-	std::deque<tUpdatePair> UpdateList;
+	tUpdateList UpdateList;
 
+	enum class tLinePart : int
+	{
+		Head,
+		RefValue,
+		SHA256,
+		Unknown,
+	};
+	tLinePart LinePart;
 	std::stringstream SStr(DataRcvd.value());
-	std::string StrHead;
-	std::string StrValue;
+	tUpdateItem UpdateItem;
 	while (!SStr.eof())
 	{
 		std::string StrTemp;
 		SStr >> StrTemp;
 
 		if (StrTemp.find("FW") != std::string::npos)
+			LinePart = tLinePart::Head;
+		
+		switch (LinePart)
 		{
-			StrHead = StrTemp;
-			StrValue.clear();
+		case tLinePart::Head:
+		{
+			UpdateItem = {};
+			UpdateItem.Head = StrTemp;
+			LinePart = tLinePart::RefValue;
+			break;
 		}
-		else if (!StrHead.empty() && !StrTemp.empty())
+		case tLinePart::RefValue:
 		{
-			StrValue = StrTemp;
+			UpdateItem.RefValue = StrTemp;
+			LinePart = tLinePart::SHA256;
+			break;
+		}
+		case tLinePart::SHA256:
+		{
+			UpdateItem.SHA256 = StrTemp;
+			LinePart = tLinePart::Unknown;
+			break;
+		}
+		case tLinePart::Unknown:
+		default:
+			continue; // just ignore this data
 		}
 
-		if (StrValue.empty())
+		if (UpdateItem.SHA256.empty())
 			continue;
 
-		UpdateList.emplace_back(StrHead, StrValue);
-
-		StrHead.clear();
-		StrValue.clear();
+		UpdateList.push_back(UpdateItem);
+		UpdateItem = {};
 	}
 
 	return UpdateList;
