@@ -103,6 +103,7 @@ int main(int argc, char* argv[])
 
 		std::string CmdCDPathMX = "cd " + DsConfig.GetUpdatePath() + "/mx; ";
 		utils::linux::CmdLine(CmdCDPathMX + "chmod 544 setup.sh");
+		// [WARNING] "Segmentation fault" is received upon implementation following script:
 		utils::linux::CmdLine(CmdCDPathMX + "./setup.sh");
 	}
 	catch (std::exception& e)
