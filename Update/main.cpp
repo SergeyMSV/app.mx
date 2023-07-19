@@ -26,30 +26,23 @@ std::string GetUpdateFile(const dev::tDataSetConfig& dsConfig)
 {
 	std::string DeviceType = dsConfig.GetDevice().Type;
 
-	std::cout << "Device: " << DeviceType << " " << dsConfig.GetDevice().Version.ToString() << '\n';
-
 	dev::config::tUpdateServer UpdateServer = dsConfig.GetUpdateServer();
 
 	tUpdateList UpdateList = GetUpdateList(UpdateServer.Host, UpdateServer.Target + UpdateServer.TargetList);
-
-	for (auto& i : UpdateList)
-		std::cout << "List: " << i.Head << " " << i.RefValue << " " << i.SHA256 << '\n';
 
 	auto UpdateItem = std::find_if(UpdateList.begin(), UpdateList.end(), [&](const tUpdateItem& item) { return item.Head.find(DeviceType) != std::string::npos; });
 	if (UpdateItem == UpdateList.end())
 		return {};
 
-	std::cout << "Update: " << UpdateItem->Head << " " << UpdateItem->RefValue << " " << UpdateItem->SHA256 << '\n';
+	std::cerr << "Update: " << UpdateItem->Head;
 
 	size_t VersionPos = UpdateItem->Head.find_last_of('_') + 1;
 	utils::tVersion Version(UpdateItem->Head.substr(VersionPos));
-	std::cout << "Version: " << Version.ToString() << " - ";
 	if (!(Version > dsConfig.GetDevice().Version))
 	{
-		std::cout << "rejected\n";
+		std::cerr << "; version " << Version.ToString() << " rejected.\n";
 		return {};
 	}
-	std::cout << "accepted\n";
 
 	utils::tVectorUInt8 UpdateData = GetUpdate(UpdateServer.Host, UpdateServer.Target + UpdateItem->RefValue);
 	if (UpdateData.empty())
@@ -60,17 +53,15 @@ std::string GetUpdateFile(const dev::tDataSetConfig& dsConfig)
 
 	std::stringstream SStrSHA256;
 	std::for_each(Sha256Out.cbegin(), Sha256Out.cend(), [&SStrSHA256](uint8_t data) { SStrSHA256 << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(data); });
-	std::cout << "SHA256: ";
 	if (SStrSHA256.str() != UpdateItem->SHA256)
 	{
-		std::cout << "rejected\n";
-		std::cout << "Right: " << UpdateItem->SHA256 << '\n';
-		std::cout << "Calc:  " << SStrSHA256.str() << '\n';
+		std::cerr << "; SHA256 rejected. Calculated SHA256 doesn't match the valid one.\n";
+		std::cerr << "Valid: " << UpdateItem->SHA256 << '\n';
+		std::cerr << "Calc:  " << SStrSHA256.str() << '\n';
 		return {};
 	}
-	std::cout << "accepted\n";
 
-	std::cout << "Update data size: " << std::to_string(UpdateData.size()) << " B\n";
+	std::cerr << '\n';
 
 	std::string Path = dsConfig.GetUpdatePath();
 
@@ -88,8 +79,6 @@ std::string GetUpdateFile(const dev::tDataSetConfig& dsConfig)
 	File.write((char*)UpdateData.data(), UpdateData.size());
 	File.close();
 
-	std::cout << "Update data saved: " << Path << '\n';
-
 	return Path;
 }
 
@@ -106,10 +95,7 @@ int main(int argc, char* argv[])
 		
 		std::string UpdateFileZip = GetUpdateFile(DsConfig);
 		if (UpdateFileZip.empty())
-		{
-			std::cout << "There is no acute update on the server." << UpdateFileZip << '\n';
 			return static_cast<int>(utils::tExitCode::EX_OK);
-		}
 
 		utils::arch_7z2201_simple::Decompress(UpdateFileZip);
 
@@ -121,8 +107,7 @@ int main(int argc, char* argv[])
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << "[ERR] " << e.what() << "\n";
-
+		std::cerr << e.what() << "\n";
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}
 
