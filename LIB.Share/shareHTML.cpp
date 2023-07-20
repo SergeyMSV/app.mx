@@ -32,7 +32,7 @@ std::string GetHTMLTableSystem(const std::string& styleCol1, const share_config:
 	Table << "<table>";
 	Table << "<tr><td " << styleCol1 << "><b>SYSTEM</b></td></tr>";
 	Table << "<tr><td" << StyleHeader << ">IP Address</td><td>" << utils::linux::CmdLine("ip address | grep 'inet ' | grep -v 127.0.0.1 | cut -d\\t -f2 | cut -d/ -f1 | awk '{print $1}'") << "</td></tr>";
-	Table << "<tr><td" << StyleHeader << ">Date</td><td>" << utils::linux::CmdLine("date") << "</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Date</td><td>" << utils::linux::CmdLine("date +\"%F %T\"") << "</td></tr>";
 	Table << "<tr><td" << StyleHeader << ">Uptime</td><td>" + utils::linux::GetUptimeString() << "</td></tr>";
 	utils::linux::tCpuInfo CpuInfo = utils::linux::GetCpuInfo();
 	Table << "<tr><td" << StyleHeader << ">CPU</td><td>" << CpuInfo.ModelName << "</td></tr>";
@@ -53,7 +53,7 @@ std::string GetHTMLTableSystemShort(const std::string& styleCol1, const share_co
 	Table << "<table>";
 	Table << "<tr><td " << styleCol1 << "><b>SYSTEM</b></td></tr>";
 	Table << "<tr><td" << StyleHeader << ">IP Address</td><td>" << utils::linux::CmdLine("ip address | grep 'inet ' | grep -v 127.0.0.1 | cut -d\\t -f2 | cut -d/ -f1 | awk '{print $1}'") << "</td></tr>";
-	Table << "<tr><td" << StyleHeader << ">Date</td><td>" << utils::linux::CmdLine("date") << "</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">Date</td><td>" << utils::linux::CmdLine("date +\"%F %T\"") << "</td></tr>";
 	Table << "<tr><td" << StyleHeader << ">Uptime</td><td>" + utils::linux::GetUptimeString() << "</td></tr>";
 	Table << "<tr><td" << StyleHeader << ">Version</td><td>" << dsConfigDevice.Type << " " << dsConfigDevice.Version.ToString() << "</td></tr>";
 	Table << "</table>";
