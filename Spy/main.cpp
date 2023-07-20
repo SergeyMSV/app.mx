@@ -20,6 +20,15 @@
 
 //#define MXSPY_TEST
 
+static std::string GetDateTimeNowString()
+{
+	std::time_t TimeNowRaw = std::time(nullptr);
+	tm TimeNow = *std::gmtime(&TimeNowRaw);//gmtime may not be thread-safe.
+	std::stringstream Stream;
+	Stream << std::put_time(&TimeNow, "%F %T");
+	return Stream.str();
+}
+
 std::string ParseGLO(const boost::property_tree::ptree& pTree);
 std::string ParseGPS(const boost::property_tree::ptree& pTree);
 
@@ -70,6 +79,7 @@ bool GetGNSSState(const std::string& host, const std::string& target, const shar
 	}
 
 	File << "{\n";
+	File << "\"date_time\": \"" << GetDateTimeNowString() << "\",\n";
 	File << DataJSON;
 	File << "\n}";
 	File.close();
