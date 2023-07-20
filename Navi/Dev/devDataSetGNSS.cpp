@@ -75,6 +75,8 @@ void tDataSetGNSS::SetStateGLO(const std::string& fileName)
 	boost::property_tree::ptree PTree;
 	boost::property_tree::json_parser::read_json(fileName, PTree);
 
+	SatStateGLO_UpdateDateTime = PTree.get<std::string>("date_time");
+
 	for (auto& sat : PTree.get_child("glonass"))
 	{
 		share_gnss::tSatDesc SatDesc(sat.second);
@@ -102,6 +104,8 @@ void tDataSetGNSS::SetStateGPS(const std::string& fileName)
 {
 	boost::property_tree::ptree PTree;
 	boost::property_tree::json_parser::read_json(fileName, PTree);
+
+	SatStateGPS_UpdateDateTime = PTree.get<std::string>("date_time");
 
 	for (auto& sat : PTree.get_child("gps"))
 	{
@@ -147,6 +151,7 @@ std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 	Table << GetHTMLTableSatellitesVert(utils::tGNSSCode::GPS);
 	Table << GetHTMLTableSatellitesVert(utils::tGNSSCode::GLONASS);
 	Table << GetHTMLTableSatellitesVert(utils::tGNSSCode::WAAS);
+	Table << GetHTMLTableUpdates();
 
 	return Table.str();
 }
@@ -236,6 +241,19 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) 
 
 	Table << "</table>";
 
+	return Table.str();
+}
+
+std::string tDataSetGNSS::GetHTMLTableUpdates() const
+{
+	std::string StyleHeader = share::GetHTMLBgColour(share::tHTMLFieldStatus::TableHeader);
+
+	std::stringstream Table;
+	Table << "<table>";
+	Table << "<tr><td " << "colspan = \"2\"" << "><b>Updates of third-party data</b></td></tr>";
+	Table << "<tr><td" << StyleHeader << ">State GLONASS</td><td>" << SatStateGLO_UpdateDateTime << "</td></tr>";
+	Table << "<tr><td" << StyleHeader << ">State GPS</td><td>" << SatStateGPS_UpdateDateTime << "</td></tr>";
+	Table << "</table>";
 	return Table.str();
 }
 

@@ -44,6 +44,9 @@ struct tDataSetGNSS
 	std::deque<tSatellite> Satellites;
 	std::string ModeIndicator;
 
+	std::string SatStateGLO_UpdateDateTime;
+	std::string SatStateGPS_UpdateDateTime;
+
 public:
 	tDataSetGNSS() = default;
 	explicit tDataSetGNSS(const std::string& fileName);
@@ -59,6 +62,8 @@ public:
 private:
 	std::string GetHTMLTableSatellitesHor(utils::tGNSSCode codeGNSS) const;
 	std::string GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) const;
+
+	std::string GetHTMLTableUpdates() const;
 
 	std::string ToString(utils::tGNSSCode codeGNSS) const;
 
