@@ -169,7 +169,7 @@ void tMonitorMemory::GetMemFree(const tDataSetConfig& config)
 std::string tMonitorMemory::GetHTMLTableMemFree() const
 {
 	std::time_t TimeNowRaw = std::time(nullptr);
-	tm TimeNow = *std::gmtime(&TimeNowRaw);//gmtime may not be thread-safe. 
+	tm TimeNow = *std::gmtime(&TimeNowRaw);//gmtime may not be thread-safe.
 
 	std::stringstream Table;
 	Table << "<table>";
@@ -199,7 +199,7 @@ std::string tMonitorMemory::GetHTMLTableMemFree() const
 		}
 		else
 		{
-			Table << std::put_time(&Time, "%D") << "</td>";
+			Table << std::put_time(&Time, "...-%m-%d") << "</td>";
 		}		
 		Table << "<td" << share::GetHTMLBgColour(StatFree) << ">" << i.Free << "</td>";
 		Table << "<td" << share::GetHTMLBgColour(StatUsed) << ">" << i.Used << "</td>";
