@@ -13,6 +13,13 @@ tDevice::tDevice(const boost::property_tree::ptree& pTree)
 	Version = utils::tVersion(pTree.get<std::string>("firmware.version"));
 }
 
+tUpdateServer::tUpdateServer(const boost::property_tree::ptree& pTree)
+{
+	Host = pTree.get<std::string>("server.host");
+	Target = pTree.get<std::string>("server.target");
+	TargetList = pTree.get<std::string>("server.target_list");
+}
+
 tOutFile::tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree)
 {
 	std::string PathRaw = pTree.get<std::string>(baseName + ".path");

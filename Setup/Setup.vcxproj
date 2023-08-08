@@ -92,13 +92,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(LIB_BOOST)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -109,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -117,7 +118,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(LIB_BOOST)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -126,13 +128,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(LIB_BOOST)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,7 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -151,13 +154,36 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(LIB_BOOST)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(LIB_BOOST);$(LIB_OPENSSL);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
+    <ClCompile Include="..\LIB.Share\shareWeb.cpp" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zAlloc.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zArcIn.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zBuf.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zCrc.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zCrcOpt.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zDec.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zFile.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zStream.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bcj2.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bra.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bra86.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\BraIA64.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\CpuArch.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Delta.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Lzma2Dec.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\LzmaDec.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Ppmd7.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Ppmd7Dec.c" />
+    <ClCompile Include="..\LIB.Utils\7z2201\utilsArch_7z2201_simple.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
-    <ClCompile Include="cmdline.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsWeb.cpp" />
+    <ClCompile Include="Dev\devCmdLine.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="fs\cron_mxsetupschedule.cpp" />
     <ClCompile Include="fs\email_msmtprc.cpp" />
@@ -167,10 +193,32 @@
     <ClCompile Include="main_setup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\LIB.Share\shareConfig.h" />
+    <ClInclude Include="..\LIB.Share\shareWeb.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7z.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zAlloc.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zBuf.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zCrc.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zFile.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zTypes.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zVersion.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Bcj2.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Bra.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Compiler.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\CpuArch.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Delta.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Lzma2Dec.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\LzmaDec.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Ppmd.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Ppmd7.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Precomp.h" />
+    <ClInclude Include="..\LIB.Utils\7z2201\utilsArch_7z2201_simple.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
+    <ClInclude Include="..\LIB.Utils\utilsWeb.h" />
     <ClInclude Include="devConfig.h" />
+    <ClInclude Include="Dev\devCmdLine.h" />
     <ClInclude Include="Dev\devDataSetConfig.h" />
     <ClInclude Include="libConfig.h" />
   </ItemGroup>
@@ -179,6 +227,7 @@
     <None Include=".vscode\c_cpp_properties.json" />
     <None Include=".vscode\launch.json" />
     <None Include=".vscode\tasks.json" />
+    <None Include="mxdevice.conf.json" />
     <None Include="mxprivate.conf.json" />
     <None Include="mxsetup.conf.json" />
     <None Include="Setup.code-workspace" />

@@ -1,27 +1,31 @@
-#include <devConfig.h>
-#include <devDataSetConfig.h>
+#include "devCmdLine.h"
 
+#include <cstring>
+
+#include <iterator>
 #include <set>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
-tCmdLine CmdLine_Parse(int argc, const char* argv[])
+namespace dev
+{
+
+tCmdLine::tCmdLine(int argc, const char* argv[])
 {
 	if (argc < 2)
-		return {};
-
-	tCmdLine CmdLine;
+		throw std::invalid_argument("Wrong Args");
 
 	for (auto& i : CmdList)
 	{
 		if (!strcmp(argv[1], i.Value))
 		{
-			CmdLine.Cmd = i.Cmd;
+			Cmd = i.Cmd;
 			break;
 		}
 	}
 
-	if (CmdLine.Cmd == tCmd::None)
+	if (Cmd == tCmd::None)
 		throw std::invalid_argument("Wrong Cmd");
 
 	std::set<tCmdOption> CmdOptSet;
@@ -43,32 +47,30 @@ tCmdLine CmdLine_Parse(int argc, const char* argv[])
 			throw std::invalid_argument("Wrong CmdOption");
 	}
 
-	if (CmdLine.Cmd == tCmd::Uninstall)
+	if (Cmd == tCmd::Uninstall)
 	{
-		std::copy(CmdOptSet.rbegin(), CmdOptSet.rend(), std::back_inserter(CmdLine.CmdOptions));
+		std::copy(CmdOptSet.rbegin(), CmdOptSet.rend(), std::back_inserter(CmdOptions));
 	}
 	else
 	{
-		std::copy(CmdOptSet.begin(), CmdOptSet.end(), std::back_inserter(CmdLine.CmdOptions));
+		std::copy(CmdOptSet.begin(), CmdOptSet.end(), std::back_inserter(CmdOptions));
 	}
-
-	return CmdLine;
 }
 
-std::string CmdLine_Make(tCmdLine cmdLine)
+std::string tCmdLine::ToString() const
 {
 	std::string CmdLine;
 
 	for (auto& i : CmdList)
 	{
-		if (cmdLine.Cmd == i.Cmd)
+		if (Cmd == i.Cmd)
 		{
 			CmdLine += i.Value;
 			break;
 		}
 	}
 
-	for (auto i : cmdLine.CmdOptions)
+	for (auto i : CmdOptions)
 	{
 		for (auto& opt : CmdOptionList)
 		{
@@ -82,4 +84,6 @@ std::string CmdLine_Make(tCmdLine cmdLine)
 	}
 
 	return CmdLine;
+}
+
 }
