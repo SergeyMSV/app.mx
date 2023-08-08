@@ -3,6 +3,7 @@
 #include <utilsPath.h>
 
 #include <devConfig.h>
+#include <devCmdLine.h>
 #include <devDataSetConfig.h>
 
 #include <filesystem>
@@ -12,10 +13,7 @@
 
 //#define TEST_SETUP
 
-tCmdLine CmdLine_Parse(int argc, const char* argv[]);
-std::string CmdLine_Make(tCmdLine cmdLine);
-
-bool Setup(tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const tAppData& appData);
+bool Setup(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const tAppData& appData);
 
 void MakeMXSetupSchedule(const std::string& appPath, const std::string& appArg);
 void RemoveMXSetupSchedule();
@@ -39,9 +37,9 @@ int main(int argc, const char* argv[])
 	{
 		RemoveMXSetupSchedule();
 
-		tCmdLine CmdLine = CmdLine_Parse(argc, argv);
+		dev::tCmdLine CmdLine(argc, argv);
 
-		if (CmdLine.Cmd == tCmd::None || CmdLine.CmdOptions.empty())
+		if (CmdLine.Cmd == dev::tCmd::None || CmdLine.CmdOptions.empty())
 			return static_cast<int>(utils::tExitCode::EX_OK);
 
 		const std::string AppName = utils::GetAppNameMain(argv[0]);
@@ -55,14 +53,13 @@ int main(int argc, const char* argv[])
 		AppData.AppName = AppName;
 
 		std::string PathFileConfig = utils::linux::GetPathConfigExc(AppData.AppName);
+		std::string PathFileDevice = utils::linux::GetPathConfigExc("mxdevice");
 		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
-		dev::tDataSetConfig DsConfig(PathFileConfig, PathFilePrivate);
+		dev::tDataSetConfig DsConfig(PathFileConfig, PathFileDevice, PathFilePrivate);
 
 		if (Setup(CmdLine, DsConfig, AppData))
 		{
-			std::string CmdLineArgsStr = CmdLine_Make(CmdLine);
-
-			MakeMXSetupSchedule(AppData.Path, CmdLineArgsStr);
+			MakeMXSetupSchedule(AppData.Path, CmdLine.ToString());
 
 			utils::linux::CmdLine("reboot");
 			return static_cast<int>(utils::tExitCode::EX_OK);
@@ -71,7 +68,6 @@ int main(int argc, const char* argv[])
 	catch (std::exception& e)
 	{
 		std::cerr << e.what() << "\n";
-
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}
 
