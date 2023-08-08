@@ -1,0 +1,8 @@
+{
+	"device": {
+		"type": "MXSetup"
+	},
+	"firmware": {
+		"version": "0.0.1"
+	}
+}

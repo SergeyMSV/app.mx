@@ -1,4 +1,10 @@
 {
+  "server": {
+    "host": "drive.google.com",
+    "target": "/uc?export=download&id=",
+    "target_list": "1y8pXWBZfJ9TinmAB0c-zvZr7Bo6X9IlQ"
+  },
+  "path": "~/temp_mx",
   "config_files": {
     "msmtprc": "~/.msmtprc",
     "muttrc": "~/.muttrc"

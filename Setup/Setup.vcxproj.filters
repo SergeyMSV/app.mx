@@ -17,6 +17,12 @@
     <Filter Include="fs">
       <UniqueIdentifier>{a72a0b41-b24b-4164-b5dc-b28cef37d347}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LIB.Utils\7x2201">
+      <UniqueIdentifier>{2fcd78f1-4bb3-486b-9532-2936f426a3cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB.Utils\7x2201\C">
+      <UniqueIdentifier>{29745371-b856-45db-bb4f-715479b038b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -30,7 +36,6 @@
       <Filter>LIB.Utils</Filter>
     </ClCompile>
     <ClCompile Include="main_setup.cpp" />
-    <ClCompile Include="cmdline.cpp" />
     <ClCompile Include="fs\cron_mxsetupschedule.cpp">
       <Filter>fs</Filter>
     </ClCompile>
@@ -42,6 +47,75 @@
     </ClCompile>
     <ClCompile Include="fs\linux_fstab.cpp">
       <Filter>fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareWeb.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsWeb.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\utilsArch_7z2201_simple.cpp">
+      <Filter>LIB.Utils\7x2201</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zAlloc.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zArcIn.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zBuf.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zCrc.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zCrcOpt.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zDec.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zFile.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\7zStream.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bcj2.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bra.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Bra86.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\BraIA64.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\CpuArch.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Delta.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Lzma2Dec.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\LzmaDec.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Ppmd7.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\7z2201\C\Ppmd7Dec.c">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="Dev\devCmdLine.cpp">
+      <Filter>Dev</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +133,72 @@
       <Filter>LIB.Utils</Filter>
     </ClInclude>
     <ClInclude Include="devConfig.h" />
+    <ClInclude Include="..\LIB.Share\shareWeb.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsWeb.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\utilsArch_7z2201_simple.h">
+      <Filter>LIB.Utils\7x2201</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7z.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zAlloc.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zBuf.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zCrc.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zFile.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zTypes.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\7zVersion.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Bcj2.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Bra.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Compiler.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\CpuArch.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Delta.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Lzma2Dec.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\LzmaDec.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Ppmd.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Ppmd7.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\7z2201\C\Precomp.h">
+      <Filter>LIB.Utils\7x2201\C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareConfig.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="Dev\devCmdLine.h">
+      <Filter>Dev</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat">
@@ -77,5 +217,6 @@
     </None>
     <None Include="Setup.code-workspace" />
     <None Include="mxsetup.sh" />
+    <None Include="mxdevice.conf.json" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <utilsBase.h>
+
+#include <shareConfig.h>
+
 #include <string>
 
 #include <boost/property_tree/ptree.hpp>
@@ -52,13 +56,19 @@ struct tFstab
 
 class tDataSetConfig
 {
+	share_config::tDevice m_Device;
+	share_config::tUpdateServer m_UpdateServer;
+	std::string m_UpdatePath;
 	config::tEmail m_Email;
 	config::tConfigFiles m_ConfigFiles;
 	config::tFstab m_Fstab;
 
 public:
-	tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNamePrivate);
+	tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNameDevice, const std::string& fileNamePrivate);
 
+	share_config::tDevice GetDevice() const { return m_Device; }
+	share_config::tUpdateServer GetUpdateServer() const { return m_UpdateServer; }
+	std::string GetUpdatePath() const { return m_UpdatePath; }
 	config::tEmail GetEmail() const { return m_Email; }
 	config::tConfigFiles GetConfigFiles() const { return m_ConfigFiles; }
 	config::tFstab GetFstab() const { return m_Fstab; }
