@@ -16,6 +16,16 @@ struct tDevice
 	explicit tDevice(const boost::property_tree::ptree& pTree);
 };
 
+struct tUpdateServer
+{
+	std::string Host;
+	std::string Target;
+	std::string TargetList;
+
+	tUpdateServer() = default;
+	explicit tUpdateServer(const boost::property_tree::ptree& pTree);
+};
+
 struct tOutFile
 {
 	std::string Path;
