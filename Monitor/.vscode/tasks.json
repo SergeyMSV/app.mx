@@ -74,7 +74,6 @@
       ],
       "group": "build",
       "detail": "compiler: /usr/bin/g++"
-      ]
     }
   ]
 }
