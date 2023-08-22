@@ -3,12 +3,25 @@
 #include <shareGNSS.h>
 #include <shareHTML.h>
 
+#include <algorithm>
 #include <sstream>
 
 #include <boost/property_tree/json_parser.hpp>
 
 namespace dev
 {
+
+static std::string str_tolower(std::string s)
+{
+	std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); });
+	return s;
+}
+
+static std::string str_toupper(std::string s)
+{
+	std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::toupper(c); });
+	return s;
+}
 
 tDataSetGNSS::tSatellite::tSatellite(boost::property_tree::ptree pTree)
 {
@@ -134,7 +147,7 @@ std::string tDataSetGNSS::GetHTMLTable(const std::string& styleCol1) const
 	std::stringstream Table;
 
 	Table << "<table>";
-	Table << "<tr><td " << styleCol1 << "><b>GNSS</b></td><td><b>" << (Valid ? "valid" : "invalid") << "</b> ("<< ModeIndicator <<")</td></tr>";
+	Table << "<tr><td " << styleCol1 << "><b>GNSS</b></td><td><b>" << (Valid ? "valid" : "invalid") << "</b> (" << str_tolower(ModeIndicator) << ")</td></tr>";
 	Table << "<tr><td " << StyleHeader << ">UTC</td><td>" << UTC << "</td></tr>";
 	Table << "</td></tr>";
 
@@ -194,12 +207,6 @@ std::string tDataSetGNSS::GetHTMLTableSatellitesHor(utils::tGNSSCode codeGNSS) c
 	Table += "</table>";
 
 	return Table;
-}
-
-static std::string str_toupper(std::string s)
-{
-	std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::toupper(c); });
-	return s;
 }
 
 std::string tDataSetGNSS::GetHTMLTableSatellitesVert(utils::tGNSSCode codeGNSS) const
