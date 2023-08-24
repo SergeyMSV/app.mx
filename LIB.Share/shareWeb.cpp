@@ -27,7 +27,7 @@ tUpdateList GetUpdateList(const std::string& host, const std::string& target)
 {
 	std::optional<std::string> DataRcvd = utils::web::HttpsReqSyncString(host, target);
 	if (!DataRcvd.has_value())
-		throw std::runtime_error("the update-server is not available");
+		THROW_RUNTIME_ERROR("the update-server is not available");
 
 	tUpdateList UpdateList;
 
@@ -89,7 +89,7 @@ utils::tVectorUInt8 GetUpdate(const std::string& host, const std::string& target
 {
 	std::optional<utils::tVectorUInt8> DataRcvd = utils::web::HttpsReqSyncVector(host, target);
 	if (!DataRcvd.has_value())
-		throw std::runtime_error("the update-server is not available");
+		THROW_RUNTIME_ERROR("the update-server is not available");
 
 	return DataRcvd.value();
 }
