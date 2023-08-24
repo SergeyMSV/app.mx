@@ -9,6 +9,8 @@
 #include <utilsFile.h>
 #include <utilsPath.h>
 
+#include <shareUtilsFile.h>
+
 #include <atomic>
 #include <chrono>
 #include <filesystem>
@@ -137,8 +139,8 @@ int main(int argc, char* argv[])
 	////////////////////////////////
 
 	dev::config::tOutPicture OutPicture = dev::g_Settings.GetOutPicture();
-	utils::file::RemoveFilesOutdated(OutPicture.Path, OutPicture.Prefix, OutPicture.QtyMax);
-	utils::file::RemoveFilesOutdated(OutPicture.Path, g_FileNameTempPrefix + OutPicture.Prefix, 0);
+	share::RemoveFilesOutdated(OutPicture);
+	share::RemoveFilesOutdated(OutPicture, g_FileNameTempPrefix);
 
 	////////////////////////////////
 

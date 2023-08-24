@@ -39,6 +39,9 @@
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Utils\utilsBase.h">
@@ -66,6 +69,9 @@
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsFile.h">
       <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareUtilsFile.h">
+      <Filter>LIB.Share</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

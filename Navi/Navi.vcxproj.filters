@@ -41,11 +41,11 @@
     <ClCompile Include="..\LIB.Utils\utilsChrono.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\LIB.Share\shareUtils.cpp">
-      <Filter>LIB.Share</Filter>
-    </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp">
       <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp">
+      <Filter>LIB.Share</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,11 +77,11 @@
     <ClInclude Include="..\LIB.Share\shareGNSS.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
-    <ClInclude Include="..\LIB.Share\shareUtils.h">
-      <Filter>LIB.Share</Filter>
-    </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsFile.h">
       <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareUtilsFile.h">
+      <Filter>LIB.Share</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
