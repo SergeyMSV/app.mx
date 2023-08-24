@@ -80,9 +80,6 @@
     <ClInclude Include="..\LIB.Utils\utilsPath.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\LIB.Utils\utilsLinux.h">
-      <Filter>LIB.Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\LIB.Share\shareConfig.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
@@ -147,9 +144,6 @@
       <Filter>Dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp">
-      <Filter>LIB.Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\LIB.Utils\utilsLinux.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp">
