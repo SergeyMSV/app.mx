@@ -1,12 +1,14 @@
 #include <devConfig.h>
 
+#include <devDataSetConfig.h>
+
 #include <utilsBase.h>
 #include <utilsChrono.h>
 #include <utilsFile.h>
 #include <utilsPath.h>
 #include <utilsWeb.h>
 
-#include <devDataSetConfig.h>
+#include <shareUtilsFile.h>
 
 #include <filesystem>
 #include <fstream>
@@ -92,7 +94,7 @@ bool GetGNSSState(const std::string& host, const std::string& target, const shar
 		std::rename(FileNameTemp.c_str(), FileNameFull.c_str());
 	}
 
-	utils::file::RemoveFilesOutdated(cfgOut.Path, cfgOut.Prefix, cfgOut.QtyMax);
+	share::RemoveFilesOutdated(cfgOut);
 
 #if defined(MXSPY_TEST)
 	DataRaw.close();

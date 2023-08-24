@@ -4,6 +4,8 @@
 #include <utilsFile.h>
 #include <utilsPath.h>
 
+#include <shareUtilsFile.h>
+
 namespace dev
 {
 
@@ -97,7 +99,7 @@ void tCamera::tModCamera::OnImageComplete()
 
 	config::tOutPicture OutPicture = g_Settings.GetOutPicture();
 
-	utils::file::RemoveFilesOutdated(OutPicture.Path, OutPicture.Prefix, OutPicture.QtyMax);
+	share::RemoveFilesOutdated(OutPicture);
 
 	m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightBlue, "Image: Complete");
 }
