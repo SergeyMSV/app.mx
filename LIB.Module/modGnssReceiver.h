@@ -7,6 +7,7 @@
 
 #include "modGnss.h"
 
+#include <utilsBase.h>
 #include <utilsLog.h>
 #include <utilsPacket.h>
 #include <utilsPacketNMEA.h>
