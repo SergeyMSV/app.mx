@@ -102,7 +102,7 @@ void tGnssReceiver::tState::TaskScript()
 			{
 				m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightRed, "ERR: unknown task");
 
-				throw std::invalid_argument("Unknown task");
+				THROW_INVALID_ARGUMENT("Unknown task");
 				//[TBD] throw an exception or do nothing
 
 				break;
