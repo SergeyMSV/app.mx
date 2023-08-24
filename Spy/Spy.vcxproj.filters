@@ -27,9 +27,6 @@
       <Filter>LIB.Utils</Filter>
     </ClCompile>
     <ClCompile Include="main_GNSS.cpp" />
-    <ClCompile Include="..\LIB.Utils\utilsLinux.cpp">
-      <Filter>LIB.Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
@@ -58,9 +55,6 @@
       <Filter>LIB.Utils</Filter>
     </ClInclude>
     <ClInclude Include="devConfig.h" />
-    <ClInclude Include="..\LIB.Utils\utilsLinux.h">
-      <Filter>LIB.Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\LIB.Share\shareConfig.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>

@@ -1,6 +1,8 @@
 #include "shareConfig.h"
 
-#include <utilsLinux.h>
+#include <utilsPath.h>
+
+#include <filesystem>
 
 #include <boost/property_tree/json_parser.hpp>
 
@@ -22,8 +24,8 @@ tUpdateServer::tUpdateServer(const boost::property_tree::ptree& pTree)
 
 tOutFile::tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree)
 {
-	std::string PathRaw = pTree.get<std::string>(baseName + ".path");
-	Path = utils::linux::GetPath(PathRaw);
+	std::filesystem::path PathRaw = pTree.get<std::string>(baseName + ".path");
+	Path = utils::path::GetPathNormal(PathRaw).string();
 	Prefix = pTree.get<std::string>(baseName + ".prefix");
 	QtyMax = pTree.get<uint8_t>(baseName + ".qtyMax", 0);
 }

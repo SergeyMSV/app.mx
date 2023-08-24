@@ -1,6 +1,6 @@
 #include "devDataSetConfig.h"
 
-#include <utilsLinux.h>
+#include <utilsPath.h>
 
 #include <boost/property_tree/json_parser.hpp>
 
@@ -31,8 +31,8 @@ tConfigFiles::tConfigFiles(const boost::property_tree::ptree& pTree)
 	std::string pathMsmtprc = pTree.get<std::string>("config_files.msmtprc");
 	std::string pathMuttrc = pTree.get<std::string>("config_files.muttrc");
 
-	msmtprc = utils::linux::GetPath(pathMsmtprc);
-	muttrc = utils::linux::GetPath(pathMuttrc);
+	msmtprc = utils::path::GetPathNormal(pathMsmtprc).string();
+	muttrc = utils::path::GetPathNormal(pathMuttrc).string();
 }
 
 bool tConfigFiles::IsWrong() const
@@ -59,7 +59,7 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
 	m_UpdateServer = share_config::tUpdateServer(PTreeConfig);
 	std::string PathRaw = PTreeConfig.get<std::string>("path");
-	m_UpdatePath = utils::linux::GetPath(PathRaw);
+	m_UpdatePath = utils::path::GetPathNormal(PathRaw).string();
 	m_ConfigFiles = config::tConfigFiles(PTreeConfig);
 	m_Fstab = config::tFstab(PTreeConfig);
 

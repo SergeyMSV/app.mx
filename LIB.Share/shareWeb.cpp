@@ -94,11 +94,6 @@ utils::tVectorUInt8 GetUpdate(const std::string& host, const std::string& target
 	return DataRcvd.value();
 }
 
-std::string AddPath(const std::string& path, const std::string& part)
-{
-	return utils::linux::CorrPath(path + "/" + part);
-}
-
 std::string GetUpdateFile(const share_config::tUpdateServer& server, const share_config::tDevice& device, const std::string& path)
 {
 	tUpdateList UpdateList = GetUpdateList(server.Host, server.Target + server.TargetList);
@@ -136,12 +131,14 @@ std::string GetUpdateFile(const share_config::tUpdateServer& server, const share
 
 	std::cerr << '\n';
 
-	if (std::filesystem::exists(path))
-		std::filesystem::remove_all(path);
+	std::filesystem::path Path = std::filesystem::weakly_canonical(path);
 
-	std::filesystem::create_directory(path);
+	if (std::filesystem::exists(Path))
+		std::filesystem::remove_all(Path);
 
-	const std::string Path = AddPath(path, UpdateItem->Head);
+	std::filesystem::create_directory(Path);
+
+	Path /= UpdateItem->Head;
 
 	std::fstream File(Path, std::ios::binary | std::ios::out);
 	if (!File.good())
@@ -150,5 +147,5 @@ std::string GetUpdateFile(const share_config::tUpdateServer& server, const share
 	File.write((char*)UpdateData.data(), UpdateData.size());
 	File.close();
 
-	return Path;
+	return Path.string();
 }

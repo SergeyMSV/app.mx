@@ -1,4 +1,5 @@
 #include <utilsLinux.h>
+#include <utilsPath.h>
 
 #include <filesystem>
 #include <fstream>
@@ -9,7 +10,7 @@ constexpr char g_PathMXSetupSchedule[] = "/etc/cron.d/mxsetupschedule";
 
 void MakeMXSetupSchedule(const std::string& appPath, const std::string& appArg)
 {
-	std::string PathFileMXScheduleSetup = utils::linux::GetPath(g_PathMXSetupSchedule);
+	std::string PathFileMXScheduleSetup = utils::path::GetPathNormal(g_PathMXSetupSchedule).string();
 
 	std::vector<std::string> Lines;
 
@@ -32,6 +33,6 @@ void MakeMXSetupSchedule(const std::string& appPath, const std::string& appArg)
 
 void RemoveMXSetupSchedule()
 {
-	std::string Path = utils::linux::GetPath(g_PathMXSetupSchedule);
+	std::filesystem::path Path = utils::path::GetPathNormal(g_PathMXSetupSchedule);
 	std::filesystem::remove(Path);
 }

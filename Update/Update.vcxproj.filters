@@ -32,7 +32,6 @@
     <ClCompile Include="..\LIB.Utils\utilsWeb.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
-    <ClCompile Include="main_web.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
@@ -94,6 +93,9 @@
       <Filter>LIB.Utils\7z2201\C</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareWeb.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
   </ItemGroup>
@@ -170,6 +172,9 @@
       <Filter>LIB.Utils\7z2201\C</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Share\shareConfig.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareWeb.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
   </ItemGroup>
