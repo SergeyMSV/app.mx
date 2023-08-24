@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
+    <ClCompile Include="..\LIB.Share\shareWeb.cpp" />
     <ClCompile Include="..\LIB.Utils\7z2201\C\7zAlloc.c" />
     <ClCompile Include="..\LIB.Utils\7z2201\C\7zArcIn.c" />
     <ClCompile Include="..\LIB.Utils\7z2201\C\7zBuf.c" />
@@ -184,10 +185,10 @@
     <ClCompile Include="..\LIB.Utils\utilsWeb.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="main_web.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
+    <ClInclude Include="..\LIB.Share\shareWeb.h" />
     <ClInclude Include="..\LIB.Utils\7z2201\C\7z.h" />
     <ClInclude Include="..\LIB.Utils\7z2201\C\7zAlloc.h" />
     <ClInclude Include="..\LIB.Utils\7z2201\C\7zBuf.h" />

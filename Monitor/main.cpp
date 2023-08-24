@@ -40,11 +40,11 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		const std::string AppName = utils::GetAppNameMain(argv[0]);
-
-		std::string PathFileConfig = utils::linux::GetPathConfigExc(AppName);
-		std::string PathFileDevice = utils::linux::GetPathConfigExc("mxdevice");
-		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
+		const std::filesystem::path Path(argv[0]);
+		const std::string AppName = utils::path::GetAppNameMain(Path);
+		std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
+		std::string PathFileDevice = utils::path::GetPathConfigExc("mxdevice").string();
+		std::string PathFilePrivate = utils::path::GetPathConfigExc("mxprivate").string();
 
 		dev::tMonitorMemory MonitorMemory;
 
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "[ERR] " << e.what() << "\n";
+		std::cerr << e.what() << "\n";
 
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}

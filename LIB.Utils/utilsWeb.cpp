@@ -164,7 +164,7 @@ std::optional<T> HttpsReqSync(const std::string& a_host, const std::string& a_ta
 	}
 	catch (std::exception const& e)
 	{
-		std::cerr << "Error: " << e.what() << std::endl;
+		std::cerr << utils::GetLogMessage(e.what(), __FILE__, __LINE__) << '\n';
 		return {};
 	}
 

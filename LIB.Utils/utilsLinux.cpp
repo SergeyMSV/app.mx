@@ -6,6 +6,7 @@
 #include <cstdio>
 
 #include <deque>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <sstream>
@@ -14,16 +15,23 @@
 
 //#define LIB_UTILS_LINUX_LOG
 
-#if defined(_WIN32)
-#include <filesystem>
-#endif
-
 #if defined(LIB_UTILS_LINUX_LOG)
 #include <iostream>
 #endif
 
 namespace utils
 {
+
+static std::string GetStringEnding(const std::string& pattern, const std::string& str)//utilsString
+{
+	size_t Pos = str.find(pattern);
+	if (Pos == std::string::npos)
+		return {};
+	std::string Str = str.substr(Pos + pattern.size());
+	std::string_view StrView = Str;
+	StrView.remove_prefix(std::min(StrView.find_first_not_of(" "), StrView.size()));
+	return StrView.data();
+}
 
 namespace linux
 {
@@ -58,18 +66,10 @@ std::string CmdLine(const std::string& cmd)
 #endif
 }
 
-std::string GetPathReal(const std::string& path)
-{
-	std::string PathReal = CmdLine("realpath " + path);
-	if (PathReal.size() > 0 && PathReal[0] == '/')
-		return PathReal;
-	return {};
-}
-
 double GetUptime()
 {
-	std::string FileName = GetPath("/proc/uptime");
-	std::fstream File(FileName, std::ios::in);
+	std::filesystem::path Path = path::GetPathNormal("/proc/uptime");
+	std::fstream File(Path, std::ios::in);
 	if (!File.good())
 		return {};
 
@@ -107,8 +107,8 @@ std::string GetUptimeString()
 
 tCpuInfo GetCpuInfo()
 {
-	std::string FileName = GetPath("/proc/cpuinfo");
-	std::fstream File(FileName, std::ios::in);
+	std::filesystem::path Path = path::GetPathNormal("/proc/cpuinfo");
+	std::fstream File(Path, std::ios::in);
 	if (!File.good())
 		return {};
 
@@ -157,126 +157,6 @@ tCpuInfo GetCpuInfo()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-namespace PathConfig
-{
-
-const std::vector<std::string> g_PathConfig =
-{
-	{"."},
-	{"../etc"},
-	{"/etc"},
-	{"~/"},
-	{"/etc/default"},
-	{"/usr/local/etc"},
-#if defined(_WIN32)
-	{".."}, // $(ProjectDir)
-#endif
-};
-
-static bool TestFile(const std::string& fileName)
-{
-#if defined(LIB_UTILS_LINUX_LOG)
-	std::cout << "TestFile: " << fileName << '\n';
-#endif
-	std::fstream File = std::fstream(fileName, std::ios::in);
-	if (!File.good())
-		return false;
-
-	File.close();
-	return true;
-}
-
-static std::string TestPath(const std::string& path, std::string fileName, bool currPath, bool testDir)
-{
-	std::string FilePath;
-
-	if (!currPath)
-	{
-		FilePath = path + fileName;
-		if (TestFile(FilePath))
-			return FilePath;
-	}
-
-	FilePath = path + "." + fileName; // hidden file
-	if (TestFile(FilePath))
-		return FilePath;
-
-	FilePath = path + fileName + "rc";
-	if (TestFile(FilePath))
-		return FilePath;
-
-	FilePath = path + "." + fileName + "rc"; // hidden file
-	if (TestFile(FilePath))
-		return FilePath;
-
-	FilePath = path + fileName + ".conf";
-	if (TestFile(FilePath))
-		return FilePath;
-
-	FilePath = path + fileName + ".conf.json";
-	if (TestFile(FilePath))
-		return FilePath;
-
-	if (!testDir)
-		return {};
-
-	FilePath = path + fileName + "/";
-	FilePath = TestPath(FilePath, fileName, false, false);
-	if (!FilePath.empty())
-		return FilePath;
-
-	return {};
-}
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-std::string CorrPath(const std::string& pathRaw)
-{
-	std::string Path = pathRaw;
-	std::replace(Path.begin(), Path.end(), '\\', '/');
-	Path.erase(std::unique(Path.begin(), Path.end(), [](char a, char b) { return a == '/' && b == '/'; }), Path.end());
-	return Path;
-}
-
-std::string GetPathConfig(const std::string& fileName)
-{
-	if (fileName.empty())
-		return {};
-
-	for (auto& i : PathConfig::g_PathConfig)
-	{
-		bool CurrPath = CorrPath(i) == ".";
-
-#if defined(_WIN32)
-		if (!CurrPath)
-			CurrPath = CorrPath(i) == ".."; // $(ProjectDir)
-#endif
-
-		std::string PathBase = GetPathReal(i) +'/';
-		std::string Path = PathConfig::TestPath(PathBase, fileName, CurrPath, true);
-		if (!Path.empty())
-			return Path;
-	}
-
-	return {};
-}
-
-std::string GetPathConfigExc(const std::string& path)
-{
-	std::string Str = GetPathConfig(path);
-	if (Str.empty())
-		throw std::runtime_error("File not found: " + path);
-	return Str;
-};
-
-std::string GetPath(const std::string& path)
-{
-	return GetPathReal(path);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions for tests
 #if defined(_WIN32)
 static std::string CmdLineWinTest(const std::string& cmd)
@@ -292,7 +172,7 @@ Swap:              0           0           0";
 	std::string CmdValue = GetStringEnding("cat", cmd);
 	if (!CmdValue.empty())
 	{
-		std::string Path = GetPath(CmdValue);
+		std::filesystem::path Path = path::GetPathNormal(CmdValue);
 		if (Path.empty())
 			return {};
 
@@ -312,46 +192,6 @@ Swap:              0           0           0";
 		File.close();
 
 		return Data;
-	}
-
-	CmdValue = GetStringEnding("realpath", cmd);
-	if (!CmdValue.empty())
-	{
-		auto CorrPathReal = [](const std::string& pathRaw)->std::string
-		{
-			std::string Path = CorrPath(pathRaw);
-			if (Path.back() == '/')
-				Path.pop_back();
-			return Path;
-		};
-
-		std::string PathCurr = std::filesystem::current_path().string();
-		std::string PathMain = GetStringEnding(":", PathCurr);
-		PathMain = CorrPath(PathMain);
-		PathMain += "/test_root_fs/";
-
-		CmdValue.erase(CmdValue.begin(), std::find_if(CmdValue.begin(), CmdValue.end(), [](char ch) { return !std::isspace(ch); }));
-		if (CmdValue.empty())
-			return "realpath: missing operand\nTry 'realpath --help' for more information.";
-
-		if (CmdValue.size() > 0)
-		{
-			if (CmdValue[0] == '/')
-				return CorrPathReal(PathMain + CmdValue);
-
-			if (CmdValue[0] == '~')
-			{
-				CmdValue.erase(CmdValue.begin(), std::find_if(CmdValue.begin(), CmdValue.end(), [](char ch) { return ch != '~'; }));
-				return CorrPathReal(PathMain + "root" + CmdValue);
-			}
-
-			if (CmdValue == "." || CmdValue == "./")
-				return CorrPathReal(PathMain);
-
-			if (CmdValue.find("..") == 0)
-				return CorrPathReal(PathMain + CmdValue);
-		}
-		return "It seems to be a BUG";
 	}
 
 	return {};
