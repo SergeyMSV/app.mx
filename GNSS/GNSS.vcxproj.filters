@@ -92,6 +92,9 @@
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp">
       <Filter>Lib.Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Lib.Utils\utilsBase.h">
@@ -155,6 +158,9 @@
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsFile.h">
       <Filter>Lib.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareUtilsFile.h">
+      <Filter>LIB.Share</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

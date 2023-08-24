@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
     <ClCompile Include="..\LIB.Share\shareGNSS.cpp" />
+    <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsChrono.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
@@ -172,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
     <ClInclude Include="..\LIB.Share\shareGNSS.h" />
+    <ClInclude Include="..\LIB.Share\shareUtilsFile.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsChrono.h" />
     <ClInclude Include="..\LIB.Utils\utilsFile.h" />

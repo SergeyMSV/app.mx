@@ -5,6 +5,8 @@
 #include <utilsFile.h>
 #include <utilsPath.h>
 
+#include <shareUtilsFile.h>
+
 #include <cstdio>
 #include <fstream>
 
@@ -54,7 +56,7 @@ void tGNSS::tModGnssReceiver::OnChanged(const mod::tGnssDataSet& value)
 	
 	std::rename(FileNameTemp.c_str(), FileNameFull.c_str());
 
-	utils::file::RemoveFilesOutdated(OutGNSS.Path, OutGNSS.Prefix, OutGNSS.QtyMax);
+	share::RemoveFilesOutdated(OutGNSS);
 
 	//m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightYellow, value.ToJSON());
 }
