@@ -1,10 +1,10 @@
-#include <utilsBase.h>
-#include <utilsLinux.h>
-#include <utilsPath.h>
-
 #include <devConfig.h>
 #include <devCmdLine.h>
 #include <devDataSetConfig.h>
+
+#include <utilsBase.h>
+#include <utilsLinux.h>
+#include <utilsPath.h>
 
 #include <filesystem>
 #include <iostream>
@@ -65,7 +65,7 @@ int main(int argc, const char* argv[])
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << e.what() << "\n";
+		std::cerr << e.what() << '\n';
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}
 
@@ -83,7 +83,7 @@ void TestCmdLine()
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << e.what() << "\n";
+		std::cerr << e.what() << '\n';
 	}
 
 	try
@@ -93,7 +93,7 @@ void TestCmdLine()
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << "ERR_OK: " << e.what() << "\n";
+		std::cerr << "ERR_OK: " << e.what() << '\n';
 	}
 
 	try
@@ -103,7 +103,7 @@ void TestCmdLine()
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << "ERR_OK: " << e.what() << "\n";
+		std::cerr << "ERR_OK: " << e.what() << '\n';
 	}
 }
 #endif // TEST_SETUP
