@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
 			}
 			catch (const std::exception& e)//JSONcat  error
 			{
-				std::cerr << "[ERR-JSON] " << e.what() << "\n";
+				std::cerr << "[ERR-JSON] " << e.what() << '\n';
 			}
 
 			LogFile.Write("DataSets loaded");
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << e.what() << "\n";
+		std::cerr << e.what() << '\n';
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}
 
