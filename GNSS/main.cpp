@@ -52,7 +52,7 @@ void Thread_GNSS_Handler(std::promise<bool>& promise)
 					const std::string ErrMsg = Dev.GetLastErrorMsg();
 					if (!ErrMsg.empty())
 					{
-						std::cerr << ErrMsg << "\n";
+						std::cerr << ErrMsg << '\n';
 						Thread_Dev_ExitOnError = true;
 					}
 				}
@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
 	}
 	catch (std::exception & e)
 	{
-		std::cerr << "Exception: " << e.what() << "\n";
+		std::cerr << e.what() << '\n';
 
 		g_DataSetMainControl.Thread_GNSS_State = tDataSetMainControl::tStateGNSS::Exit;
 

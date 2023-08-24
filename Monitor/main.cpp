@@ -1,3 +1,6 @@
+#include <devDataSetConfig.h>
+#include <devMonitorMemory.h>
+
 #include <utilsBase.h>
 #include <utilsChrono.h>
 #include <utilsLinux.h>
@@ -5,9 +8,6 @@
 
 #include <shareConfig.h>
 #include <shareHTML.h>
-
-#include <devDataSetConfig.h>
-#include <devMonitorMemory.h>
 
 #include <filesystem>
 #include <iostream>
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << e.what() << "\n";
+		std::cerr << e.what() << '\n';
 
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}

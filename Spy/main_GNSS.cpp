@@ -50,7 +50,7 @@ std::string ParseGLO(const boost::property_tree::ptree& pTree)
 		SatDesc.Slot = i.second.get<uint8_t>("point", 0);
 		SatDesc.Plane = i.second.get<std::string>("plane");
 		SatDesc.SVN = i.second.get<uint16_t>("SVN", 0);
-		SatDesc.Channel = i.second.get<int8_t>("slot", 0x80);//in case of empty value (" ") it sets 0x80 = -128
+		SatDesc.Channel = i.second.get<int8_t>("slot", (int8_t)0x80);//in case of empty value (" ") it sets 0x80 = -128
 		SatDesc.NORAD = i.second.get<uint16_t>("NORAD", 0);
 		SatDesc.COSMOS = i.second.get<uint16_t>("COSMOS", 0);
 		SatDesc.TypeKA = i.second.get<std::string>("typeKA");

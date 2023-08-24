@@ -1,10 +1,10 @@
 #include <devConfig.h>
 
+#include <devDataSetConfig.h>
+
 #include <utilsBase.h>
 #include <utilsLinux.h>
 #include <utilsPath.h>
-
-#include <devDataSetConfig.h>
 
 #include <shareWeb.h>
 
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << e.what() << "\n";
+		std::cerr << e.what() << '\n';
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}
 
