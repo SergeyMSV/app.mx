@@ -36,7 +36,7 @@ bool tGnssReceiver::tState::operator()()
 			m_ReceivedData.insert(m_ReceivedData.end(), DataChunk.cbegin(), DataChunk.cend());
 
 			m_ReceivedData_Parsed = false;
-		}		
+		}
 	}
 
 	if (!m_ReceivedData_Parsed)

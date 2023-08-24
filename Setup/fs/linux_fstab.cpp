@@ -1,5 +1,5 @@
 #include <utilsBase.h>
-#include <utilsLinux.h>
+#include <utilsPath.h>
 
 #include <devDataSetConfig.h>
 
@@ -43,7 +43,7 @@ void WriteFileLines(const std::string& path, const std::vector<std::string>& lin
 
 bool SetupFstab(const dev::config::tFstab& fstabConf)
 {
-	std::string PathFileFstab = utils::linux::GetPath(g_PathFstab);
+	std::string PathFileFstab = utils::path::GetPathNormal(g_PathFstab).string();
 	std::vector<std::string> Lines = ReadFileLines(PathFileFstab);
 
 	const std::string Line = "tmpfs          " + fstabConf.fs + "  tmpfs  nosuid,nodev,noatime,size=" + fstabConf.size + "   0  0";
@@ -65,7 +65,7 @@ bool SetupFstab(const dev::config::tFstab& fstabConf)
 
 bool RevertFstab(const dev::config::tFstab& fstabConf)
 {
-	std::string PathFileFstab = utils::linux::GetPath(g_PathFstab);
+	std::string PathFileFstab = utils::path::GetPathNormal(g_PathFstab).string();
 	std::vector<std::string> Lines = ReadFileLines(PathFileFstab);
 
 	auto Iter = std::find_if(Lines.begin(), Lines.end(), [&](const std::string& val) {return std::string::npos != val.find(fstabConf.fs); });

@@ -7,7 +7,6 @@
 
 #include <utilsBase.h>
 #include <utilsFile.h>
-#include <utilsLinux.h>
 #include <utilsPath.h>
 
 #include <atomic>
@@ -114,9 +113,9 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		const std::string AppName = utils::GetAppNameMain(argv[0]);
-
-		std::string FileNameConf = utils::linux::GetPathConfig(AppName);
+		const std::filesystem::path Path(argv[0]);
+		const std::string AppName = utils::path::GetAppNameMain(Path);
+		std::string FileNameConf = utils::path::GetPathConfig(AppName).string();
 		if (FileNameConf.empty())
 			throw std::runtime_error{ "config file is not found" };
 

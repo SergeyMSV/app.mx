@@ -1,7 +1,6 @@
 #include "shareUtils.h"
 
 #include <utilsFile.h>
-#include <utilsLinux.h>
 #include <utilsPath.h>
 
 #include <filesystem>
@@ -63,9 +62,7 @@ void tLogFileLine::WriteData(const std::string& msg)
 
 std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf)
 {
-	auto List = utils::file::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
-	utils::linux::CorrPaths(List);
-	return List;
+	return utils::file::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
 }
 
 void RemoveFilesOutdated(const share_config::tOutFile& conf)

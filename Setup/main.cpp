@@ -42,19 +42,17 @@ int main(int argc, const char* argv[])
 		if (CmdLine.Cmd == dev::tCmd::None || CmdLine.CmdOptions.empty())
 			return static_cast<int>(utils::tExitCode::EX_OK);
 
-		const std::string AppName = utils::GetAppNameMain(argv[0]);
+		const std::filesystem::path Path(argv[0]);
 
 		tAppData AppData;
-
-		AppData.Path = argv[0];
-		const std::filesystem::path Path{ argv[0] };
+		AppData.Path = Path.string();
 		std::filesystem::path WorkDir = Path.parent_path();
 		AppData.WorkingDirectory = WorkDir.string();
-		AppData.AppName = AppName;
+		AppData.AppName = utils::path::GetAppNameMain(Path);
 
-		std::string PathFileConfig = utils::linux::GetPathConfigExc(AppData.AppName);
-		std::string PathFileDevice = utils::linux::GetPathConfigExc("mxdevice");
-		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
+		std::string PathFileConfig = utils::path::GetPathConfigExc(AppData.AppName).string();
+		std::string PathFileDevice = utils::path::GetPathConfigExc("mxdevice").string();
+		std::string PathFilePrivate = utils::path::GetPathConfigExc("mxprivate").string();
 		dev::tDataSetConfig DsConfig(PathFileConfig, PathFileDevice, PathFilePrivate);
 
 		if (Setup(CmdLine, DsConfig, AppData))
