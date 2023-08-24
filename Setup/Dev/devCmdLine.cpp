@@ -1,7 +1,8 @@
 #include "devCmdLine.h"
 
-#include <cstring>
+#include <utilsBase.h>
 
+#include <cstring>
 #include <iterator>
 #include <set>
 #include <stdexcept>
@@ -14,7 +15,7 @@ namespace dev
 tCmdLine::tCmdLine(int argc, const char* argv[])
 {
 	if (argc < 2)
-		throw std::invalid_argument("Wrong Args");
+		THROW_INVALID_ARGUMENT("Wrong Args");
 
 	for (auto& i : CmdList)
 	{
@@ -26,7 +27,7 @@ tCmdLine::tCmdLine(int argc, const char* argv[])
 	}
 
 	if (Cmd == tCmd::None)
-		throw std::invalid_argument("Wrong Cmd");
+		THROW_INVALID_ARGUMENT("Wrong Cmd");
 
 	std::set<tCmdOption> CmdOptSet;
 
@@ -44,7 +45,7 @@ tCmdLine::tCmdLine(int argc, const char* argv[])
 		}
 
 		if (QtyFound == CmdOptSet.size())
-			throw std::invalid_argument("Wrong CmdOption");
+			THROW_INVALID_ARGUMENT("Wrong CmdOption");
 	}
 
 	if (Cmd == tCmd::Uninstall)

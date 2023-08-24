@@ -119,13 +119,13 @@ int main(int argc, char* argv[])
 		const std::string AppName = utils::path::GetAppNameMain(Path);
 		std::string FileNameConf = utils::path::GetPathConfig(AppName).string();
 		if (FileNameConf.empty())
-			throw std::runtime_error{ "config file is not found" };
+			THROW_RUNTIME_ERROR("config file is not found");
 
 		dev::g_Settings = dev::tDataSetConfig(FileNameConf);
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << "Exception: " << e.what() << "\n";
+		std::cerr << e.what() << '\n';
 
 		return static_cast<int>(utils::tExitCode::EX_CONFIG);
 	}
