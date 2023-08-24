@@ -8,6 +8,8 @@
 #include <utilsFile.h>
 #include <utilsPath.h>
 
+#include <shareUtilsFile.h>
+
 #include <atomic>
 #include <chrono>
 #include <filesystem>
@@ -147,8 +149,8 @@ int main(int argc, char* argv[])
 	////////////////////////////////
 
 	dev::config::tOutGNSS OutGNSS = dev::g_Settings.GetOutGNSS();
-	utils::file::RemoveFilesOutdated(OutGNSS.Path, OutGNSS.Prefix, OutGNSS.QtyMax);
-	utils::file::RemoveFilesOutdated(OutGNSS.Path, g_FileNameTempPrefix + OutGNSS.Prefix, 0);
+	share::RemoveFilesOutdated(OutGNSS);
+	share::RemoveFilesOutdated(OutGNSS, g_FileNameTempPrefix);
 
 	////////////////////////////////
 

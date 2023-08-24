@@ -156,9 +156,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
+    <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp" />
     <ClCompile Include="..\LIB.Share\shareGNSS.cpp" />
     <ClCompile Include="..\LIB.Share\shareHTML.cpp" />
-    <ClCompile Include="..\LIB.Share\shareUtils.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsChrono.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
@@ -169,9 +169,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
+    <ClInclude Include="..\LIB.Share\shareUtilsFile.h" />
     <ClInclude Include="..\LIB.Share\shareGNSS.h" />
     <ClInclude Include="..\LIB.Share\shareHTML.h" />
-    <ClInclude Include="..\LIB.Share\shareUtils.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsChrono.h" />
     <ClInclude Include="..\LIB.Utils\utilsFile.h" />

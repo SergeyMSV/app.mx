@@ -1,4 +1,4 @@
-#include "shareUtils.h"
+#include "shareUtilsFile.h"
 
 #include <utilsFile.h>
 #include <utilsPath.h>
@@ -68,6 +68,11 @@ std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf)
 void RemoveFilesOutdated(const share_config::tOutFile& conf)
 {
 	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
+}
+
+void RemoveFilesOutdated(const share_config::tOutFile& conf, const std::string& prefixTemp)
+{
+	utils::file::RemoveFilesOutdated(conf.Path, prefixTemp + conf.Prefix, 0);
 }
 
 }
