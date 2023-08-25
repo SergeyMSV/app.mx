@@ -21,6 +21,8 @@ enum class tCmdOption
 	Fstab,
 	Email,
 	Script,
+
+	Final // It's the last state (it can remove its temporary directories, files and the like)
 };
 
 struct tCmdLine
@@ -60,6 +62,7 @@ constexpr tCmdOptionListItem CmdOptionList[] =
 	{ tCmdOption::Fstab, "-fstab" },
 	{ tCmdOption::Email, "-email" },
 	{ tCmdOption::Script, "-script" },
+	{ tCmdOption::Final, "-final" },
 };
 
 }
