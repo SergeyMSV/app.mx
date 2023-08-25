@@ -49,6 +49,14 @@ bool Install(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const 
 			return false;
 		case dev::tCmdOption::Download:
 		{
+			// In Linux a program can delete its own executable even while it's running.
+			// In Windows it's not possible.
+			//
+			// 1. It removes temporary directory "temp_mx" where the executable can be running (GetUpdateFile removes the directory and creates a new one). (Not for Windows)
+			// 2. It creates a new temporary directory "temp_mx" and unpacks into the directory received archive containing a firmware.
+
+			// It can try to remove it's own executable if it's started from temporary installation directory (dsConfig.GetUpdatePath, "temp_mx"). That can cause trouble in Windows.
+
 			std::string UpdateFileZip = GetUpdateFile(dsConfig.GetUpdateServer(), dsConfig.GetDevice(), dsConfig.GetUpdatePath());
 			if (UpdateFileZip.empty())
 				return static_cast<int>(utils::tExitCode::EX_OK);
@@ -63,7 +71,10 @@ bool Install(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const 
 			std::string CmdCDPathMX = "cd " + dsConfig.GetUpdatePath() + "; ";
 			utils::linux::CmdLine(CmdCDPathMX + "chmod 544 mxsetup");
 			utils::linux::CmdLine(CmdCDPathMX + "./mxsetup " + cmdLine.ToString());
-			return false;
+
+			//[*] This program is running while a new version of this program is running too.
+
+			return false; // mxsetup must be started from temporary installation directory (dsConfig.GetUpdatePath, "temp_mx").
 		}
 		case dev::tCmdOption::Fstab:
 		{
@@ -83,6 +94,14 @@ bool Install(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const 
 		case dev::tCmdOption::Script:
 		{
 			ScriptStart(appData, "install");
+			break;
+		}
+		case dev::tCmdOption::Final:
+		{
+			// It can try to remove it's own executable if it's started from temporary installation directory (dsConfig.GetUpdatePath, "temp_mx"). That can cause trouble in Windows.
+			const std::string DirTemp = dsConfig.GetUpdatePath();
+			if (std::filesystem::exists(DirTemp))
+				std::filesystem::remove_all(DirTemp);
 			break;
 		}
 		}
@@ -123,6 +142,14 @@ bool Uninstall(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, cons
 			ScriptStart(appData, "uninstall");
 			break;
 		}
+		case dev::tCmdOption::Final:
+		{
+			// It can try to remove it's own executable if it's started from temporary installation directory (dsConfig.GetUpdatePath, "temp_mx"). That can cause trouble in Windows.
+			const std::string DirTemp = dsConfig.GetUpdatePath();
+			if (std::filesystem::exists(DirTemp))
+				std::filesystem::remove_all(DirTemp);
+			break;
+		}
 		}
 
 		if (Reboot)
@@ -136,6 +163,10 @@ bool Uninstall(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, cons
 
 bool Setup(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const tAppData& appData)
 {
+	// It adds "Final" as the last state of installation process.
+	if (std::find_if(cmdLine.CmdOptions.begin(), cmdLine.CmdOptions.end(), [](dev::tCmdOption a) { return a == dev::tCmdOption::Final; }) == cmdLine.CmdOptions.end())
+		cmdLine.CmdOptions.push_back(dev::tCmdOption::Final);
+
 	switch (cmdLine.Cmd)
 	{
 	case dev::tCmd::None:
