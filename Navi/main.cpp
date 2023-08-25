@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
 			}
 			catch (const std::exception& e)//JSONcat  error
 			{
-				std::cerr << "[ERR-JSON] " << e.what() << '\n';
+				std::cerr << utils::GetLogMessage(e.what(), __FILE__, __LINE__) << '\n';
 			}
 
 			LogFile.Write("DataSets loaded");
@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
 
 			if (!ThreadSystem_ExitOK)
 			{
-				std::cerr << "[ERR] \"system\" failed\n";
+				std::cerr << utils::GetLogMessage("\"system\" failed", __FILE__, __LINE__) << '\n';
 				// The program is being closed without joining existing thread.
 				exit(static_cast<int>(utils::tExitCode::EX_IOERR));
 				// If "return" is called while the program is being terminated without joining existing thread.
