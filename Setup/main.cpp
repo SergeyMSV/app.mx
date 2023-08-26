@@ -50,6 +50,10 @@ int main(int argc, const char* argv[])
 		AppData.WorkingDirectory = WorkDir.string();
 		AppData.AppName = utils::path::GetAppNameMain(Path);
 
+#if !defined(_WIN32)
+		std::filesystem::current_path(WorkDir); // If it's started by cron, current directory is not right.
+#endif
+
 		std::string PathFileConfig = utils::path::GetPathConfigExc(AppData.AppName).string();
 		std::string PathFileDevice = utils::path::GetPathConfigExc("mxdevice").string();
 		std::string PathFilePrivate = utils::path::GetPathConfigExc("mxprivate").string();
