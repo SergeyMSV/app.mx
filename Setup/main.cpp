@@ -42,7 +42,7 @@ int main(int argc, const char* argv[])
 		if (CmdLine.Cmd == dev::tCmd::None || CmdLine.CmdOptions.empty())
 			return static_cast<int>(utils::tExitCode::EX_OK);
 
-		const std::filesystem::path Path(argv[0]);
+		const std::filesystem::path Path = std::filesystem::weakly_canonical(argv[0]); // It prevens relative path (something like ./mxsetup)
 
 		tAppData AppData;
 		AppData.Path = Path.string();
