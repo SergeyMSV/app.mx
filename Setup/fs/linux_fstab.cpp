@@ -8,7 +8,7 @@
 
 constexpr char g_PathFstab[] = "/etc/fstab";
 
-std::vector<std::string> ReadFileLines(const std::string& path)
+std::vector<std::string> ReadFileLines(const std::filesystem::path& path)
 {
 	std::vector<std::string> Lines;
 	std::fstream File(path, std::ios::in);
@@ -27,7 +27,7 @@ std::vector<std::string> ReadFileLines(const std::string& path)
 	return Lines;
 }
 
-void WriteFileLines(const std::string& path, const std::vector<std::string>& lines)
+void WriteFileLines(const std::filesystem::path& path, const std::vector<std::string>& lines)
 {
 	std::fstream File = std::fstream(path, std::ios::out | std::ios::binary);
 	if (File.good())
@@ -65,7 +65,7 @@ bool SetupFstab(const dev::config::tFstab& fstabConf)
 
 bool RevertFstab(const dev::config::tFstab& fstabConf)
 {
-	std::string PathFileFstab = utils::path::GetPathNormal(g_PathFstab).string();
+	std::filesystem::path PathFileFstab = utils::path::GetPathNormal(g_PathFstab);
 	std::vector<std::string> Lines = ReadFileLines(PathFileFstab);
 
 	auto Iter = std::find_if(Lines.begin(), Lines.end(), [&](const std::string& val) {return std::string::npos != val.find(fstabConf.fs); });
