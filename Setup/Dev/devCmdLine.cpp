@@ -15,7 +15,7 @@ namespace dev
 tCmdLine::tCmdLine(int argc, const char* argv[])
 {
 	if (argc < 2)
-		THROW_INVALID_ARGUMENT("Wrong Args");
+		THROW_INVALID_ARGUMENT(std::string("Wrong args qty: ") + std::to_string(argc));
 
 	for (auto& i : CmdList)
 	{
@@ -27,7 +27,7 @@ tCmdLine::tCmdLine(int argc, const char* argv[])
 	}
 
 	if (Cmd == tCmd::None)
-		THROW_INVALID_ARGUMENT("Wrong Cmd");
+		THROW_INVALID_ARGUMENT(std::string("Wrong Cmd: ") + argv[1]);
 
 	std::set<tCmdOption> CmdOptSet;
 
@@ -45,7 +45,7 @@ tCmdLine::tCmdLine(int argc, const char* argv[])
 		}
 
 		if (QtyFound == CmdOptSet.size())
-			THROW_INVALID_ARGUMENT("Wrong CmdOption");
+			THROW_INVALID_ARGUMENT(std::string("Wrong CmdOption: ") + argv[i]);
 	}
 
 	if (Cmd == tCmd::Uninstall)
