@@ -14,16 +14,13 @@
     <Filter Include=".vscode">
       <UniqueIdentifier>{912f8b52-d912-4d6c-9e60-157023451688}</UniqueIdentifier>
     </Filter>
+    <Filter Include="fs">
+      <UniqueIdentifier>{a72a0b41-b24b-4164-b5dc-b28cef37d347}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devMakeFile_msmtprc.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devMakeFile_muttrc.cpp">
       <Filter>Dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp">
@@ -31,6 +28,20 @@
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp">
       <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="main_setup.cpp" />
+    <ClCompile Include="cmdline.cpp" />
+    <ClCompile Include="fs\cron_mxsetupschedule.cpp">
+      <Filter>fs</Filter>
+    </ClCompile>
+    <ClCompile Include="fs\email_msmtprc.cpp">
+      <Filter>fs</Filter>
+    </ClCompile>
+    <ClCompile Include="fs\email_muttrc.cpp">
+      <Filter>fs</Filter>
+    </ClCompile>
+    <ClCompile Include="fs\linux_fstab.cpp">
+      <Filter>fs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +58,7 @@
     <ClInclude Include="..\LIB.Utils\utilsLinux.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
+    <ClInclude Include="devConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat">
@@ -54,7 +66,6 @@
     </None>
     <None Include="mxsetup.conf.json" />
     <None Include="mxprivate.conf.json" />
-    <None Include="mxdevice.conf.json" />
     <None Include=".vscode\c_cpp_properties.json">
       <Filter>.vscode</Filter>
     </None>
@@ -65,5 +76,6 @@
       <Filter>.vscode</Filter>
     </None>
     <None Include="Setup.code-workspace" />
+    <None Include="mxsetup.sh" />
   </ItemGroup>
 </Project>

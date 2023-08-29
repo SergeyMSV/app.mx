@@ -40,6 +40,17 @@ bool tConfigFiles::IsWrong() const
 	return msmtprc.empty() || muttrc.empty();
 }
 
+tFstab::tFstab(const boost::property_tree::ptree& pTree)
+{
+	fs = pTree.get<std::string>("fstab.fs");
+	size = pTree.get<std::string>("fstab.size");
+}
+
+bool tFstab::IsWrong() const
+{
+	return fs.empty() || size.empty();
+}
+
 }
 
 tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNamePrivate)
@@ -47,6 +58,7 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	boost::property_tree::ptree PTreeConfig;
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
 	m_ConfigFiles = config::tConfigFiles(PTreeConfig);
+	m_Fstab = config::tFstab(PTreeConfig);
 
 	boost::property_tree::ptree PTreePrivate;
 	boost::property_tree::json_parser::read_json(fileNamePrivate, PTreePrivate);
