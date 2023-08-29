@@ -1,6 +1,10 @@
 {
   "config_files": {
-    "msmtprc": "/root/.msmtprc",
-    "muttrc": "/root/.muttrc"
+    "msmtprc": "~/.msmtprc",
+    "muttrc": "~/.muttrc"
+  },
+  "fstab": {
+    "fs": "/tmpram",
+    "size": "16M"
   }
 }
