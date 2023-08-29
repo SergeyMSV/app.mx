@@ -19,7 +19,7 @@ void MakeFile_muttrc(const std::string& a_path, const std::string& a_hostname, c
 bool SetupFstab(const dev::config::tFstab& fstabConf);
 bool RevertFstab(const dev::config::tFstab& fstabConf);
 
-void Install_Email(const dev::tDataSetConfig& dsConfig)
+static void Install_Email(const dev::tDataSetConfig& dsConfig)
 {
 	dev::config::tConfigFiles ConfigFiles = dsConfig.GetConfigFiles();
 	dev::config::tEmail Email = dsConfig.GetEmail();
@@ -30,12 +30,13 @@ void Install_Email(const dev::tDataSetConfig& dsConfig)
 	MakeFile_muttrc(ConfigFiles.muttrc, HostName, Email);
 }
 
-void ScriptStart(const tAppData& appData, const std::string& cmd)
+static void StartApp(const std::string& path, const std::string& name, const std::string& args, const std::string& appLogID)
 {
-	std::string ScrName = appData.AppName + ".sh";
-	std::string CmdCDPathWorkDir = "cd " + appData.WorkingDirectory + "; ";
-	utils::linux::CmdLine(CmdCDPathWorkDir + "chmod 544 " + ScrName);
-	utils::linux::CmdLine(CmdCDPathWorkDir + "./" + ScrName + " " + cmd);
+	std::filesystem::path PathMXSetup = std::filesystem::weakly_canonical(path);
+	PathMXSetup /= name;
+	std::string PathMXSetupStr = PathMXSetup.string();
+	utils::linux::CmdLine("chmod 544 " + PathMXSetupStr);
+	utils::linux::CmdLine(PathMXSetupStr + " " + args + " 2>&1 | logger -t " + appLogID);
 }
 
 bool Install(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const tAppData& appData)
@@ -68,9 +69,7 @@ bool Install(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const 
 			// mxsetup from downloaded folder shall be called with the same options except -download
 			cmdLine.CmdOptions = { cmdLine.CmdOptions.begin() + i + 1, cmdLine.CmdOptions.end() };
 
-			std::string CmdCDPathMX = "cd " + dsConfig.GetUpdatePath() + "; ";
-			utils::linux::CmdLine(CmdCDPathMX + "chmod 544 mxsetup");
-			utils::linux::CmdLine(CmdCDPathMX + "./mxsetup " + cmdLine.ToString());
+			StartApp(dsConfig.GetUpdatePath(), appData.AppName, cmdLine.ToString(), appData.AppName);
 
 			//[*] This program is running while a new version of this program is running too.
 
@@ -93,7 +92,7 @@ bool Install(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const 
 		}
 		case dev::tCmdOption::Script:
 		{
-			ScriptStart(appData, "install");
+			StartApp(appData.WorkingDirectory, appData.AppName + ".sh", "install", appData.AppName);
 			break;
 		}
 		case dev::tCmdOption::Final:
@@ -139,7 +138,7 @@ bool Uninstall(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, cons
 		}
 		case dev::tCmdOption::Script:
 		{
-			ScriptStart(appData, "uninstall");
+			StartApp(appData.WorkingDirectory, appData.AppName + ".sh", "uninstall", appData.AppName);
 			break;
 		}
 		case dev::tCmdOption::Final:

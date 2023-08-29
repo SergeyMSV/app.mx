@@ -8,14 +8,16 @@
 
 constexpr char g_PathMXSetupSchedule[] = "/etc/cron.d/mxsetupschedule";
 
-void MakeMXSetupSchedule(const std::string& appPath, const std::string& appArg)
+void MakeMXSetupSchedule(const std::string& appPath, const std::string& appArg, const std::string& appLogID)
 {
 	std::string PathFileMXScheduleSetup = utils::path::GetPathNormal(g_PathMXSetupSchedule).string();
 
 	std::vector<std::string> Lines;
 
 	Lines.push_back("#!/bin/bash");
-	Lines.push_back("@reboot root " + appPath + " " + appArg);
+	// Pipe the output of the cron command through logger so they end up in the syslog.
+	// stderr is to be forwarded to stdout(2>&1)
+	Lines.push_back("@reboot root " + appPath + " " + appArg + " 2>&1 | logger -t " + appLogID);
 
 	std::fstream File(PathFileMXScheduleSetup, std::ios::out | std::ios::binary);
 	if (!File.good())
