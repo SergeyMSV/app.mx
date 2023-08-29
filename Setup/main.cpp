@@ -2,56 +2,114 @@
 #include <utilsLinux.h>
 #include <utilsPath.h>
 
+#include <devConfig.h>
 #include <devDataSetConfig.h>
 
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
-bool MakeFile_fstab();
-void MakeFile_msmtprc(const std::string& a_path, const dev::config::tEmail& a_email);
-void MakeFile_muttrc(const std::string& a_path, const std::string& a_hostname, const dev::config::tEmail& a_email);
-void MakeFile_mxschedulesetup();
+//#define TEST_SETUP
 
-int main(int argc, char* argv[])
+tCmdLine CmdLine_Parse(int argc, const char* argv[]);
+std::string CmdLine_Make(tCmdLine cmdLine);
+
+bool Setup(tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const tAppData& appData);
+
+void MakeMXSetupSchedule(const std::string& appPath, const std::string& appArg);
+void RemoveMXSetupSchedule();
+
+// mxsetup install (-fstab -email -script)              working directory contains the called mxsetup,  OK
+// mxsetup install -download (-fstab -email -script)    working directory contains the called mxsetup,  OK
+// mxsetup uninstall (-fstab -email -script)            working directory contains the called mxsetup,  OK
+// mxsetup uninstall -download ...                                                                      WRONG
+
+#ifdef TEST_SETUP
+void TestCmdLine();
+#endif // TEST_SETUP
+
+int main(int argc, const char* argv[])
 {
+#ifdef TEST_SETUP
+	TestCmdLine();
+#endif // TEST_SETUP
+
 	try
 	{
+		RemoveMXSetupSchedule();
+
+		tCmdLine CmdLine = CmdLine_Parse(argc, argv);
+
+		if (CmdLine.Cmd == tCmd::None || CmdLine.CmdOptions.empty())
+			return static_cast<int>(utils::tExitCode::EX_OK);
+
 		const std::string AppName = utils::GetAppNameMain(argv[0]);
 
-		std::string PathFileConfig = utils::linux::GetPathConfigExc(AppName);
-		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
+		tAppData AppData;
 
+		AppData.Path = argv[0];
+		const std::filesystem::path Path{ argv[0] };
+		std::filesystem::path WorkDir = Path.parent_path();
+		AppData.WorkingDirectory = WorkDir.string();
+		AppData.AppName = AppName;
+
+		std::string PathFileConfig = utils::linux::GetPathConfigExc(AppData.AppName);
+		std::string PathFilePrivate = utils::linux::GetPathConfigExc("mxprivate");
 		dev::tDataSetConfig DsConfig(PathFileConfig, PathFilePrivate);
 
-		dev::config::tEmail Email = DsConfig.GetEmail();
-
-		dev::config::tConfigFiles ConfigFiles = DsConfig.GetConfigFiles();
-
-		MakeFile_msmtprc(ConfigFiles.msmtprc, Email);
-
-		std::string HostName = utils::linux::CmdLine("hostname");
-		MakeFile_muttrc(ConfigFiles.muttrc, HostName, Email);
-
-		if (MakeFile_fstab())
+		if (Setup(CmdLine, DsConfig, AppData))
 		{
-			MakeFile_mxschedulesetup();
+			std::string CmdLineArgsStr = CmdLine_Make(CmdLine);
+
+			MakeMXSetupSchedule(AppData.Path, CmdLineArgsStr);
 
 			utils::linux::CmdLine("reboot");
 			return static_cast<int>(utils::tExitCode::EX_OK);
 		}
-
-		utils::linux::CmdLine("chmod 544 setup.sh");
-		utils::linux::CmdLine("./setup.sh");
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << "[ERR] " << e.what() << "\n";
+		std::cerr << e.what() << "\n";
 
 		return static_cast<int>(utils::tExitCode::EX_NOINPUT);
 	}
 
 	return static_cast<int>(utils::tExitCode::EX_OK);
 }
+
+#ifdef TEST_SETUP
+void TestCmdLine()
+{
+	try
+	{
+		const char* Argv[] = { "mxsetup","install","-fstab","-script","-download","-email",0 };
+		tCmdLine CmdLine = CmdLine_Parse(6, Argv);
+		std::cerr << "OK\n";
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << "\n";
+	}
+
+	try
+	{
+		const char* Argv[] = { "mxsetup","install","-fstab","-script","-smthelse","-email",0 };
+		tCmdLine CmdLine = CmdLine_Parse(6, Argv);
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << "ERR_OK: " << e.what() << "\n";
+	}
+
+	try
+	{
+		const char* Argv[] = { "mxsetup","install","-fstab","-script","-email","-email",0 };
+		tCmdLine CmdLine = CmdLine_Parse(6, Argv);
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << "ERR_OK: " << e.what() << "\n";
+	}
+}
+#endif // TEST_SETUP
