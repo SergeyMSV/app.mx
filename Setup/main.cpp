@@ -15,7 +15,7 @@
 
 bool Setup(dev::tCmdLine& cmdLine, const dev::tDataSetConfig& dsConfig, const tAppData& appData);
 
-void MakeMXSetupSchedule(const std::string& appPath, const std::string& appArg);
+void MakeMXSetupSchedule(const std::string& appPath, const std::string& appArg, const std::string& appLogID);
 void RemoveMXSetupSchedule();
 
 // mxsetup install (-fstab -email -script)              working directory contains the called mxsetup,  OK
@@ -57,7 +57,7 @@ int main(int argc, const char* argv[])
 
 		if (Setup(CmdLine, DsConfig, AppData))
 		{
-			MakeMXSetupSchedule(AppData.Path, CmdLine.ToString());
+			MakeMXSetupSchedule(AppData.Path, CmdLine.ToString(), AppData.AppName);
 
 			utils::linux::CmdLine("reboot");
 			return static_cast<int>(utils::tExitCode::EX_OK);
