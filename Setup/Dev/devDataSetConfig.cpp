@@ -63,9 +63,17 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	m_ConfigFiles = config::tConfigFiles(PTreeConfig);
 	m_Fstab = config::tFstab(PTreeConfig);
 
-	boost::property_tree::ptree PTreeDevice;
-	boost::property_tree::json_parser::read_json(fileNameDevice, PTreeDevice);
-	m_Device = share_config::tDevice(PTreeDevice);
+	// If the file is not found it means that nothing has been installed yet.
+	if (fileNameDevice.empty())
+	{
+		m_Device = share_config::tDevice("MXSetup", utils::tVersion());
+	}
+	else
+	{
+		boost::property_tree::ptree PTreeDevice;
+		boost::property_tree::json_parser::read_json(fileNameDevice, PTreeDevice);
+		m_Device = share_config::tDevice(PTreeDevice);
+	}
 
 	boost::property_tree::ptree PTreePrivate;
 	boost::property_tree::json_parser::read_json(fileNamePrivate, PTreePrivate);
