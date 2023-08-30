@@ -63,7 +63,7 @@ int main(int argc, const char* argv[])
 		{
 			MakeMXSetupSchedule(AppData.Path, CmdLine.ToString(), AppData.AppName);
 
-			utils::linux::CmdLine("reboot");
+			utils::linux::CmdLine("systemctl reboot");
 			return static_cast<int>(utils::tExitCode::EX_OK);
 		}
 	}
