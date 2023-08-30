@@ -55,7 +55,7 @@ int main(int argc, const char* argv[])
 #endif
 
 		std::string PathFileConfig = utils::path::GetPathConfigExc(AppData.AppName).string();
-		std::string PathFileDevice = utils::path::GetPathConfigExc("mxdevice").string();
+		std::string PathFileDevice = utils::path::GetPathConfig("mxdevice").string();
 		std::string PathFilePrivate = utils::path::GetPathConfigExc("mxprivate").string();
 		dev::tDataSetConfig DsConfig(PathFileConfig, PathFileDevice, PathFilePrivate);
 
