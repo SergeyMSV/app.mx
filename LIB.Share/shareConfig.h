@@ -14,6 +14,7 @@ struct tDevice
 
 	tDevice() = default;
 	explicit tDevice(const boost::property_tree::ptree& pTree);
+	tDevice(const std::string& type, const utils::tVersion& version);
 };
 
 struct tUpdateServer

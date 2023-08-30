@@ -15,6 +15,11 @@ tDevice::tDevice(const boost::property_tree::ptree& pTree)
 	Version = utils::tVersion(pTree.get<std::string>("firmware.version"));
 }
 
+tDevice::tDevice(const std::string& type, const utils::tVersion& version)
+	:Type(type), Version(version)
+{
+}
+
 tUpdateServer::tUpdateServer(const boost::property_tree::ptree& pTree)
 {
 	Host = pTree.get<std::string>("server.host");
