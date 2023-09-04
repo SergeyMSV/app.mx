@@ -9,14 +9,18 @@ namespace dev
 
 tDataSetConfig g_Settings;
 
-tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig)
+tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNamePrivate)
 	:m_ConfigFileName(fileNameConfig)
 {
 	boost::property_tree::ptree PTree;
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTree);
 
+	boost::property_tree::ptree PTreePrivate;
+	boost::property_tree::json_parser::read_json(fileNamePrivate, PTreePrivate);
+	m_Platform = share_config::tPlatform(PTreePrivate);
+
 	m_OutGNSS = config::tOutGNSS(PTree);
-	m_SerialPort = config::tSerialPortGNSS(PTree);
+	m_SerialPort = config::tSerialPortGNSS(PTree, m_Platform.ID);
 }
 
 mod::tGnssTaskScript tDataSetConfig::GetTaskScript(const std::string& id) const

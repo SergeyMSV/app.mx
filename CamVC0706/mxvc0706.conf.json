@@ -2,16 +2,18 @@
 	"device": {
 		"model": "Vimicro VC0706"
 	},
-	"serial_port_ctrl": {
-		"id_win": "COM1",
-		"id": "/dev/ttyUSB1",
-		"br": 115200
-	},
-	"serial_port_data": {
-		"id_win": "",
-		"id": "/dev/ttyUSB2",
-		"br": 921600
-	},
+  "serial_port_ctrl": {
+    "id_win": "COM1",
+    "id_vsom": "/dev/ttyUSB1",
+    "id_opio": "/dev/ttyUSB1",
+    "br": 115200
+  },
+  "serial_port_data": {
+    "id_win": "",
+    "id_vsom": "/dev/ttyUSB2",
+    "id_opio": "/dev/ttyUSB2",
+    "br": 921600
+  },
 	"camera": {
 		"resolution": "640x480",
 		"check_presence_period_ms": 1000,

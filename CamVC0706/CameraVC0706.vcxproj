@@ -160,6 +160,7 @@
     <None Include=".vscode\launch.json" />
     <None Include=".vscode\tasks.json" />
     <None Include="CamVC0706.code-workspace" />
+    <None Include="mxprivate.conf.json" />
     <None Include="mxvc0706.conf.json" />
   </ItemGroup>
   <ItemGroup>

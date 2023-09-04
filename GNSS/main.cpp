@@ -128,11 +128,10 @@ int main(int argc, char* argv[])
 	{
 		const std::filesystem::path Path(argv[0]);
 		const std::string AppName = utils::path::GetAppNameMain(Path);
-		std::string FileNameConf = utils::path::GetPathConfig(AppName).string();
-		if (FileNameConf.empty())
-			THROW_RUNTIME_ERROR("config file is not found");
+		std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
+		std::string PathFilePrivate = utils::path::GetPathConfigExc("mxprivate").string();
 
-		dev::g_Settings = dev::tDataSetConfig(FileNameConf);
+		dev::g_Settings = dev::tDataSetConfig(PathFileConfig, PathFilePrivate);
 	}
 	catch (std::exception & e)
 	{
