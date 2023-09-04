@@ -29,8 +29,8 @@ struct tOutGNSS : public share_config::tOutFile
 struct tSerialPortGNSS : public share_config::tSerialPort
 {
 	tSerialPortGNSS() = default;
-	explicit tSerialPortGNSS(boost::property_tree::ptree pTree)
-		:share_config::tSerialPort("serial_port", pTree)
+	tSerialPortGNSS(boost::property_tree::ptree pTree, const std::string& platformID)
+		:share_config::tSerialPort("serial_port", platformID, pTree)
 	{}
 };
 
@@ -38,6 +38,7 @@ struct tSerialPortGNSS : public share_config::tSerialPort
 
 class tDataSetConfig
 {
+	share_config::tPlatform m_Platform;
 	config::tOutGNSS m_OutGNSS;
 	config::tSerialPortGNSS m_SerialPort;
 
@@ -45,12 +46,10 @@ class tDataSetConfig
 
 public:
 	tDataSetConfig() = default;
-	explicit tDataSetConfig(const std::string& fileNameConfig);
+	tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNamePrivate);
 
 	config::tOutGNSS GetOutGNSS() const { return m_OutGNSS; }
 	config::tSerialPortGNSS GetSerialPortGNSS() const { return  m_SerialPort; }
-
-
 	mod::tGnssTaskScript GetTaskScript(const std::string& id) const;
 	mod::tGnssSettingsNMEA GetSettingsNMEA() const;
 };

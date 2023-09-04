@@ -17,6 +17,14 @@ struct tDevice
 	tDevice(const std::string& type, const utils::tVersion& version);
 };
 
+struct tPlatform
+{
+	std::string ID;
+
+	tPlatform() = default;
+	explicit tPlatform(const boost::property_tree::ptree& pTree);
+};
+
 struct tUpdateServer
 {
 	std::string Host;
@@ -55,7 +63,7 @@ struct tSerialPort
 	std::uint32_t BR = 0;
 
 	tSerialPort() = default;
-	tSerialPort(const std::string & baseName, const boost::property_tree::ptree & pTree);
+	tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree);
 
 	bool IsWrong() const;
 };

@@ -186,5 +186,6 @@
       <Filter>.vscode</Filter>
     </None>
     <None Include="GNSS.code-workspace" />
+    <None Include="mxprivate.conf.json" />
   </ItemGroup>
 </Project>

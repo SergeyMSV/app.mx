@@ -19,15 +19,17 @@ tDevice::tDevice(boost::property_tree::ptree a_PTree)
 
 tDataSetConfig g_Settings;
 
-tDataSetConfig::tDataSetConfig(const std::string& fileName)
-	:m_ConfigFileName(fileName)
+tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNamePrivate)
 {
 	boost::property_tree::ptree PTree;
-	boost::property_tree::json_parser::read_json(m_ConfigFileName, PTree);
+	boost::property_tree::json_parser::read_json(fileNameConfig, PTree);
 
-	m_Device = config::tDevice(PTree);
-	m_SerialPortCtrl = config::tSerialPortCtrl(PTree);
-	m_SerialPortData = config::tSerialPortData(PTree);
+	boost::property_tree::ptree PTreePrivate;
+	boost::property_tree::json_parser::read_json(fileNamePrivate, PTreePrivate);
+	m_Platform = share_config::tPlatform(PTreePrivate);
+
+	m_SerialPortCtrl = config::tSerialPortCtrl(PTree, m_Platform.ID);
+	m_SerialPortData = config::tSerialPortData(PTree, m_Platform.ID);
 	m_OutPicture = config::tOutPicture(PTree);
 
 	auto Str = PTree.get<std::string>("camera.resolution");
