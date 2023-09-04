@@ -20,6 +20,11 @@ tDevice::tDevice(const std::string& type, const utils::tVersion& version)
 {
 }
 
+tPlatform::tPlatform(const boost::property_tree::ptree& pTree)
+{
+	ID = pTree.get<std::string>("platform.id");
+}
+
 tUpdateServer::tUpdateServer(const boost::property_tree::ptree& pTree)
 {
 	Host = pTree.get<std::string>("server.host");
@@ -51,14 +56,10 @@ bool tOutFileCap::IsWrong() const
 	return tOutFile::IsWrong() || Capacity == 0;
 }
 
-tSerialPort::tSerialPort(const std::string& baseName, const boost::property_tree::ptree& pTree)
+tSerialPort::tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
 {
-	ID = pTree.get<std::string>(baseName + ".id");
+	ID = pTree.get<std::string>(baseName + ".id" + (platformID.empty() ?  "" : "_" + platformID));
 	BR = pTree.get<uint32_t>(baseName + ".br");
-
-#if defined(_WIN32)
-	ID = pTree.get<std::string>(baseName + ".id_win");
-#endif
 }
 
 bool tSerialPort::IsWrong() const

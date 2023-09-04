@@ -34,6 +34,7 @@
       <Filter>.vscode</Filter>
     </None>
     <None Include="CamVC0706.code-workspace" />
+    <None Include="mxprivate.conf.json" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="devConfig.h" />

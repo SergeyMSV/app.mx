@@ -1,7 +1,8 @@
 {
   "serial_port": {
     "id_win": "COM3",
-    "id": "/dev/ttyUSB0",
+    "id_vsom": "/dev/ttyUSB0",
+    "id_opio": "/dev/ttyUSB0",
     "br": 9600
   },
   "NMEA": {
