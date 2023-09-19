@@ -24,7 +24,7 @@ namespace utils
 
 static std::string GetStringEnding(const std::string& pattern, const std::string& str)//utilsString
 {
-	size_t Pos = str.find(pattern);
+	std::size_t Pos = str.find(pattern);
 	if (Pos == std::string::npos)
 		return {};
 	std::string Str = str.substr(Pos + pattern.size());
@@ -122,7 +122,7 @@ tCpuInfo GetCpuInfo()
 		std::getline(File, Line);
 		Line.erase(std::remove_if(Line.begin(), Line.end(), [](char ch) { return ch == '\t'; }), Line.end());
 
-		size_t Pos = Line.find(":", 0);
+		std::size_t Pos = Line.find(":", 0);
 		std::string PrmName = Line.substr(0, Pos);
 
 		auto GetValueString = [&Pos](const std::string& a_line)
