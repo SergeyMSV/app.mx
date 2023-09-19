@@ -145,10 +145,10 @@ std::filesystem::path GetPathConfig(const std::string& filename)
 
 	for (const auto& i : PathConfig)
 	{
-		bool CurrPath = i == ".";
+		bool CurrPath = std::string(i) == ".";
 #if defined(_WIN32)
 		if (!CurrPath)
-			CurrPath = i == ".."; // $(ProjectDir)
+			CurrPath = std::string(i) == ".."; // $(ProjectDir)
 #endif
 		std::filesystem::path PathItem = GetPathNormal(i);
 		if (PathItem.empty())
