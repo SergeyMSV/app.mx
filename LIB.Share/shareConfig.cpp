@@ -9,6 +9,11 @@
 namespace share_config
 {
 
+static std::string GetPostfix(const std::string& value)
+{
+	return  value.empty() ? "" : "_" + value;
+}
+
 tDevice::tDevice(const boost::property_tree::ptree& pTree)
 {
 	Type = pTree.get<std::string>("device.type");
@@ -58,13 +63,47 @@ bool tOutFileCap::IsWrong() const
 
 tSerialPort::tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
 {
-	ID = pTree.get<std::string>(baseName + ".id" + (platformID.empty() ?  "" : "_" + platformID));
+	ID = pTree.get<std::string>(baseName + ".id" + GetPostfix(platformID));
 	BR = pTree.get<uint32_t>(baseName + ".br");
 }
 
 bool tSerialPort::IsWrong() const
 {
 	return ID.empty() || BR == 0;
+}
+
+tSPIPort::tSPIPort(const std::string& portID, const std::string& baseName, const boost::property_tree::ptree& pTree)
+	:ID(portID)
+{
+	Mode = pTree.get<std::uint8_t>(baseName + ".mode", 0);
+	Bits = pTree.get<std::uint8_t>(baseName + ".bits", 0);
+	Frequency_hz = pTree.get<std::uint32_t>(baseName + ".frequency_hz", 0);
+	Delay_us = pTree.get<std::uint16_t>(baseName + ".delay_us", 0);
+}
+
+bool tSPIPort::IsWrong() const
+{
+	return ID.empty() || !Bits || !Frequency_hz;
+}
+
+tGPIOPort::tGPIOPort(const std::string& baseName, const boost::property_tree::ptree& pTree)
+{
+	ID = pTree.get<std::string>(baseName, "");
+}
+
+bool tGPIOPort::IsWrong() const
+{
+	return ID.empty();
+}
+
+tIPPort::tIPPort(const std::string& baseName, const boost::property_tree::ptree& pTree)
+{
+	Value = pTree.get<std::uint16_t>(baseName, 0);
+}
+
+bool tIPPort::IsWrong() const
+{
+	return Value == 0;
 }
 
 }

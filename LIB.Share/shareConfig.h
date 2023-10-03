@@ -39,7 +39,7 @@ struct tOutFile
 {
 	std::string Path;
 	std::string Prefix;
-	uint8_t QtyMax = 0;
+	std::uint8_t QtyMax = 0;
 
 	tOutFile() = default;
 	tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree);
@@ -49,7 +49,7 @@ struct tOutFile
 
 struct tOutFileCap : public tOutFile
 {
-	uint32_t Capacity = 0;
+	std::uint32_t Capacity = 0;
 
 	tOutFileCap() = default;
 	tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree);
@@ -67,5 +67,43 @@ struct tSerialPort
 
 	bool IsWrong() const;
 };
+
+struct tSPIPort
+{
+	std::string ID;
+	std::uint8_t Mode = 0;
+	std::uint8_t Bits = 0;
+	std::uint32_t Frequency_hz = 0;
+	std::uint16_t Delay_us = 0;
+
+	tSPIPort() = default;
+	tSPIPort(const std::string& portID, const std::string& baseName, const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
+};
+
+struct tGPIOPort
+{
+	std::string ID;
+
+	tGPIOPort() = default;
+	tGPIOPort(const std::string& baseName, const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
+};
+
+struct tIPPort
+{
+	std::uint16_t Value = 0;
+
+	tIPPort() = default;
+	explicit tIPPort(std::uint16_t value) :Value(value) {}
+	tIPPort(const std::string& baseName, const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
+};
+
+using tUDPPort = tIPPort;
+using tTCPPort = tIPPort;
 
 }
