@@ -49,7 +49,7 @@ struct tOutFile
 
 struct tOutFileCap : public tOutFile
 {
-	uint32_t Capacity = 0;
+	std::uint32_t Capacity = 0;
 
 	tOutFileCap() = default;
 	tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree);
@@ -64,6 +64,30 @@ struct tSerialPort
 
 	tSerialPort() = default;
 	tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
+};
+
+struct tSPIPort
+{
+	std::string ID;
+	std::uint8_t Mode = 0;
+	std::uint8_t Bits = 0;
+	std::uint32_t Frequency_hz = 0;
+	std::uint16_t Delay_us = 0;
+
+	tSPIPort() = default;
+	tSPIPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
+};
+
+struct tGPIOPort
+{
+	std::string ID;
+
+	tGPIOPort() = default;
+	tGPIOPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree);
 
 	bool IsWrong() const;
 };

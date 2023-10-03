@@ -67,4 +67,28 @@ bool tSerialPort::IsWrong() const
 	return ID.empty() || BR == 0;
 }
 
+tSPIPort::tSPIPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
+{
+	ID = pTree.get<std::string>(baseName + ".id" + (platformID.empty() ? "" : "_" + platformID), "");
+	Mode = pTree.get<std::uint8_t>(baseName + ".mode", 0);
+	Bits = pTree.get<std::uint8_t>(baseName + ".bits", 0);
+	Frequency_hz = pTree.get<std::uint32_t>(baseName + ".frequency_hz", 0);
+	Delay_us = pTree.get<std::uint16_t>(baseName + ".delay_us", 0);
+}
+
+bool tSPIPort::IsWrong() const
+{
+	return ID.empty() || !Bits || !Frequency_hz;
+}
+
+tGPIOPort::tGPIOPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
+{
+	ID = pTree.get<std::string>(baseName + ".id" + (platformID.empty() ? "" : "_" + platformID), "");
+}
+
+bool tGPIOPort::IsWrong() const
+{
+	return ID.empty();
+}
+
 }

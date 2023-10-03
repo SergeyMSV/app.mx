@@ -1,0 +1,17 @@
+{
+  "server": {
+    "port": "50000"
+  },
+  "spi-0-0": {
+    "id_win": "spi_0.0",
+    "id_opio": "/dev/spidev0.0",
+    "mode": "0",
+    "bits": "8",
+    "frequency_hz": "4000000",
+    "delay_us": "0"
+  },
+  "spi-0-0-rst": {
+    "id_win": "rfid_reset",
+    "id_opio": "/sys/devices/platform/leds/leds/rfid_reset/brightness"
+  }
+}
