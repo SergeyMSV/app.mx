@@ -16,6 +16,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GNSS", "GNSS\GNSS.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CameraVC0706", "CamVC0706\CameraVC0706.vcxproj", "{CEE043AF-34E8-4837-A389-40879D7ABD4F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TWR", "TWR\TWR.vcxproj", "{585EC38A-5991-4517-B501-9AB0C47A739E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -80,6 +82,14 @@ Global
 		{CEE043AF-34E8-4837-A389-40879D7ABD4F}.Release|x64.Build.0 = Release|x64
 		{CEE043AF-34E8-4837-A389-40879D7ABD4F}.Release|x86.ActiveCfg = Release|Win32
 		{CEE043AF-34E8-4837-A389-40879D7ABD4F}.Release|x86.Build.0 = Release|Win32
+		{585EC38A-5991-4517-B501-9AB0C47A739E}.Debug|x64.ActiveCfg = Debug|x64
+		{585EC38A-5991-4517-B501-9AB0C47A739E}.Debug|x64.Build.0 = Debug|x64
+		{585EC38A-5991-4517-B501-9AB0C47A739E}.Debug|x86.ActiveCfg = Debug|Win32
+		{585EC38A-5991-4517-B501-9AB0C47A739E}.Debug|x86.Build.0 = Debug|Win32
+		{585EC38A-5991-4517-B501-9AB0C47A739E}.Release|x64.ActiveCfg = Release|x64
+		{585EC38A-5991-4517-B501-9AB0C47A739E}.Release|x64.Build.0 = Release|x64
+		{585EC38A-5991-4517-B501-9AB0C47A739E}.Release|x86.ActiveCfg = Release|Win32
+		{585EC38A-5991-4517-B501-9AB0C47A739E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

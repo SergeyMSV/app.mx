@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="LIB.Utils">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Dev">
+      <UniqueIdentifier>{791890f4-242d-4c51-ad0b-b33f611c9cf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LIB.Share">
+      <UniqueIdentifier>{f431439b-05a7-40d0-bb94-3daf849511d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include=".vscode">
+      <UniqueIdentifier>{b2df58ef-5437-4915-8c94-3297dae66762}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Dev\devDataSetConfig.cpp">
+      <Filter>Dev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsPath.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\sharePortSPI.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="main_client.cpp" />
+    <ClCompile Include="main_server.cpp" />
+    <ClCompile Include="main_port_spi.cpp" />
+    <ClCompile Include="main_port_demo.cpp" />
+    <ClCompile Include="..\LIB.Share\sharePortGPIO.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\LIB.Utils\utilsBase.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="libConfig.h" />
+    <ClInclude Include="Dev\devDataSetConfig.h">
+      <Filter>Dev</Filter>
+    </ClInclude>
+    <ClInclude Include="devConfig.h" />
+    <ClInclude Include="..\LIB.Share\shareConfig.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPath.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsCRC.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPacket.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPacketStar.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPacketTWR.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareNetwork.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\sharePortSPI.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h" />
+    <ClInclude Include="main_server.h" />
+    <ClInclude Include="..\LIB.Share\sharePortGPIO.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LIB.Utils\!Refresh.bat">
+      <Filter>LIB.Utils</Filter>
+    </None>
+    <None Include="mxtwr.conf.json" />
+    <None Include=".vscode\c_cpp_properties.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\launch.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\tasks.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include="TWR.code-workspace" />
+    <None Include="mx.conf.json" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,15 @@
+{
+  "platform": {
+    "id": "win"
+  },
+  "network": {
+    "lantag_port": "58188",
+    "twr_port": "58200"
+  },
+  "spi": {
+    "twr": {
+      "id": "spi0_cs0",
+      "reset": "spi0_cs0_reset"
+    }
+  }
+}
