@@ -1,0 +1,11 @@
+{
+  "server": {
+    "port": "50000"
+  },
+  "spi0cs0": {
+    "mode": "0",
+    "bits": "8",
+    "frequency_hz": "4000000",
+    "delay_us": "0"
+  }
+}

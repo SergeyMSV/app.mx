@@ -1,0 +1,9 @@
+{
+  "platform": {
+    "id": "win"
+  },
+  "spi0cs0": {
+    "id": "spi0_cs0",
+    "reset": "spi0_cs0_reset"
+  }
+}
