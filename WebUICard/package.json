@@ -1,0 +1,13 @@
+{
+  "name": "web-ui-card",
+  "version": "0.0.0",
+  "description": "WebUICard",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-favicon": "^2.0.4"
+  }
+}
