@@ -1,0 +1,9 @@
+{
+  "hostname": "/etc/hostname",
+  "loadavg": "/proc/loadavg",
+  "uptime": "/proc/uptime",
+  "cpu_thermal": "/sys/devices/virtual/thermal/thermal_zone0/temp",
+  "cpu_thermaldiv_win": 1000,
+  "cpu_thermaldiv_vsom": 2000,
+  "cpu_thermaldiv_opio": 1000
+}
