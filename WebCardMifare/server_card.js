@@ -2,10 +2,14 @@
 
 const np_fs = require('fs');
 
+let g_PipeName;
 let g_ReadPipe = {};
 
 exports.StartPipeReading = function (a_config) {
-    ReadPipe(a_config.pipe['card_mifare']);
+    const startRead = g_PipeName === undefined;
+    g_PipeName = a_config.pipe['card_mifare'];
+    if (startRead)
+        ReadPipe();
 }
 
 exports.GetPage = function () {
@@ -13,7 +17,11 @@ exports.GetPage = function () {
         '<tr><td></td><td id="card_content" colspan="2">' +
         '<table>' +
         '<tr><td>UID:</td><td id="card_uid" class="hex_box"></td></tr>' +
-        '<tr><td>Payload:</td><td id="card_payload" class="hex_box"></td></tr>' +
+        '<tr><td>Payload:<br><br>' +
+        '<button id="card_keep" onkeypress="card_keep();" onclick="card_keep();">Keep</button><br><br>' +
+        '<button id="card_write" onkeypress="card_write();" onclick="card_write();">Write</button>' +
+        '</td><td id="card_payload" class="hex_box"></td></tr>' +
+        '</td></tr>' +
         '</table>' +
         '</td></td></tr>';
 }
@@ -26,9 +34,27 @@ exports.GetPageData = function (a_config) {
     return data;
 }
 
-function ReadPipe(a_pipeName) {
+exports.CardWrite = function (a_config, a_data) {
     try {
-        const pipeRead = np_fs.createReadStream(a_pipeName + '_o', 'utf-8');
+        let Res = false;
+        const pipeWrite = np_fs.createWriteStream(a_config.pipe['card_mifare'] + '_i', 'utf-8');
+        try {
+            pipeWrite.write(JSON.stringify(a_data));
+            Res = true;
+        }
+        catch { }
+        pipeWrite.close();
+        return Res;
+    }
+    catch (err) {
+        console.error(err);
+    }
+    return false;
+}
+
+function ReadPipe() {
+    try {
+        const pipeRead = np_fs.createReadStream(g_PipeName + '_o', 'utf-8');
         pipeRead.on('data', (chunk) => {
             try {
                 g_ReadPipe = JSON.parse(chunk);
@@ -40,7 +66,7 @@ function ReadPipe(a_pipeName) {
     catch (err) {
         console.error(err);
     }
-    setTimeout(() => { ReadPipe(a_pipeName) }, 100); // Nyquist sampling theorem 1/2F (?)
+    setTimeout(() => { ReadPipe() }, 100); // Nyquist sampling theorem 1/2F (?)
 }
 
 function GetCardTypeNum(a_card) {

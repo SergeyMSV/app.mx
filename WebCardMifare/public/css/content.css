@@ -10,3 +10,7 @@ td {
 .hex_box {
     font-family: 'Courier New';
 }
+button {
+    width: 4em;
+    height: 2em;
+}
