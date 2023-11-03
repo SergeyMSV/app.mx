@@ -5,6 +5,9 @@ let g_update_period = 0; // ms
 
 const audio_blip_no_answer = new Audio('sound/blip_no_answer.wav');
 
+let g_cardActive;
+let g_cardStored;
+
 function update() {
     $.ajax({
         type: 'get',
@@ -43,6 +46,7 @@ function update() {
                         break;
                     case 'card':
                         {
+                            let CardValid = false;
                             for (const key2 in data[key]) {
                                 //console.log(key2 + ' : ' + data[key][key2]);
                                 switch (key2) {
@@ -50,9 +54,12 @@ function update() {
                                         SetElemText(key2, data[key][key2]);
                                         break;
                                     case 'card_status':
+                                        CardValid = data[key][key2] === 'green';
                                         SetElemBgColour(key2, data[key][key2]);
                                         break;
                                     case 'card_data':
+                                        g_cardActive = data[key][key2];
+                                        UpdateButtons(CardValid);
                                         SetElemText('card_uid', ToHexStr(data[key][key2]['uid']));
                                         SetElemText('card_payload', ToHexStr(data[key][key2]['payload']));
                                         break;
@@ -94,6 +101,20 @@ function SetElemBgColour(a_key, a_data) {
         elem.setAttribute('bgcolor', a_data);
 }
 
+function SetElemEnabled(a_key, a_data) {
+    const elem = document.getElementById(a_key);
+    if (elem != null)
+        elem.disabled = !a_data;
+}
+
+function UpdateButtons(a_cardValid) {
+    const buttonBoth = a_cardValid && g_cardActive !== undefined && g_cardActive.uid.length > 0;
+    const buttonKeep = buttonBoth && (g_cardStored === undefined || g_cardActive.uid != g_cardStored.uid);
+    const buttonWrite = buttonBoth && g_cardStored !== undefined && g_cardStored.uid != g_cardActive.uid;
+    SetElemEnabled('card_keep', buttonKeep);
+    SetElemEnabled('card_write', buttonWrite);
+}
+
 function ToHexStr(a_val) {
     let str = "";
     for (let i = 0; i < a_val.length; ++i) {
@@ -106,4 +127,30 @@ function ToHexStr(a_val) {
         str += a_val[i].toUpperCase();
     }
     return str;
+}
+
+function card_keep() {
+    if (g_cardActive !== undefined) {
+        g_cardStored = g_cardActive;
+        window.alert('Put an empty RFID Card onto the card reader/writer.\nThen button "Write" is unblocked.');
+    }
+}
+
+function card_write() {
+    if (g_cardStored === undefined)
+        return;
+    $.ajax({
+        type: 'post',
+        url: '/card_write',
+        //dataType: 'application/json',
+        data: g_cardStored,
+        //data: JSON.stringify(g_cardStored),
+        success: (data, status, xhr) => {
+            window.alert('RFID Card has been written successfully.');
+        },
+        error: (xhr, status, error) => {
+            window.alert('RFID Card has not been written. \n' + error);
+            console.log(error);
+        },
+    });
 }

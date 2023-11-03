@@ -9,9 +9,12 @@ const g_port = process.env.PORT || 1337;
 const np_fs = require('fs');
 const np_express = require('express');
 const np_favicon = require('express-favicon');
+const np_bodyParser = require('body-parser');
 
 let app = np_express();
 app.use(np_favicon(__dirname + '/public/favicon.ico'));
+app.use(np_bodyParser.urlencoded({ extended: true }));
+//app.use(np_bodyParser.json());
 
 const sc_server_card = require('./server_card');
 const sc_server_cpu = require('./server_cpu');
@@ -138,6 +141,13 @@ app.get('/sound/blip_no_answer.wav', (req, res) => {
     np_fs.readFile(__dirname + '/public' + req.url, (err, file) => {
         res.setHeader('Content-Type', 'audio/mpeg'); res.end(file);
     });
+});
+
+app.post('/card_write', (req, res) => {
+    if (req.body !== undefined && sc_server_card.CardWrite(g_config, req.body))
+        res.status(200).end();
+    else
+        res.status(500).end();
 });
 
 app.listen(g_port);
