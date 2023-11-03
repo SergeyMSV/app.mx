@@ -5,4 +5,8 @@ body {
 }
 td {
     padding: 0px 5px;
+    vertical-align: top;
+}
+.hex_box {
+    font-family: 'Courier New';
 }

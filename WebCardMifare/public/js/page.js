@@ -53,7 +53,8 @@ function update() {
                                         SetElemBgColour(key2, data[key][key2]);
                                         break;
                                     case 'card_data':
-                                        SetElemText('card_uid', data[key][key2]['uid']);
+                                        SetElemText('card_uid', ToHexStr(data[key][key2]['uid']));
+                                        SetElemText('card_payload', ToHexStr(data[key][key2]['payload']));
                                         break;
                                 }
                             }
@@ -91,4 +92,18 @@ function SetElemBgColour(a_key, a_data) {
     const elem = document.getElementById(a_key);
     if (elem != null)
         elem.setAttribute('bgcolor', a_data);
+}
+
+function ToHexStr(a_val) {
+    let str = "";
+    for (let i = 0; i < a_val.length; ++i) {
+        if (i && i % 16 == 0) {
+            str += '\n';
+        }
+        else if (i && i % 2 == 0) {
+            str += ' ';
+        }
+        str += a_val[i].toUpperCase();
+    }
+    return str;
 }
