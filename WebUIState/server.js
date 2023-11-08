@@ -121,4 +121,10 @@ app.get([
         });
     });
 
+app.get('/sound/blip_no_answer.wav', (req, res) => {
+    np_fs.readFile(__dirname + '/public' + req.url, (err, file) => {
+        res.setHeader('Content-Type', 'audio/mpeg'); res.end(file);
+    });
+});
+
 app.listen(g_port);
