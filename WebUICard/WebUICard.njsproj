@@ -31,8 +31,10 @@
     <Content Include="mx.conf.json" />
     <Content Include="package-lock.json" />
     <Content Include="public\css\content.css" />
+    <Content Include="public\favicon.ico" />
     <Content Include="public\js\jquery-3.7.1.js" />
     <Content Include="public\js\jquery-3.7.1.min.js" />
+    <Content Include="public\sound\blip_no_answer.wav" />
     <Content Include="server_card.js" />
     <Content Include="server_data.js">
       <SubType>Code</SubType>
@@ -53,6 +55,7 @@
     <Folder Include="public\" />
     <Folder Include="public\css\" />
     <Folder Include="public\js\" />
+    <Folder Include="public\sound\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>

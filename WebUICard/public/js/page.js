@@ -3,6 +3,8 @@
 const g_update_period_min = 10; // ms
 let g_update_period = 0; // ms
 
+const audio_blip_no_answer = new Audio('sound/blip_no_answer.wav');
+
 function update() {
     $.ajax({
         type: 'get',
@@ -68,7 +70,13 @@ function update() {
         },
         error: () => {
             if (g_update_period > 0)
-                setTimeout(() => { window.location.reload() }, g_update_period);
+                setTimeout(() => {
+                    try {
+                        // Uncaught(in promise) DOMException: play() failed because the user didn't interact with the document first.
+                        audio_blip_no_answer.play();
+                    } catch { }
+                    update();
+                }, g_update_period > 1000 ? g_update_period : 1000); // It's not frequently that once a second.
         },
     });
 }
