@@ -65,7 +65,7 @@ void MFRC522DriverSPI::PCD_ReadRegister(const PCD_Register reg,    ///< The regi
   if(count == 0) {
     return;
   }
-  //Serial.print(F("Reading ")); 	Serial.print(count); Serial.println(F(" bytes from register."));
+  //Serial.print(F_removeIt("Reading ")); 	Serial.print(count); Serial.println(F_removeIt(" bytes from register."));
   const byte address  = (byte)0x80 | (reg << 1);        // MSB == 1 is for reading. LSB is not used in address. Datasheet section 8.1.2.3.
   //count--;								// One read is performed outside of the loop // TODO is this correct?
 
