@@ -61,6 +61,16 @@ bool tOutFileCap::IsWrong() const
 	return tOutFile::IsWrong() || Capacity == 0;
 }
 
+tPipe::tPipe(const std::string& pipeName, const std::string& platformID, const boost::property_tree::ptree& pTree)
+{
+	Path = pTree.get<std::string>("pipe." + pipeName + GetPostfix(platformID), "");
+}
+
+bool tPipe::IsWrong() const
+{
+	return Path.empty();
+}
+
 tSerialPort::tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
 {
 	ID = pTree.get<std::string>(baseName + ".id" + GetPostfix(platformID));

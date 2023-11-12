@@ -1,0 +1,11 @@
+{
+  "platform": {
+    "id": "win"
+  },
+  "pipe": {
+    "card_mifare_win": "\\\\.\\pipe\\mx_card_mifare",
+    "card_mifare_linx": "/tmp/mx_card_mifare",
+    "card_mifare_vsom": "/tmpram/mx_card_mifare",
+    "card_mifare_opio": "/tmpram/mx_card_mifare"
+  }
+}
