@@ -57,13 +57,23 @@ struct tOutFileCap : public tOutFile
 	bool IsWrong() const;
 };
 
+struct tPipe
+{
+	std::string Path;
+
+	tPipe() = default;
+	tPipe(const std::string& pipeName, const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
+};
+
 struct tSerialPort
 {
 	std::string ID;
 	std::uint32_t BR = 0;
 
 	tSerialPort() = default;
-	tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree);
+	tSerialPort(const std::string& baseName, const boost::property_tree::ptree& pTree);
 
 	bool IsWrong() const;
 };

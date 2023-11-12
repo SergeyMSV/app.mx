@@ -9,11 +9,6 @@
 namespace share_config
 {
 
-static std::string GetPostfix(const std::string& value)
-{
-	return  value.empty() ? "" : "_" + value;
-}
-
 tDevice::tDevice(const boost::property_tree::ptree& pTree)
 {
 	Type = pTree.get<std::string>("device.type");
@@ -61,9 +56,19 @@ bool tOutFileCap::IsWrong() const
 	return tOutFile::IsWrong() || Capacity == 0;
 }
 
-tSerialPort::tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
+tPipe::tPipe(const std::string& pipeName, const boost::property_tree::ptree& pTree)
 {
-	ID = pTree.get<std::string>(baseName + ".id" + GetPostfix(platformID));
+	Path = pTree.get<std::string>("pipe." + pipeName, "");
+}
+
+bool tPipe::IsWrong() const
+{
+	return Path.empty();
+}
+
+tSerialPort::tSerialPort(const std::string& baseName, const boost::property_tree::ptree& pTree)
+{
+	ID = pTree.get<std::string>(baseName + ".id");
 	BR = pTree.get<uint32_t>(baseName + ".br");
 }
 
