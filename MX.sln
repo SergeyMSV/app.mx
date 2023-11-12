@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TWR", "TWR\TWR.vcxproj", "{
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "WebState", "WebState\WebState.njsproj", "{1976C63E-0028-42AA-B267-8790C99F449A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CardMifare", "CardMifare\CardMifare.vcxproj", "{C684E456-AE0F-4826-A3BE-8C6F22073308}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,18 @@ Global
 		{1976C63E-0028-42AA-B267-8790C99F449A}.Release|x64.Build.0 = Release|Any CPU
 		{1976C63E-0028-42AA-B267-8790C99F449A}.Release|x86.ActiveCfg = Release|Any CPU
 		{1976C63E-0028-42AA-B267-8790C99F449A}.Release|x86.Build.0 = Release|Any CPU
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Debug|Any CPU.Build.0 = Debug|x64
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Debug|x64.ActiveCfg = Debug|x64
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Debug|x64.Build.0 = Debug|x64
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Debug|x86.ActiveCfg = Debug|Win32
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Debug|x86.Build.0 = Debug|Win32
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|Any CPU.ActiveCfg = Release|x64
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|Any CPU.Build.0 = Release|x64
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|x64.ActiveCfg = Release|x64
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|x64.Build.0 = Release|x64
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|x86.ActiveCfg = Release|Win32
+		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

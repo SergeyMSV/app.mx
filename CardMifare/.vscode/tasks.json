@@ -1,0 +1,94 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "C/C++: cpp build active file ARM",
+      "command": "/usr/bin/arm-linux-gnueabihf-g++-10",
+      "args": [
+        "-std=c++2a",
+        "-g",
+        "-Wall",
+        "-I${workspaceFolder}",
+        "-I${workspaceFolder}/Dev",
+        "-I${workspaceFolder}/../LIB.MFRC522v2",
+        "-I${workspaceFolder}/../LIB.Share",
+        "-I${workspaceFolder}/../LIB.Utils",
+        "-I/usr/local/boost_1_77_0_ARM",
+        "-L/usr/local/boost_1_77_0_ARM/stage/lib",
+        "-L/usr/arm-linux-gnueabihf/lib",
+        "${workspaceFolder}/Dev/devDataSet.cpp",
+        "${workspaceFolder}/Dev/devDataSetConfig.cpp",
+        "${workspaceFolder}/Dev/devMFRC522.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/Arduino.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/MFRC522Debug.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/MFRC522DriverSPI.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/MFRC522Hack.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/MFRC522v2.cpp",
+        "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+        "${workspaceFolder}/../LIB.Share/sharePort.cpp",
+        "${workspaceFolder}/../LIB.Share/sharePortGPIO.cpp",
+        "${workspaceFolder}/../LIB.Share/sharePortSPI.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+        "${workspaceFolder}/main.cpp",
+        "-o",
+        "${workspaceFolder}/mxcardmifare",
+        "-lpthread"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "cppbuild",
+      "label": "C/C++: g++ build active file",
+      "command": "/usr/bin/g++-11",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-std=c++2a",
+        "-g",
+        "-Wall",
+        "-I${workspaceFolder}",
+        "-I${workspaceFolder}/Dev",
+        "-I${workspaceFolder}/../LIB.MFRC522v2",
+        "-I${workspaceFolder}/../LIB.Share",
+        "-I${workspaceFolder}/../LIB.Utils",
+        "-I/usr/local/boost_1_77_0_ARM",
+        "-L/usr/local/boost_1_77_0_ARM/stage/lib",
+        "-L/usr/arm-linux-gnueabihf/lib",
+        "${workspaceFolder}/Dev/devDataSet.cpp",
+        "${workspaceFolder}/Dev/devDataSetConfig.cpp",
+        "${workspaceFolder}/Dev/devMFRC522.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/Arduino.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/MFRC522Debug.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/MFRC522DriverSPI.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/MFRC522Hack.cpp",
+        "${workspaceFolder}/../LIB.MFRC522v2/MFRC522v2.cpp",
+        "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+        "${workspaceFolder}/../LIB.Share/sharePort.cpp",
+        "${workspaceFolder}/../LIB.Share/sharePortGPIO.cpp",
+        "${workspaceFolder}/../LIB.Share/sharePortSPI.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+        "${workspaceFolder}/main.cpp",
+        "-o",
+        "${workspaceFolder}/mxcardmifare_dbg",
+        "-lpthread"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": "build",
+      "detail": "compiler: /usr/bin/g++"
+    }
+  ]
+}
