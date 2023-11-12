@@ -2,6 +2,7 @@ del /Q *.cpp
 del /Q *.h
 
 xcopy /Y %LIB_UTILS%\utilsBase.*
+xcopy /Y %LIB_UTILS%\utilsCardMIFARE.*
 xcopy /Y %LIB_UTILS%\utilsChrono.*
 xcopy /Y %LIB_UTILS%\utilsCRC.*
 xcopy /Y %LIB_UTILS%\utilsFile.*

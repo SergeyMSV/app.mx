@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="LIB.Utils">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="LIB.Share">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="LIB.MFRC522v2">
+      <UniqueIdentifier>{86db75be-d1b2-4753-83a1-f7cd2a0ada4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include=".vscode">
+      <UniqueIdentifier>{bd71a565-dd67-4695-ac0f-a06cb5a264d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dev">
+      <UniqueIdentifier>{5242ebee-25d3-46f0-8c0a-705fdb14cf33}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\LIB.MFRC522v2\MFRC522DriverSPI.cpp">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.MFRC522v2\MFRC522v2.cpp">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsPath.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\shareConfig.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.MFRC522v2\Arduino.cpp">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClCompile>
+    <ClCompile Include="Dev\devDataSetConfig.cpp">
+      <Filter>Dev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\sharePortSPI.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\sharePort.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Share\sharePortGPIO.cpp">
+      <Filter>LIB.Share</Filter>
+    </ClCompile>
+    <ClCompile Include="Dev\devMFRC522.cpp">
+      <Filter>Dev</Filter>
+    </ClCompile>
+    <ClCompile Include="Dev\devDataSet.cpp">
+      <Filter>Dev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsCardMIFARE.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LIB.Utils\!Refresh.bat">
+      <Filter>LIB.Utils</Filter>
+    </None>
+    <None Include="..\LIB.MFRC522v2\!Refresh.bat">
+      <Filter>LIB.MFRC522v2</Filter>
+    </None>
+    <None Include=".vscode\c_cpp_properties.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\launch.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include=".vscode\tasks.json">
+      <Filter>.vscode</Filter>
+    </None>
+    <None Include="CardMifare.code-workspace" />
+    <None Include="mxcardmifare.conf.json" />
+    <None Include="mx.conf.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\LIB.MFRC522v2\deprecated.h">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.MFRC522v2\MFRC522Constants.h">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.MFRC522v2\MFRC522Driver.h">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.MFRC522v2\MFRC522DriverSPI.h">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.MFRC522v2\MFRC522v2.h">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.MFRC522v2\require_cpp11.h">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsBase.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPath.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareConfig.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.MFRC522v2\Arduino.h">
+      <Filter>LIB.MFRC522v2</Filter>
+    </ClInclude>
+    <ClInclude Include="Dev\devDataSetConfig.h">
+      <Filter>Dev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\sharePortSPI.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPacket.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPacketStar.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPacketTWR.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="libConfig.h" />
+    <ClInclude Include="devConfig.h" />
+    <ClInclude Include="..\LIB.Share\sharePort.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\shareNetwork.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\sharePortGPIO.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="Dev\devMFRC522.h">
+      <Filter>Dev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Share\sharePipe.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="Dev\devDataSet.h">
+      <Filter>Dev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsCardMIFARE.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
