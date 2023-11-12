@@ -641,7 +641,7 @@ MFRC522::StatusCode MFRC522::PICC_Select(Uid *uid,      ///< Pointer to Uid stru
     while(!selectDone) {
       // Find out how many bits and bytes to send and receive.
       if(currentLevelKnownBits >= 32) { // All UID bits in this Cascade Level are known. This is a SELECT.
-        //Serial.print(F("SELECT: currentLevelKnownBits=")); Serial.println(currentLevelKnownBits, DEC);
+        //Serial.print(F_removeIt("SELECT: currentLevelKnownBits=")); Serial.println(currentLevelKnownBits, DEC);
         buffer[1] = 0x70; // NVB - Number of Valid Bits: Seven whole bytes
         // Calculate BCC - Block Check Character
         buffer[6] = buffer[2] ^ buffer[3] ^ buffer[4] ^ buffer[5];
@@ -656,7 +656,7 @@ MFRC522::StatusCode MFRC522::PICC_Select(Uid *uid,      ///< Pointer to Uid stru
         responseBuffer = &buffer[6];
         responseLength = 3;
       } else { // This is an ANTICOLLISION.
-        //Serial.print(F("ANTICOLLISION: currentLevelKnownBits=")); Serial.println(currentLevelKnownBits, DEC);
+        //Serial.print(F_removeIt("ANTICOLLISION: currentLevelKnownBits=")); Serial.println(currentLevelKnownBits, DEC);
         txLastBits = currentLevelKnownBits%8;
         count      = currentLevelKnownBits/8;  // Number of whole bytes in the UID part.
         index      = 2+count;          // Number of whole bytes: SEL + NVB + UIDs

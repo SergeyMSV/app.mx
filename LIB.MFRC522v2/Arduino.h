@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#define F(x) x
+#define F_removeIt(x) x
 
 #define PROGMEM
 
