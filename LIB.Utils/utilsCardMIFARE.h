@@ -143,6 +143,7 @@ class tSector
 	tKeyID m_KeyID = tKeyID::None;
 	tKey m_Key{};
 	std::vector<std::uint8_t> m_Payload;
+	std::string m_Status;
 
 public:
 	tSector() = default;
@@ -150,6 +151,9 @@ public:
 	tSector(tKeyID keyID, const tKey& key) :m_KeyID(keyID), m_Key(key) {}
 	tSector(tKeyID keyID, const tKey& key, const std::vector<std::uint8_t>& sector);
 	tSector(const tSector& val) = default;
+
+	std::string GetStatus() const { return m_Status; }
+	void SetStatus(const std::string& val) { m_Status = val; }
 
 	tKey GetKey() const { return m_Key; }
 
@@ -281,6 +285,7 @@ class tCard
 
 	std::vector<std::uint8_t> m_ID;
 	std::vector<std::uint8_t> m_Payload;
+	std::string m_Status;
 
 public:
 	tCard() = default;
@@ -290,6 +295,9 @@ public:
 	tCard(const std::vector<std::uint8_t>& id, const std::vector<std::uint8_t>& payload)
 		:m_ID(id), m_Payload(payload)
 	{}
+
+	std::string GetStatus() const { return m_Status; }
+	void SetStatus(const std::string& val) { m_Status = val; }
 
 	void push(std::vector<std::uint8_t> sector);
 	void push_back_block(std::vector<std::uint8_t> block);

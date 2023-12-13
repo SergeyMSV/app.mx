@@ -180,16 +180,16 @@ std::optional<card_classic::tSector> tMFRC522::GetCard_MIFARE_ClassicSector(int 
 		auto Stat = m_MFRC522.PCD_Authenticate(MFRC522::PICC_Command::PICC_CMD_MF_AUTH_KEY_A, BlockFirst, &SectorKey, &m_MFRC522.uid);
 		if (Stat != MFRC522::StatusCode::STATUS_OK)
 		{
-			std::cout << " PCD_Authenticate() failed: " << ToString(Stat) << '\n';
-			return {};
+			Sector.SetStatus("auth:fail");
+			return Sector;
 		}
 
 		std::uint8_t ReadBytes = static_cast<std::uint8_t>(BlockRead.size());
 		Stat = m_MFRC522.MIFARE_Read(blockAddr, BlockRead.data(), &ReadBytes);
 		if (Stat != MFRC522::StatusCode::STATUS_OK)
 		{
-			std::cout << " MIFARE_Read() failed: " << ToString(Stat) << '\n';
-			continue; // [TBD] maybe try again ?
+			Sector.SetStatus("read:fail");
+			return Sector;
 		}
 
 		Sector.push_back_block(BlockRead);
