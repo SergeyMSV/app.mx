@@ -260,6 +260,8 @@ std::string tSector::ToJSON() const
 	std::stringstream SStr;
 	SStr << "{";
 	SStr << "\"payload\":\"" << ToStringHEX(m_Payload) << '\"';
+	if (!m_Status.empty())
+		SStr << ",\"status\":\"" << m_Status << '\"';
 	SStr << '}';
 	return SStr.str();
 }
@@ -299,11 +301,9 @@ std::string tSector::ToString() const
 	SStr << " Key B: ";
 	KeyToSStr(GetKeyB());
 	SStr << '\n';
-
 	tAccess Access = GetAccess();
-	SStr << " Access: " << Access.ToString();
-
-	SStr << '\n';
+	SStr << " Access: " << Access.ToString() << '\n';
+	SStr << " Status: " << m_Status << '\n';
 	return SStr.str();
 }
 
@@ -560,6 +560,8 @@ std::string tCard::ToJSON() const
 		SStr << "\"uid\":\"" << ToStringHEX(*UID) << "\",";
 	SStr << "\"payload\":\"" << ToStringHEX(m_Payload) << "\",";
 	SStr << "\"available\":\"" << std::dec << GetUserMemoryUnlockedSize() << "\"";
+	if (!m_Status.empty())
+		SStr << ",\"status\":\"" << m_Status << '\"';
 	SStr << '}';
 	return SStr.str();
 }
