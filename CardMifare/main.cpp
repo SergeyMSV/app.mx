@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
 			}
 			case card::tCardType::MIFARE_1K:
 			{
-				card_classic::tCard1K Card = DevCardRW.GetCard_MIFARE_Classic1K(/*keys*/);
+				card_classic::tCard1K Card = DevCardRW.GetCard_MIFARE_Classic1K(card_classic::tKeyID::A, {});
 				std::cout << Card.ToJSON() << '\n';
 				break;
 			}

@@ -65,24 +65,24 @@ std::vector<std::uint8_t> tMFRC522::GetCardID() const
 	return std::vector<std::uint8_t>(m_MFRC522.uid.uidByte, m_MFRC522.uid.uidByte + m_MFRC522.uid.size);
 }
 
-card_classic::tCardMini tMFRC522::GetCard_MIFARE_ClassicMini()
+card_classic::tCardMini tMFRC522::GetCard_MIFARE_ClassicMini(card_classic::tKeyID keyID, card_classic::tKey key)
 {
 	card_classic::tCardMini Card;
-	ReadCard_MIFARE_Classic(Card);
+	ReadCard_MIFARE_Classic(Card, keyID, key);
 	return Card;
 }
 
-card_classic::tCard1K tMFRC522::GetCard_MIFARE_Classic1K()
+card_classic::tCard1K tMFRC522::GetCard_MIFARE_Classic1K(card_classic::tKeyID keyID, card_classic::tKey key)
 {
 	card_classic::tCard1K Card;
-	ReadCard_MIFARE_Classic(Card);
+	ReadCard_MIFARE_Classic(Card, keyID, key);
 	return Card;
 }
 
-card_classic::tCard4K tMFRC522::GetCard_MIFARE_Classic4K()
+card_classic::tCard4K tMFRC522::GetCard_MIFARE_Classic4K(card_classic::tKeyID keyID, card_classic::tKey key)
 {
 	card_classic::tCard4K Card;
-	ReadCard_MIFARE_Classic(Card);
+	ReadCard_MIFARE_Classic(Card, keyID, key);
 	return Card;
 }
 
@@ -126,7 +126,7 @@ bool tMFRC522::WriteCard(const card_ul::tCard& card)
 }
 
 template <class T>
-void tMFRC522::ReadCard_MIFARE_Classic(T& card)
+void tMFRC522::ReadCard_MIFARE_Classic(T& card, card_classic::tKeyID keyID, card_classic::tKey key)
 {
 	static_assert(T::GetType() == card::tCardType::MIFARE_Mini || T::GetType() == card::tCardType::MIFARE_1K || T::GetType() == card::tCardType::MIFARE_4K,
 		"ReadCard: wrong type of card");
@@ -134,15 +134,11 @@ void tMFRC522::ReadCard_MIFARE_Classic(T& card)
 	card = T();
 	card.SetID(GetCardID());
 
-	constexpr std::size_t CardSectorQty = T::GetSectorQty();
-	
-	card_classic::tKey Key{}; // [TBD] it's a demo key - replace it
-
 	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
 
-	for (int i = 0; i < CardSectorQty; ++i)
+	for (int i = 0; i < T::GetSectorQty(); ++i)
 	{
-		std::optional<card_classic::tSector> SectorOpt = tMFRC522::GetCard_MIFARE_ClassicSector(i, Key);
+		std::optional<card_classic::tSector> SectorOpt = tMFRC522::GetCard_MIFARE_ClassicSector(i, keyID, key);
 		if (SectorOpt.has_value())
 			card.insert(i, *SectorOpt);
 	}
@@ -151,7 +147,7 @@ void tMFRC522::ReadCard_MIFARE_Classic(T& card)
 	m_MFRC522.PCD_StopCrypto1();
 }
 
-std::optional<card_classic::tSector> tMFRC522::GetCard_MIFARE_ClassicSector(int index, card_classic::tKey key)
+std::optional<card_classic::tSector> tMFRC522::GetCard_MIFARE_ClassicSector(int index, card_classic::tKeyID keyID, card_classic::tKey key)
 {
 	std::uint8_t BlockFirst = 0;
 	std::uint8_t BlockQty = 0;
@@ -171,7 +167,7 @@ std::optional<card_classic::tSector> tMFRC522::GetCard_MIFARE_ClassicSector(int 
 
 	std::vector<std::uint8_t> BlockRead(18, 0); // Block size + CRC size = 18
 
-	card_classic::tSector Sector(card_classic::tKeyID::A);
+	card_classic::tSector Sector(keyID);
 
 	for (int8_t blockIndex = 0; blockIndex < BlockQty; ++blockIndex)
 	{
