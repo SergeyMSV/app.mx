@@ -356,7 +356,10 @@ std::string CardToJSON(const T& card)
 {
 	std::stringstream SStr;
 	SStr << "{";
+	auto ID = card.GetID();
 	SStr << "\"type\":\"" << to_string(card.GetType()) << "\",";
+	if (!ID.empty())
+		SStr << "\"id\":\"" << ToStringHEX(ID) << "\",";
 	auto UID = card.GetUID();
 	if (UID.has_value())
 		SStr << "\"uid\":\"" << ToStringHEX(*UID) << "\",";
@@ -380,6 +383,9 @@ std::string CardToString(const T& card)
 	{
 		SStr << card.GetSector(i).ToString() << '\n';
 	}
+	auto ID = card.GetID();
+	if (!ID.empty())
+		SStr << "\n ID:  " << ToStringHEX(ID, true) << '\n';
 	return SStr.str();
 }
 
@@ -546,12 +552,14 @@ std::string tCard::ToJSON() const
 {
 	std::stringstream SStr;
 	SStr << "{";
-	SStr << "\"type\":\"" << to_string(GetType()) << "\"";
+	SStr << "\"type\":\"" << to_string(GetType()) << "\",";
+	if (!m_ID.empty())
+		SStr << "\"id\":\"" << ToStringHEX(m_ID) << "\",";
 	std::optional<tUID> UID = GetUID();
 	if (UID.has_value())
-		SStr << "\"uid\":\"" << ToStringHEX(*UID) << "\"";
-	SStr << ",\"payload\":\"" << ToStringHEX(m_Payload) << "\"";
-	SStr << ",\"available\":\"" << std::dec << GetUserMemoryUnlockedSize() << "\"";
+		SStr << "\"uid\":\"" << ToStringHEX(*UID) << "\",";
+	SStr << "\"payload\":\"" << ToStringHEX(m_Payload) << "\",";
+	SStr << "\"available\":\"" << std::dec << GetUserMemoryUnlockedSize() << "\"";
 	SStr << '}';
 	return SStr.str();
 }

@@ -61,14 +61,14 @@ int main(int argc, char* argv[])
 				std::cout << value << '\n';
 			});
 
-		utils::card_MIFARE::tUID PrevUID{};
+		std::vector<std::uint8_t> PrevCardID{};
 		while (true)
 		{
 			if (!DevCardRW.IsNewCardPresent())
 			{
-				if (!PrevUID.empty())
+				if (!PrevCardID.empty())
 				{
-					PrevUID = {};
+					PrevCardID = {};
 					DataSet.ClearCard();
 					std::cout << "\nno card\n";
 				}
@@ -76,53 +76,41 @@ int main(int argc, char* argv[])
 				continue;
 			}
 
-			if (!DevCardRW.ReadCardSerial()) // Select one of the cards.
+			std::vector<std::uint8_t> CardID = DevCardRW.ReadCardID();
+			if (CardID.empty())
 			{
 				std::cout << "\nno serial\n";
 				continue;
 			}
 
-			std::optional<card::tUID> UID{};
+			if (CardID == PrevCardID)
+			{
+				std::cout << '.';
+				std::this_thread::sleep_for(std::chrono::milliseconds(200));
+				DevCardRW.HaltCard();
+				continue;
+			}
+
+			PrevCardID = CardID;
+
 			switch (DevCardRW.GetCardType())
 			{
 			case card::tCardType::MIFARE_UL:
 			{
 				card_ul::tCard Card = DevCardRW.GetCard_MIFARE_Ultralight();
-				UID = Card.GetUID();
-				if (UID.has_value() && *UID != PrevUID)
-					std::cout << Card.ToJSON() << '\n';
+				std::cout << Card.ToJSON() << '\n';
 				break;
 			}
 			case card::tCardType::MIFARE_1K:
 			{
 				card_classic::tCard1K Card = DevCardRW.GetCard_MIFARE_Classic1K(/*keys*/);
-				UID = Card.GetUID();
-				if (UID.has_value() && *UID != PrevUID)
-					std::cout << Card.ToJSON() << '\n';
+				std::cout << Card.ToJSON() << '\n';
 				break;
 			}
 			default:
-				PrevUID = {};
 				std::cout << "The card of this type is not supported.\n";
 				break;
 			}
-
-			
-
-			// Check the fact that the card wasn't replaced.
-			//card_ul::tCard Card = DevCardRW.GetCard_MIFARE_Ultralight();
-			//std::optional<card::tUID> UID = Card.GetUID();
-			if (UID.has_value())
-			{
-				if (*UID == PrevUID)
-					std::cout << '.';
-
-				PrevUID = *UID;
-
-				std::this_thread::sleep_for(std::chrono::milliseconds(200));
-			}
-
-			
 
 			// [TEST] Wiriting MIFARE UL
 			/*dev::tCard::tLock Lock = Card.GetLock();
@@ -137,32 +125,6 @@ int main(int argc, char* argv[])
 				Card.WriteUserMemoryUnlocked(Data);
 				std::cout << "WriteUserMemory: " << (DevCardRW.WriteCard(Card) ? "OK" : "ERR") << '\n';
 			}*/
-
-			//if (!CardToWrite.empty())
-			//{
-			//	Mfrc522.WriteTheCard();
-			//	CardToWrite.clear();
-			//	continue;
-			//}	
-
-			//DataSet.SetCard(Card);
-
-			//std::cout << Card.ToJSON() << '\n';
-
-			//switch (DevCardRW.GetCardType())
-			//{
-			//case utils::card_MIFARE::tCardType::MIFARE_UL: break;
-			//case utils::card_MIFARE::tCardType::MIFARE_Mini: break;
-			//case utils::card_MIFARE::tCardType::MIFARE_1K: break;
-			//case utils::card_MIFARE::tCardType::MIFARE_4K: break;
-			//default:
-			//	std::cout << "The card of this type is not supported.\n";
-			//	break;
-			//}
-
-			//UID = Card.GetUID();
-			//if (UID.has_value())
-			//	PrevUID = *UID;
 		}
 	}
 	catch (std::exception& e)

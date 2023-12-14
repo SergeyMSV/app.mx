@@ -187,6 +187,7 @@ public:
 template <tCardType CardType, std::size_t SectorQty>
 class tCardClassic
 {
+	std::vector<std::uint8_t> m_ID;
 	std::array<tSector, SectorQty> m_Sectors;
 
 public:
@@ -200,6 +201,9 @@ public:
 			return;
 		m_Sectors[index] = sector; // [TBD] std::move
 	}
+
+	std::vector<std::uint8_t> GetID() const { return m_ID; };
+	void SetID(const std::vector<std::uint8_t>& id) { m_ID = id; }
 
 	static constexpr tCardType GetType() { return CardType; }
 	std::optional<tNUID> GetNUID() const { return static_cast<tSector0>(m_Sectors[0]).GetNUID(); }
@@ -275,18 +279,25 @@ class tCard
 	static constexpr std::size_t PageSize = 4;
 	static constexpr std::size_t LockPos = 10;
 
+	std::vector<std::uint8_t> m_ID;
 	std::vector<std::uint8_t> m_Payload;
 
 public:
 	tCard() = default;
-	explicit tCard(const std::vector<std::uint8_t>& payload)
-		:m_Payload(payload)
+	explicit tCard(const std::vector<std::uint8_t>& id)
+		:m_ID(id)
+	{}
+	tCard(const std::vector<std::uint8_t>& id, const std::vector<std::uint8_t>& payload)
+		:m_ID(id), m_Payload(payload)
 	{}
 
 	void push(std::vector<std::uint8_t> sector);
 	void push_back_block(std::vector<std::uint8_t> block);
 	void push_back_block(tBlock block);
 	bool good() const { return m_Payload.size() == SectorSize; }
+
+	std::vector<std::uint8_t> GetID() const { return m_ID; };
+	void SetID(const std::vector<std::uint8_t>& id) { m_ID = id; }
 
 	static constexpr tCardType GetType() { return tCardType::MIFARE_UL; }
 	std::optional<tUID> GetUID() const;

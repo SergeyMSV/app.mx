@@ -65,9 +65,12 @@ public:
 	std::uint8_t GetAntennaGain();
 
 	bool IsNewCardPresent();
-	bool ReadCardSerial();
+
+	std::vector<std::uint8_t> ReadCardID();
 
 	card::tCardType GetCardType() const;
+	std::vector<std::uint8_t> GetCardID() const;
+	
 	card_classic::tCardMini GetCard_MIFARE_ClassicMini();
 	card_classic::tCard1K GetCard_MIFARE_Classic1K();
 	card_classic::tCard4K GetCard_MIFARE_Classic4K();
@@ -79,8 +82,6 @@ private:
 	template <class T>
 	void ReadCard_MIFARE_Classic(T& card);
 	std::optional<card_classic::tSector> GetCard_MIFARE_ClassicSector(int index, card_classic::tKey key);
-
-	std::vector<std::uint8_t> GetUID() const;
 
 	std::vector<std::uint8_t> Read(std::uint8_t blockAddr, std::uint8_t size);
 	//bool Write(std::uint8_t blockAddr, std::vector<std::uint8_t> data); // MIFARE Classic : The block(0 - 0xff) number. MIFARE Ultralight : The page(2 - 15) to write to.
