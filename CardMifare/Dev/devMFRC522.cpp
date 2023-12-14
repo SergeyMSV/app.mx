@@ -5,6 +5,7 @@
 #include <iostream>//[TEST]
 #include <iomanip>//[TEST]
 
+#include <algorithm>
 #include <chrono>
 #include <sstream>
 #include <thread>
@@ -37,11 +38,14 @@ bool tMFRC522::IsNewCardPresent()
 	return m_MFRC522.PICC_IsNewCardPresent();
 }
 
-bool tMFRC522::ReadCardSerial()
+std::vector<std::uint8_t> tMFRC522::ReadCardID()
 {
-	std::lock_guard<std::mutex> Lock(m_MFRC522_mtx);
-
-	return m_MFRC522.PICC_ReadCardSerial();
+	{
+		std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
+		if (!m_MFRC522.PICC_ReadCardSerial())
+			return {};
+	}
+	return GetCardID();
 }
 
 utils::card_MIFARE::tCardType tMFRC522::GetCardType() const
@@ -54,6 +58,11 @@ utils::card_MIFARE::tCardType tMFRC522::GetCardType() const
 	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_4K:	return card::tCardType::MIFARE_4K;
 	}
 	return  utils::card_MIFARE::tCardType::None;
+}
+
+std::vector<std::uint8_t> tMFRC522::GetCardID() const
+{
+	return std::vector<std::uint8_t>(m_MFRC522.uid.uidByte, m_MFRC522.uid.uidByte + m_MFRC522.uid.size);
 }
 
 card_classic::tCardMini tMFRC522::GetCard_MIFARE_ClassicMini()
@@ -79,7 +88,7 @@ card_classic::tCard4K tMFRC522::GetCard_MIFARE_Classic4K()
 
 card_ul::tCard tMFRC522::GetCard_MIFARE_Ultralight()
 {
-	card_ul::tCard Card;
+	card_ul::tCard Card(GetCardID());
 	for (int k = 0; k < 4; ++k)
 	{
 		std::vector<std::uint8_t> Data = Read(k * 4, 16);
@@ -121,6 +130,9 @@ void tMFRC522::ReadCard_MIFARE_Classic(T& card)
 {
 	static_assert(T::GetType() == card::tCardType::MIFARE_Mini || T::GetType() == card::tCardType::MIFARE_1K || T::GetType() == card::tCardType::MIFARE_4K,
 		"ReadCard: wrong type of card");
+
+	card = T();
+	card.SetID(GetCardID());
 
 	constexpr std::size_t CardSectorQty = T::GetSectorQty();
 	
@@ -186,11 +198,6 @@ std::optional<card_classic::tSector> tMFRC522::GetCard_MIFARE_ClassicSector(int 
 	if (!Sector.good())
 		return {};
 	return Sector;
-}
-
-std::vector<std::uint8_t> tMFRC522::GetUID() const
-{
-	return { m_MFRC522.uid.uidByte, m_MFRC522.uid.uidByte + m_MFRC522.uid.size };
 }
 
 std::vector<uint8_t> tMFRC522::Read(std::uint8_t blockAddr, std::uint8_t size)
