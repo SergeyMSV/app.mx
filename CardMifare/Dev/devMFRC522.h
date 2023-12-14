@@ -78,6 +78,8 @@ public:
 
 	bool WriteCard(const card_ul::tCard& card); // [TBD] that shall be a template for different types of cards
 
+	void HaltCard();
+
 private:
 	template <class T>
 	void ReadCard_MIFARE_Classic(T& card, card_classic::tKeyID keyID, card_classic::tKey key);

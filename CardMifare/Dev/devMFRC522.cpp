@@ -94,6 +94,9 @@ card_ul::tCard tMFRC522::GetCard_MIFARE_Ultralight()
 		std::vector<std::uint8_t> Data = Read(k * 4, 16);
 		Card.push_back_block(Data);
 	}
+
+	HaltCard();
+
 	return Card;
 }
 
@@ -125,6 +128,14 @@ bool tMFRC522::WriteCard(const card_ul::tCard& card)
 	return true;
 }
 
+void tMFRC522::HaltCard()
+{
+	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
+	m_MFRC522.PICC_HaltA(); // Halt the PICC before stopping the encrypted session.
+	if (GetCardType() != card::tCardType::MIFARE_UL)
+		m_MFRC522.PCD_StopCrypto1();
+}
+
 template <class T>
 void tMFRC522::ReadCard_MIFARE_Classic(T& card, card_classic::tKeyID keyID, card_classic::tKey key)
 {
@@ -143,8 +154,7 @@ void tMFRC522::ReadCard_MIFARE_Classic(T& card, card_classic::tKeyID keyID, card
 			card.insert(i, *SectorOpt);
 	}
 
-	m_MFRC522.PICC_HaltA(); // Halt the PICC before stopping the encrypted session.
-	m_MFRC522.PCD_StopCrypto1();
+	HaltCard();
 }
 
 std::optional<card_classic::tSector> tMFRC522::GetCard_MIFARE_ClassicSector(int index, card_classic::tKeyID keyID, card_classic::tKey key)
