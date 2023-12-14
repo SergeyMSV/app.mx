@@ -1247,6 +1247,27 @@ void MFRC522::MIFARE_CalculateAccessBits(byte accessBitBuffer[3],  ///< Pointer 
 /////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Returns true if a PICC responds to PICC_Command::PICC_CMD_WUPA.
+ * All of cards in state IDLE and HALT are invited. Sleeping cards in state HALT are NOT ignored.
+ *
+ * @return bool
+ */
+bool MFRC522::PICC_IsAnyCardPresent()
+{
+	byte bufferATQA[2];
+	byte bufferSize = sizeof(bufferATQA);
+
+	// Reset baud rates
+	_driver.PCD_WriteRegister(PCD_Register::TxModeReg, 0x00);
+	_driver.PCD_WriteRegister(PCD_Register::RxModeReg, 0x00);
+	// Reset ModWidthReg
+	_driver.PCD_WriteRegister(PCD_Register::ModWidthReg, 0x26);
+
+	MFRC522::StatusCode result = PICC_WakeupA(bufferATQA, &bufferSize);
+	return (result == StatusCode::STATUS_OK || result == StatusCode::STATUS_COLLISION);
+}
+
+/**
  * Returns true if a PICC responds to PICC_Command::PICC_CMD_REQA.
  * Only "new" cards in state IDLE are invited. Sleeping cards in state HALT are ignored.
  * 
