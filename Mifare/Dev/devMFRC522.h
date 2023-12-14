@@ -64,7 +64,8 @@ public:
 	std::uint8_t GetAntennaGain(); // returns in dB
 	void SetAntennaGain(tMFRC522_RxGain value);
 
-	bool IsNewCardPresent();
+	bool IsAnyCardPresent(); // All of cards in state IDLE and HALT are invited. Sleeping cards in state HALT are NOT ignored.
+	bool IsNewCardPresent(); // Only "new" cards in state IDLE are invited. Sleeping cards in state HALT are ignored.
 
 	std::vector<std::uint8_t> ReadCardID();
 

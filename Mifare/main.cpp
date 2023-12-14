@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
 		std::vector<std::uint8_t> PrevCardID{};
 		while (true)
 		{
-			if (!DevCardRW.IsNewCardPresent())
+			if (!DevCardRW.IsAnyCardPresent())
 			{
 				if (!PrevCardID.empty())
 				{

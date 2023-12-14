@@ -54,6 +54,12 @@ void tMFRC522::SetAntennaGain(tMFRC522_RxGain value)
 	m_MFRC522.PCD_SetAntennaGain(value);
 }
 
+bool tMFRC522::IsAnyCardPresent()
+{
+	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
+	return m_MFRC522.PICC_IsAnyCardPresent();
+}
+
 bool tMFRC522::IsNewCardPresent()
 {
 	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
