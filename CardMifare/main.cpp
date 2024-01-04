@@ -71,6 +71,7 @@ private:
 				break;
 
 			// [TBD] parse MAD and detect type of card in terms of applications
+			// [TBD] obtain keys for the application sectors
 		}
 		m_pCardRW->HaltCard();
 		return this->good();
