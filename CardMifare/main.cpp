@@ -151,7 +151,8 @@ int main(int argc, char* argv[])
 
 		dev::tMFRC522 DevCardRW(SPIPortCfg);
 		std::cout << DevCardRW.GetVersionString() << '\n';
-		std::cout << "Antenna gain: " << (int)DevCardRW.GetAntennaGain() << '\n';
+		//DevCardRW.SetAntennaGain(dev::tMFRC522_RxGain::RxGain_48dB);
+		std::cout << "Antenna gain: " << (int)DevCardRW.GetAntennaGain() << " dB (min 18, max 48 dB)\n";
 		std::cout << "Scan PICC to see UID, SAK, type, and data blocks...\n";
 
 		

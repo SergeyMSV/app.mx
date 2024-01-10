@@ -22,6 +22,8 @@
 namespace dev
 {
 
+using tMFRC522_RxGain = MFRC522Constants::PCD_RxGain;
+
 class tMFRC522
 {
 	class tPortSPI : public MFRC522DriverSPI
@@ -59,7 +61,8 @@ public:
 	tMFRC522(tMFRC522&&) = delete;
 	~tMFRC522();
 	
-	std::uint8_t GetAntennaGain();
+	std::uint8_t GetAntennaGain(); // returns in dB
+	void SetAntennaGain(tMFRC522_RxGain value);
 
 	bool IsAnyCardPresent(); // All of cards in state IDLE and HALT are invited. Sleeping cards in state HALT are NOT ignored.
 	bool IsNewCardPresent(); // Only "new" cards in state IDLE are invited. Sleeping cards in state HALT are ignored.

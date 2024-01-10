@@ -28,8 +28,30 @@ tMFRC522::~tMFRC522()
 
 std::uint8_t tMFRC522::GetAntennaGain()
 {
+	std::uint8_t RxGain = 0;
+	{
+		std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
+		RxGain = m_MFRC522.PCD_GetAntennaGain() >> 4;
+	}
+
+	switch (RxGain) // returns in dB
+	{
+	case 0:
+	case 2: return 18;
+	case 1:
+	case 3: return 23;
+	case 4: return 33;
+	case 5: return 38;
+	case 6: return 43;
+	case 7: return 48;
+	}
+	return 0;
+}
+
+void tMFRC522::SetAntennaGain(tMFRC522_RxGain value)
+{
 	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
-	return m_MFRC522.PCD_GetAntennaGain();
+	m_MFRC522.PCD_SetAntennaGain(value);
 }
 
 bool tMFRC522::IsAnyCardPresent()
