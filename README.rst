@@ -4,7 +4,7 @@ Apps Structure
 
 1. `Platforms etc. [TBD]`
 2. `Config files for all 'mx'-applications`_
-3. `WebUI`_
+3. `WebUI web_state`_
 
 --------------
 1. Platforms etc. [TBD]
@@ -35,7 +35,7 @@ mx.conf.json
 
 Contains:
 1. platform
-2. pipes
+2. pipes (if needed)
 
 ::
 
@@ -57,7 +57,7 @@ mxprivate.conf.json
 /root/
 
 --------------
-3. WebUI
+3. WebUI web_state
 --------------
 
 3.1 Add user "user1" (it's mentioned in mxwebstate.service)
