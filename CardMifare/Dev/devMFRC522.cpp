@@ -52,10 +52,10 @@ utils::card_MIFARE::tCardType tMFRC522::GetCardType() const
 {
 	switch (m_MFRC522.PICC_GetType(m_MFRC522.uid.sak))
 	{
-	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_UL:	return card::tCardType::MIFARE_UL;
-	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_MINI:	return card::tCardType::MIFARE_Mini;
-	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_1K:	return card::tCardType::MIFARE_1K;
-	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_4K:	return card::tCardType::MIFARE_4K;
+	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_UL:	return card_mfr::tCardType::MIFARE_UL;
+	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_MINI:	return card_mfr::tCardType::MIFARE_Mini;
+	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_1K:	return card_mfr::tCardType::MIFARE_1K;
+	case MFRC522::PICC_Type::PICC_TYPE_MIFARE_4K:	return card_mfr::tCardType::MIFARE_4K;
 	}
 	return  utils::card_MIFARE::tCardType::None;
 }
@@ -65,47 +65,89 @@ std::vector<std::uint8_t> tMFRC522::GetCardID() const
 	return std::vector<std::uint8_t>(m_MFRC522.uid.uidByte, m_MFRC522.uid.uidByte + m_MFRC522.uid.size);
 }
 
-card_classic::tCardMini tMFRC522::GetCard_MIFARE_ClassicMini(card_classic::tKeyID keyID, card_classic::tKey key)
+card_mfr::tSector tMFRC522::GetCardClassicSector(int sectorIdx, card_mfr::tKeyID keyID, card_mfr::tKey key)
 {
-	card_classic::tCardMini Card;
-	ReadCard_MIFARE_Classic(Card, keyID, key);
-	return Card;
-}
-
-card_classic::tCard1K tMFRC522::GetCard_MIFARE_Classic1K(card_classic::tKeyID keyID, card_classic::tKey key)
-{
-	card_classic::tCard1K Card;
-	ReadCard_MIFARE_Classic(Card, keyID, key);
-	return Card;
-}
-
-card_classic::tCard4K tMFRC522::GetCard_MIFARE_Classic4K(card_classic::tKeyID keyID, card_classic::tKey key)
-{
-	card_classic::tCard4K Card;
-	ReadCard_MIFARE_Classic(Card, keyID, key);
-	return Card;
-}
-
-card_ul::tCard tMFRC522::GetCard_MIFARE_Ultralight()
-{
-	card_ul::tCard Card(GetCardID());
-	for (int k = 0; k < 4; ++k)
+	std::uint8_t BlockFirst = 0;
+	std::uint8_t BlockQty = 0;
+	if (sectorIdx < 32) // Sectors 0..31 has 4 blocks each
 	{
-		std::vector<std::uint8_t> Data = Read(k * 4, 16);
-		Card.push_back_block(Data);
+		BlockQty = 4;
+		BlockFirst = sectorIdx * BlockQty;
+	}
+	// [TBD] The following statement is not tested yet.
+	else if (sectorIdx < 40) // Sectors 32-39 has 16 blocks each
+	{
+		BlockQty = 16;
+		BlockFirst = 128 + (sectorIdx - 32) * BlockQty;
+	}
+	else
+		return {};
+
+	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
+
+	MFRC522::MIFARE_Key SectorKey;
+	key.CopyTo(SectorKey.keyByte);
+
+	card_mfr::tSector Sector(BlockQty, keyID);
+
+	for (int8_t i = 0; i < BlockQty; ++i)
+	{
+		const byte BlockIndex = BlockFirst + i;
+
+		auto Stat = m_MFRC522.PCD_Authenticate(MFRC522::PICC_Command::PICC_CMD_MF_AUTH_KEY_A, BlockIndex, &SectorKey, &m_MFRC522.uid);
+		if (Stat != MFRC522::StatusCode::STATUS_OK)
+		{
+			Sector.SetStatus(card_mfr::tStatus::ErrAuth);
+			return Sector;
+		}
+
+		card_mfr::tBlockCRC BlockRead{}; // Block size + CRC size = 18
+		std::uint8_t ReadBytes = static_cast<std::uint8_t>(BlockRead.size());
+		Stat = m_MFRC522.MIFARE_Read(BlockIndex, BlockRead.data(), &ReadBytes);
+		if (Stat != MFRC522::StatusCode::STATUS_OK)
+		{
+			Sector.SetStatus(card_mfr::tStatus::ErrRead);
+			return Sector;
+		}
+
+		Sector.SetBlock(i, BlockRead);
 	}
 
-	HaltCard();
+	Sector.SetStatus(card_mfr::tStatus::OK);
+	return Sector;
+}
 
+card_mfr::tCardUL tMFRC522::GetCardUltralight()
+{
+	card_mfr::tStatus Status = card_mfr::tStatus::OK;
+	card_mfr::tCardUL Card(GetCardID());
+	for (int blockIdx = 0; blockIdx < 4; ++blockIdx)
+	{
+		std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
+		card_mfr::tBlockCRC BlockRead{}; // Block size + CRC size = 18. Buffer size, at least 18 bytes. Also number of bytes returned if StatusCode::STATUS_OK.
+		std::uint8_t ReadBytes = static_cast<std::uint8_t>(BlockRead.size());
+		MFRC522::StatusCode Stat = m_MFRC522.MIFARE_Read(blockIdx * 4, BlockRead.data(), &ReadBytes);
+		if (Stat == MFRC522::StatusCode::STATUS_OK)
+		{
+			Card.SetBlock(blockIdx, BlockRead);
+		}
+		else //THROW_RUNTIME_ERROR("Read error: " + std::to_string(Cerr));
+		{
+			Status = card_mfr::tStatus::ErrRead;
+			break;
+		}		
+	}
+	HaltCard();
+	Card.SetStatus(Status);
 	return Card;
 }
 
-bool tMFRC522::WriteCard(const card_ul::tCard& card)
+bool tMFRC522::WriteCard(const card_mfr::tCardUL& card)
 {
 	if (card.GetType() == utils::card_MIFARE::tCardType::MIFARE_UL)// || card.GetUID() != GetUID())
 	//if (card.SAK != GetSAK() || card.UID != GetUID())
 		return false;
-	const card_ul::tLock CardLock = card.GetLock();
+	const card_mfr::tLock CardLock = card.GetLock();
 	std::vector<std::uint8_t> UserMemory = card.GetUserMemory();
 	// pageAddr = 2 - Lock Bytes (irreversible)
 	// pageAddr = 3 - OTP (irreversible)
@@ -115,7 +157,7 @@ bool tMFRC522::WriteCard(const card_ul::tCard& card)
 	// is set to logic 1, it cannot be changed back to logic 0.
 	for (std::uint8_t i = 0, pageAddr = 4; i < UserMemory.size() && pageAddr <= 0x0F; i += 4, ++pageAddr)
 	{
-		if (!card_ul::tCard::IsPageAvailable(CardLock, pageAddr))
+		if (!card_mfr::tCardUL::IsPageAvailable(CardLock, pageAddr))
 			continue;
 		std::size_t Size = UserMemory.size() - i;
 		if (Size > 4)
@@ -132,99 +174,10 @@ void tMFRC522::HaltCard()
 {
 	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
 	m_MFRC522.PICC_HaltA(); // Halt the PICC before stopping the encrypted session.
-	if (GetCardType() != card::tCardType::MIFARE_UL)
+	if (GetCardType() != card_mfr::tCardType::MIFARE_UL)
 		m_MFRC522.PCD_StopCrypto1();
 }
 
-template <class T>
-void tMFRC522::ReadCard_MIFARE_Classic(T& card, card_classic::tKeyID keyID, card_classic::tKey key)
-{
-	static_assert(T::GetType() == card::tCardType::MIFARE_Mini || T::GetType() == card::tCardType::MIFARE_1K || T::GetType() == card::tCardType::MIFARE_4K,
-		"ReadCard: wrong type of card");
-
-	card = T();
-	card.SetID(GetCardID());
-
-	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
-
-	for (int i = 0; i < T::GetSectorQty(); ++i)
-	{
-		std::optional<card_classic::tSector> SectorOpt = tMFRC522::GetCard_MIFARE_ClassicSector(i, keyID, key);
-		if (SectorOpt.has_value())
-			card.insert(i, *SectorOpt);
-	}
-
-	HaltCard();
-}
-
-std::optional<card_classic::tSector> tMFRC522::GetCard_MIFARE_ClassicSector(int index, card_classic::tKeyID keyID, card_classic::tKey key)
-{
-	std::uint8_t BlockFirst = 0;
-	std::uint8_t BlockQty = 0;
-	if (index < 32) // Sectors 0..31 has 4 blocks each
-	{
-		BlockQty = 4;
-		BlockFirst = index * BlockQty;
-	}
-	else if (index < 40) // Sectors 32-39 has 16 blocks each
-	{
-		BlockQty = 16;
-		BlockFirst = 128 + (index - 32) * BlockQty;
-	}
-
-	MFRC522::MIFARE_Key SectorKey;
-	key.CopyTo(SectorKey.keyByte);
-
-	std::vector<std::uint8_t> BlockRead(18, 0); // Block size + CRC size = 18
-
-	card_classic::tSector Sector(keyID);
-
-	for (int8_t blockIndex = 0; blockIndex < BlockQty; ++blockIndex)
-	{
-		byte blockAddr = BlockFirst + blockIndex;
-
-		auto Stat = m_MFRC522.PCD_Authenticate(MFRC522::PICC_Command::PICC_CMD_MF_AUTH_KEY_A, BlockFirst, &SectorKey, &m_MFRC522.uid);
-		if (Stat != MFRC522::StatusCode::STATUS_OK)
-		{
-			Sector.SetStatus("auth:fail");
-			return Sector;
-		}
-
-		std::uint8_t ReadBytes = static_cast<std::uint8_t>(BlockRead.size());
-		Stat = m_MFRC522.MIFARE_Read(blockAddr, BlockRead.data(), &ReadBytes);
-		if (Stat != MFRC522::StatusCode::STATUS_OK)
-		{
-			Sector.SetStatus("read:fail");
-			return Sector;
-		}
-
-		Sector.push_back_block(BlockRead);
-	}
-
-	if (!Sector.good())
-		return {};
-	return Sector;
-}
-
-std::vector<uint8_t> tMFRC522::Read(std::uint8_t blockAddr, std::uint8_t size)
-{
-	if (size == 0)
-		return {};
-
-	std::lock_guard<std::recursive_mutex> Lock(m_MFRC522_mtx);
-
-	constexpr std::uint8_t crcSize = 2;
-	size += crcSize;
-	// Buffer size, at least 18 bytes. Also number of bytes returned if StatusCode::STATUS_OK.
-	std::vector<std::uint8_t> Data(size, 0);
-	MFRC522::StatusCode Cerr = m_MFRC522.MIFARE_Read(blockAddr, Data.data(), &size);
-	if (Cerr != MFRC522::StatusCode::STATUS_OK)
-		return {};//THROW_RUNTIME_ERROR("Read error: " + std::to_string(Cerr));
-	if (size < crcSize)
-		return {};
-	Data.resize(size - crcSize);
-	return Data;
-}
 
 //bool tMFRC522::Write(std::uint8_t blockAddr, std::vector<std::uint8_t> data)
 //{

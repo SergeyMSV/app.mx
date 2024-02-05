@@ -29,8 +29,17 @@ std::string to_string(tCardType value)
 	return SStr.str();
 }
 
-namespace classic
+std::string to_string(tStatus value)
 {
+	switch (value)
+	{
+	case tStatus::Default:	return "default";
+	case tStatus::OK:			return "OK";
+	case tStatus::ErrAuth:	return "err:auth";
+	case tStatus::ErrRead:	return "err:read";
+	}
+	return "UNKNOWN";
+}
 
 tAccess::tAccess(std::uint32_t value)
 {
@@ -90,9 +99,9 @@ bool tAccess::IsW_Access(tKeyID keyID) const
 	return AccKeyA || AccKeyB;
 }
 
-bool tAccess::IsR_Data(tKeyID keyID, tBlockID blockID) const
+bool tAccess::IsR_Data(std::size_t sectorIdx, std::size_t blockIdx, tKeyID keyID) const
 {
-	if (blockID == tBlockID::Block_3_Trailer)
+	if (IsTrailer(sectorIdx, blockIdx))
 		return false;
 	auto Check = [&keyID](tAccessBlock a)
 	{
@@ -100,12 +109,12 @@ bool tAccess::IsR_Data(tKeyID keyID, tBlockID blockID) const
 		bool AccKeyB = keyID == tKeyID::B && (!a.C3 || a.C1 != a.C2 && a.C3 || !a.C1 && !a.C2 && a.C3);
 		return AccKeyA || AccKeyB;
 	};
-	return Check(GetAccessBlock(blockID));
+	return Check(GetAccessBlock(sectorIdx, blockIdx));
 }
 
-bool tAccess::IsW_Data(tKeyID keyID, tBlockID blockID) const
+bool tAccess::IsW_Data(std::size_t sectorIdx, std::size_t blockIdx, tKeyID keyID) const
 {
-	if (blockID == tBlockID::Block_3_Trailer)
+	if (IsTrailer(sectorIdx, blockIdx))
 		return false;
 	auto Check = [&keyID](tAccessBlock a)
 	{
@@ -113,12 +122,12 @@ bool tAccess::IsW_Data(tKeyID keyID, tBlockID blockID) const
 		bool AccKeyB = keyID == tKeyID::B && (!a.C1 && a.C2 == a.C3 || a.C1 && !a.C3);
 		return AccKeyA || AccKeyB;
 	};
-	return Check(GetAccessBlock(blockID));
+	return Check(GetAccessBlock(sectorIdx, blockIdx));
 }
 
-bool tAccess::IsIncr_Data(tKeyID keyID, tBlockID blockID) const
+bool tAccess::IsIncr_Data(std::size_t sectorIdx, std::size_t blockIdx, tKeyID keyID) const
 {
-	if (blockID == tBlockID::Block_3_Trailer)
+	if (IsTrailer(sectorIdx, blockIdx))
 		return false;
 	auto Check = [&keyID](tAccessBlock a)
 	{
@@ -126,18 +135,18 @@ bool tAccess::IsIncr_Data(tKeyID keyID, tBlockID blockID) const
 		bool AccKeyB = keyID == tKeyID::B && !a.C3 && a.C1 == a.C2;
 		return AccKeyA || AccKeyB;
 	};
-	return Check(GetAccessBlock(blockID));
+	return Check(GetAccessBlock(sectorIdx, blockIdx));
 }
 
-bool tAccess::IsDecr_Data(tKeyID keyID, tBlockID blockID) const
+bool tAccess::IsDecr_Data(std::size_t sectorIdx, std::size_t blockIdx, tKeyID keyID) const
 {
-	if (blockID == tBlockID::Block_3_Trailer)
+	if (IsTrailer(sectorIdx, blockIdx))
 		return false;
 	auto Check = [&keyID](tAccessBlock a)
 	{
 		return !a.C3 && a.C1 == a.C2 || !a.C1 && !a.C2 && a.C3;
 	};
-	return Check(GetAccessBlock(blockID));
+	return Check(GetAccessBlock(sectorIdx, blockIdx));
 }
 
 std::string tAccess::ToString() const
@@ -153,30 +162,41 @@ std::string tAccess::ToString() const
 	return SStr.str();
 }
 
-tAccess::tAccessBlock tAccess::GetAccessBlock(tBlockID blockID) const
+tAccess::tCluster tAccess::GetCluster(std::size_t sectorIdx, std::size_t blockIdx)
 {
-	switch (blockID)
+	if (sectorIdx < 32)
+		return static_cast<tCluster>(blockIdx);
+
+	if (blockIdx < 5) // 0-4
+		return tCluster::_0;
+	if (blockIdx < 10) // 5-9
+		return tCluster::_1;
+	if (blockIdx < 15) // 10-14
+		return tCluster::_2;
+	return tCluster::_3_Trailer; // 15
+}
+
+tAccess::tAccessBlock tAccess::GetAccessBlock(std::size_t sectorIdx, std::size_t blockIdx) const
+{
+	switch (GetCluster(sectorIdx, blockIdx))
 	{
-	case tBlockID::Block_0: return { !!m_Access.Field.C1_0, !!m_Access.Field.C2_0, !!m_Access.Field.C3_0 };
-	case tBlockID::Block_1: return { !!m_Access.Field.C1_1, !!m_Access.Field.C2_1, !!m_Access.Field.C3_1 };
-	case tBlockID::Block_2: return { !!m_Access.Field.C1_2, !!m_Access.Field.C2_2, !!m_Access.Field.C3_2 };
-	case tBlockID::Block_3_Trailer: return { !!m_Access.Field.C1_3, !!m_Access.Field.C2_3, !!m_Access.Field.C3_3 };
+	case tCluster::_0: return { !!m_Access.Field.C1_0, !!m_Access.Field.C2_0, !!m_Access.Field.C3_0 };
+	case tCluster::_1: return { !!m_Access.Field.C1_1, !!m_Access.Field.C2_1, !!m_Access.Field.C3_1 };
+	case tCluster::_2: return { !!m_Access.Field.C1_2, !!m_Access.Field.C2_2, !!m_Access.Field.C3_2 };
+	case tCluster::_3_Trailer: return { !!m_Access.Field.C1_3, !!m_Access.Field.C2_3, !!m_Access.Field.C3_3 };
 	}
 	return {};
+}
+
+bool tAccess::IsTrailer(std::size_t sectorIdx, std::size_t blockIdx)
+{
+	return GetCluster(sectorIdx, blockIdx) == tCluster::_3_Trailer;
 }
 
 tKey::tKey(std::uint64_t value) :m_Value(value)
 {
 	if (m_Value > ValueMAX)
 		m_Value = ValueMAX;
-}
-
-tKey::tKey(std::vector<std::uint8_t>::const_iterator itBegin, std::vector<std::uint8_t>::const_iterator itEnd)
-{
-	if (std::distance(itBegin, itEnd) != KeySize)
-		m_Value = ValueMAX;
-	m_Value = 0;
-	std::copy_n(itBegin, std::min(KeySize, sizeof(m_Value)), (char*)&m_Value);
 }
 
 void tKey::CopyTo(std::uint8_t(&key)[KeySize]) const
@@ -201,39 +221,28 @@ std::string tKey::ToString() const
 	std::stringstream SStr;
 	std::vector<std::uint8_t> ValueArray;
 	std::copy_n((char*)&m_Value, std::min(KeySize, sizeof(m_Value)), std::back_inserter(ValueArray));
-	ToStringHEX(std::vector<std::uint8_t>(ValueArray), true);
+	SStr << ToStringHEX(std::vector<std::uint8_t>(ValueArray), true);
 	return SStr.str();
 }
 
-tSector::tSector(tKeyID keyID, const tKey& key, const std::vector<std::uint8_t>& sector)
-	:m_KeyID(keyID), m_Key(key)
+tSector::tSector(std::size_t bloclQty, tKeyID keyID)
+	:m_KeyID(keyID)
 {
-	push(sector);
+	m_Blocks.resize(bloclQty);
 }
 
-void tSector::push(std::vector<std::uint8_t> sector)
+tSector::tSector(std::size_t bloclQty, tKeyID keyID, tStatus status)
+	:m_KeyID(keyID), m_Status(status)
 {
-	sector.resize(SectorSize);
-	m_Payload = sector;
-}
-
-void tSector::push_back_block(std::vector<std::uint8_t> block)
-{
-	block.resize(BlockSize);
-	m_Payload.insert(m_Payload.end(), block.begin(), block.end());
-}
-
-void tSector::push_back_block(tBlock block)
-{
-	m_Payload.insert(m_Payload.end(), block.begin(), block.end());
+	m_Blocks.resize(bloclQty);
 }
 
 tAccess tSector::GetAccess() const
 {
-	if (m_Payload.size() != SectorSize)
+	if (m_Blocks.empty())
 		return {};
 	std::uint32_t Value = 0;
-	std::copy_n(m_Payload.begin() + AccessPos, sizeof(Value), (char*)&Value);
+	std::copy_n(m_Blocks[m_Blocks.size() - 1].begin() + AccessBlockPos, sizeof(Value), (char*)&Value);
 	return tAccess(Value);
 }
 
@@ -242,26 +251,45 @@ std::optional<tKey> tSector::GetKeyB() const
 	tAccess Access = GetAccess();
 	if (!Access.good() || !Access.IsR_KeyB(m_KeyID))
 		return {};
-	return GetKey(KeyBPos);
+	return GetKey(KeyBBlockPos);
 }
 
-std::optional<tBlock> tSector::GetBlock(tBlockID blockID) const
+std::optional<tBlock> tSector::GetBlock(std::size_t blockIdx) const
 {
-	if (!good())
+	if (!good() || blockIdx >= m_Blocks.size())
 		return {};
-	std::size_t BlockPos = static_cast<std::size_t>(blockID) * BlockSize;
-	tBlock Block{};
-	std::copy_n(m_Payload.begin() + BlockPos, Block.size(), Block.begin());
-	return Block;
+	return m_Blocks[blockIdx];
+}
+
+bool tSector::SetBlock(std::size_t blockIdx, const tBlock& block)
+{
+	if (blockIdx >= m_Blocks.size())
+		return false;
+	m_Blocks[blockIdx] = block;
+	return true;
+}
+
+bool tSector::SetBlock(std::size_t blockIdx, const tBlockCRC& block)
+{
+	if (blockIdx >= m_Blocks.size()) // [TBD] Check CRC
+		return false;
+	std::copy_n(block.begin(), std::min(block.size(), m_Blocks[blockIdx].size()), m_Blocks[blockIdx].begin());
+	return true;
 }
 
 std::string tSector::ToJSON() const
 {
 	std::stringstream SStr;
 	SStr << "{";
-	SStr << "\"payload\":\"" << ToStringHEX(m_Payload) << '\"';
-	if (!m_Status.empty())
-		SStr << ",\"status\":\"" << m_Status << '\"';
+	std::optional<tBlock> BlockSystem = GetBlockSystem();
+	if (BlockSystem.has_value())
+		SStr << "\"system\":\"" << ToStringHEX(*BlockSystem) << "\",";
+	std::vector<std::uint8_t> Payload = GetPayload();
+	SStr << "\"payload\":\"" << ToStringHEX(Payload) << '\"';
+	std::optional<tBlock> BlockTrailer = GetBlockTrailer();
+	if (BlockTrailer.has_value())
+		SStr << ",\"trailer\":\"" << ToStringHEX(*BlockTrailer) << '\"';
+	SStr << ",\"status\":\"" << to_string(m_Status) << '\"';
 	SStr << '}';
 	return SStr.str();
 }
@@ -269,22 +297,15 @@ std::string tSector::ToJSON() const
 std::string tSector::ToString() const
 {
 	std::stringstream SStr;
-	auto BlockToSStr = [&](tBlockID blockID)
+	for (std::size_t i = 0; i < m_Blocks.size(); ++i)
 	{
-		std::optional<tBlock> Block = GetBlock(blockID);
-		if (!Block.has_value())
-			return;
-		SStr << ToStringHEX(*Block, true);
-	};
-
-	BlockToSStr(tBlockID::Block_0);
-	SStr << "   ";
-	BlockToSStr(tBlockID::Block_1);
-	SStr << '\n';
-	BlockToSStr(tBlockID::Block_2);
-	SStr << "   ";
-	BlockToSStr(tBlockID::Block_3_Trailer);
-	SStr << '\n';
+		std::optional<tBlock> Block = GetBlock(i);
+		if (Block.has_value())
+		{
+			SStr << ToStringHEX(*Block, true);
+			SStr << (!((i + 1) % 2) ? "\n" : "   ");
+		}
+	}
 
 	auto KeyToSStr = [&SStr](const std::optional<tKey>& key)
 	{
@@ -297,13 +318,14 @@ std::string tSector::ToString() const
 	};
 	SStr << " Key A: ";
 	KeyToSStr(GetKeyA());
-	SStr << '\n';
+	SStr << "   ";
 	SStr << " Key B: ";
 	KeyToSStr(GetKeyB());
-	SStr << '\n';
+	SStr << "   ";
 	tAccess Access = GetAccess();
-	SStr << " Access: " << Access.ToString() << '\n';
-	SStr << " Status: " << m_Status << '\n';
+	SStr << " Access: " << Access.ToString();
+	SStr << "   ";
+	SStr << " Status: " << to_string(m_Status) << '\n';
 	return SStr.str();
 }
 
@@ -311,13 +333,23 @@ tKey tSector::GetKey(int pos) const
 {
 	if (!good())
 		return {};
-	auto Begin = m_Payload.begin() + pos;
+	auto Begin = m_Blocks[m_Blocks.size() - 1].begin() + pos;
 	return tKey(Begin, Begin + tKey::size());
+}
+
+std::vector<std::uint8_t> tSector::GetPayload() const
+{
+	if (!good())
+		return {};
+	std::vector<std::uint8_t> Payload;
+	for (std::size_t i = 0; i < m_Blocks.size() - 1; ++i) // Block_3_Trailer is not a part of the payload
+		Payload.insert(Payload.end(), m_Blocks[i].begin(), m_Blocks[i].end());
+	return Payload;
 }
 
 std::optional<tNUID> tSector0::GetNUID() const
 {
-	std::optional<tBlock> Block = GetBlock(tBlockID::Block_0);
+	std::optional<tBlock> Block = GetBlock(0);
 	if (!Block.has_value())
 		return {};
 	tNUID NUID{};
@@ -327,7 +359,7 @@ std::optional<tNUID> tSector0::GetNUID() const
 
 std::optional<tUID> tSector0::GetUID() const
 {
-	std::optional<tBlock> Block = GetBlock(tBlockID::Block_0);
+	std::optional<tBlock> Block = GetBlock(0);
 	if (!Block.has_value())
 		return {};
 	tUID UID{};
@@ -351,6 +383,16 @@ std::string tSector0::ToString() const
 	return SStr.str();
 }
 
+std::vector<std::uint8_t> tSector0::GetPayload() const
+{
+	if (!good())
+		return {};
+	std::vector<std::uint8_t> Payload;
+	for (std::size_t i = 1; i < m_Blocks.size() - 1; ++i) // Block_0 and Block_3_Trailer are not parts of the payload
+		Payload.insert(Payload.end(), m_Blocks[i].begin(), m_Blocks[i].end());
+	return Payload;
+}
+
 template <class T>
 std::string CardToJSON(const T& card)
 {
@@ -369,7 +411,16 @@ std::string CardToJSON(const T& card)
 	SStr << "\"sectors\":[\n";
 	for (std::size_t i = 0; i < card.GetSectorQty(); ++i)
 	{
-		SStr << card.GetSector(i).ToJSON() << (i == card.GetSectorQty() - 1 ? "" : ",") << '\n';
+		tSector Sector = card.GetSector(i);
+		if (i == 0)
+		{
+			SStr << static_cast<tSector0>(Sector).ToJSON();
+		}
+		else
+		{
+			SStr << Sector.ToJSON();
+		}
+		SStr << (i == card.GetSectorQty() - 1 ? "" : ",") << '\n';
 	}
 	SStr << "]\n}";
 	return SStr.str();
@@ -381,67 +432,45 @@ std::string CardToString(const T& card)
 	std::stringstream SStr;
 	for (std::size_t i = 0; i < card.GetSectorQty(); ++i)
 	{
-		SStr << card.GetSector(i).ToString() << '\n';
+		SStr << card.GetSector(i).ToString();
 	}
 	auto ID = card.GetID();
 	if (!ID.empty())
-		SStr << "\n ID:  " << ToStringHEX(ID, true) << '\n';
+		SStr << " ID:  " << ToStringHEX(ID, true) << '\n';
 	return SStr.str();
 }
 
-std::string tCardMini::ToJSON() const
+std::string tCardClassicMini::ToJSON() const
 {
 	return CardToJSON(*this);
 }
 
-std::string tCardMini::ToString() const
+std::string tCardClassicMini::ToString() const
 {
 	return CardToString(*this);
 }
 
-std::string tCard1K::ToJSON() const
+std::string tCardClassic1K::ToJSON() const
 {
 	return CardToJSON(*this);
 }
 
-std::string tCard1K::ToString() const
+std::string tCardClassic1K::ToString() const
 {
 	return CardToString(*this);
 }
 
-std::string tCard4K::ToJSON() const
+std::string tCardClassic4K::ToJSON() const
 {
 	return CardToJSON(*this);
 }
 
-std::string tCard4K::ToString() const
+std::string tCardClassic4K::ToString() const
 {
 	return CardToString(*this);
 }
 
-}
-
-namespace ultralight
-{
-
-void tCard::push(std::vector<std::uint8_t> sector)
-{
-	sector.resize(SectorSize);
-	m_Payload = sector;
-}
-
-void tCard::push_back_block(std::vector<std::uint8_t> block)
-{
-	block.resize(BlockSize);
-	m_Payload.insert(m_Payload.end(), block.begin(), block.end());
-}
-
-void tCard::push_back_block(tBlock block)
-{
-	m_Payload.insert(m_Payload.end(), block.begin(), block.end());
-}
-
-std::optional<tUID> tCard::GetUID() const
+std::optional<tUID> tCardUL::GetUID() const
 {
 	if (!good())
 		return {};
@@ -451,55 +480,75 @@ std::optional<tUID> tCard::GetUID() const
 	{
 		if (i == 3 || i == 8) // UID check bytes
 			continue;
-		*UIDBegin++ = m_Payload[i];
+		*UIDBegin++ = m_Blocks[0][i];
 	}
 	return UID;
 }
 
-tLock tCard::GetLock() const
+tLock tCardUL::GetLock() const
 {
 	if (!good())
 		return {};
-	const auto LockIter = m_Payload.begin() + LockPos;
+	const auto LockIter = m_Blocks[0].begin() + LockPos;
 	tLock Lock;
 	std::copy(LockIter, LockIter + 2, reinterpret_cast<std::uint8_t*>(&Lock.Value));
 	return Lock;
 }
 
-void tCard::SetLock(tLock lock)
+void tCardUL::SetLock(tLock lock)
 {
 	if (!good())
 		return;
-	const auto LockIter = m_Payload.begin() + LockPos;
+	const auto LockIter = m_Blocks[0].begin() + LockPos;
 	std::copy((std::uint8_t*)&lock.Value, (std::uint8_t*)&lock.Value + sizeof(lock.Value), LockIter);
 }
 
-std::optional<tBlock> tCard::GetBlock(tBlockID blockID) const
+std::optional<tBlock> tCardUL::GetBlock(std::size_t blockIdx) const
+{
+	if (!good() || blockIdx >= m_Blocks.size())
+		return {};
+	return m_Blocks[blockIdx];
+}
+
+bool tCardUL::SetBlock(std::size_t blockIdx, const tBlock& block)
+{
+	if (blockIdx >= m_Blocks.size())
+		return false;
+	m_Blocks[blockIdx] = block;
+	return true;
+}
+
+bool tCardUL::SetBlock(std::size_t blockIdx, const tBlockCRC& block)
+{
+	if (blockIdx >= m_Blocks.size()) // [TBD] Check CRC
+		return false;
+	std::copy_n(block.begin(), std::min(block.size(), m_Blocks[blockIdx].size()), m_Blocks[blockIdx].begin());
+	return true;
+}
+
+std::vector<std::uint8_t> tCardUL::GetUserMemory() const
 {
 	if (!good())
 		return {};
-	std::size_t BlockPos = static_cast<std::size_t>(blockID) * BlockSize;
-	tBlock Block{};
-	std::copy_n(m_Payload.begin() + BlockPos, Block.size(), Block.begin());
-	return Block;
+	std::vector<std::uint8_t> Payload;
+	for (std::size_t i = 1; i < m_Blocks.size(); ++i) // Block_0_System is not a part of the payload
+		Payload.insert(Payload.end(), m_Blocks[i].begin(), m_Blocks[i].end());
+	return Payload;
 }
 
-std::vector<std::uint8_t> tCard::GetUserMemory() const
-{
-	if (!good())
-		return {};
-	return std::vector<std::uint8_t>(m_Payload.begin() + BlockSize, m_Payload.end());
-}
-
-void tCard::SetUserMemory(const std::vector<std::uint8_t>& data)
+void tCardUL::SetUserMemory(const std::vector<std::uint8_t>& data)
 {
 	if (!good() || data.size() != UserMemorySize)
 		return;
-	m_Payload.resize(SystemMemorySize);
-	m_Payload.insert(m_Payload.end(), data.begin(), data.end());
+	for (std::size_t blockIdx = 1, dataIdx = 0; blockIdx < m_Blocks.size() && dataIdx < data.size(); ++blockIdx)
+	{
+		std::size_t Size = std::min(data.size() - dataIdx, m_Blocks[blockIdx].size());
+		std::copy_n(data.begin() + dataIdx, Size, m_Blocks[blockIdx].begin());
+		dataIdx += Size;
+	}
 }
 
-std::size_t tCard::GetUserMemoryUnlockedSize() const
+std::size_t tCardUL::GetUserMemoryUnlockedSize() const
 {
 	if (!good())
 		return 0;
@@ -513,42 +562,44 @@ std::size_t tCard::GetUserMemoryUnlockedSize() const
 	return PageUnlocked * PageSize;
 }
 
-std::vector<std::uint8_t> tCard::ReadUserMemoryUnlocked()
+std::vector<std::uint8_t> tCardUL::ReadUserMemoryUnlocked()
 {
 	std::size_t Size = GetUserMemoryUnlockedSize();
 	if (!Size)
 		return {};
 	std::vector<std::uint8_t> Data(Size, 0);
 	tLock Lock = GetLock();
-	for (int i = 0, dataIndex = 0; i < 16 && dataIndex < Size; ++i) // 14 pages are for User Memory
+	for (int i = 4, dataIdx = 0; i < 16 && dataIdx < Size; ++i) // 12 pages are for User Memory
 	{
 		if (!IsPageAvailable(Lock, i))
 			continue;
-
-		for (int j = 0; j < PageSize; ++j)
-			Data[dataIndex++] = m_Payload[i * PageSize + j];
+		std::size_t BlockIdx = GetBlockIdxForPage(i);
+		std::size_t BlockPos = (i - (BlockIdx * PageSize)) * PageSize;
+		std::copy_n(m_Blocks[BlockIdx].begin() + BlockPos, PageSize, Data.begin() + dataIdx);
+		dataIdx += PageSize;
 	}
 	return Data;
 }
 
-void tCard::WriteUserMemoryUnlocked(std::vector<std::uint8_t> data)
+void tCardUL::WriteUserMemoryUnlocked(std::vector<std::uint8_t> data)
 {
 	std::size_t Size = GetUserMemoryUnlockedSize();
 	if (!Size)
 		return;
 	data.resize(Size, 0);
 	tLock Lock = GetLock();
-	for (int i = 0, dataIndex = 0; i < 16 && dataIndex < Size; ++i) // 14 pages are for User Memory
+	for (int i = 4, dataIdx = 0; i < 16 && dataIdx < Size; ++i) // 12 pages are for User Memory
 	{
 		if (!IsPageAvailable(Lock, i))
 			continue;
-
-		for (int j = 0; j < PageSize; ++j)
-			m_Payload[i * PageSize + j] = data[dataIndex++];
+		std::size_t BlockIdx = GetBlockIdxForPage(i);
+		std::size_t BlockPos = (i - (BlockIdx * PageSize)) * PageSize;
+		std::copy_n(data.begin() + dataIdx, PageSize, m_Blocks[BlockIdx].begin() + BlockPos);
+		dataIdx += PageSize;
 	}
 }
 
-std::string tCard::ToJSON() const
+std::string tCardUL::ToJSON() const
 {
 	std::stringstream SStr;
 	SStr << "{";
@@ -558,14 +609,26 @@ std::string tCard::ToJSON() const
 	std::optional<tUID> UID = GetUID();
 	if (UID.has_value())
 		SStr << "\"uid\":\"" << ToStringHEX(*UID) << "\",";
-	SStr << "\"payload\":\"" << ToStringHEX(m_Payload) << "\",";
-	SStr << "\"available\":\"" << std::dec << GetUserMemoryUnlockedSize() << "\"";
-	if (!m_Status.empty())
-		SStr << ",\"status\":\"" << m_Status << '\"';
+	SStr << "\"system\":\"" << ToStringHEX(m_Blocks[0]) << "\",";
+	SStr << "\"payload\":\"" << ToStringHEX(GetUserMemory()) << "\",";
+	SStr << "\"available\":\"" << std::dec << GetUserMemoryUnlockedSize() << "\",";
+	SStr << "\"status\":\"" << to_string(m_Status) << '\"';
 	SStr << '}';
 	return SStr.str();
 }
 
+std::size_t tCardUL::GetBlockIdxForPage(int pageIdx)
+{
+	if (pageIdx < 4)
+		return 0;
+	if (pageIdx < 8)
+		return 1;
+	if (pageIdx < 12)
+		return 2;
+	if (pageIdx < 16)
+		return 3;
+	return 3; // [TBD] an exception can be thrown, this value is invalid
 }
+
 }
 }

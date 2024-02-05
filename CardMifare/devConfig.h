@@ -1,7 +1,12 @@
 #pragma once
 #include <utilsBase.h>
+#include <utilsCardMIFARE.h>
+
+#include <string_view>
 
 using tVectorUInt8 = utils::tVectorUInt8;
+
+namespace card_mfr = utils::card_MIFARE;
 
 //constexpr char Version[] = "TWR.0.1.1";
 

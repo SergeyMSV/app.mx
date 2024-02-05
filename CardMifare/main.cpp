@@ -15,6 +15,115 @@
 
 namespace TWR = utils::packet_TWR;
 
+enum class tCardConfigType
+{
+	None,
+	Email,
+	GoogleDisk,
+};
+
+class tCard1KBase : public card_mfr::tCardClassic1K
+{
+	dev::tMFRC522* m_pCardRW = nullptr;
+
+public:
+	tCard1KBase() = delete;
+	explicit tCard1KBase(dev::tMFRC522* cardRW) :m_pCardRW(cardRW)
+	{
+		if (m_pCardRW == nullptr)
+			return;
+
+		if (ReadCard(card_mfr::tKeyID::A, {}, false))
+			return;
+
+		if (ReadCard(card_mfr::tKeyID::A, card_mfr::tKey(0xa5a4a3a2a1a0), true))
+			return;
+	}
+
+	tCardConfigType GetType() const { return tCardConfigType::Email; }
+
+protected:
+	std::optional<card_mfr::tSector> Card_ReadSector(std::size_t sectorIdx, card_mfr::tKeyID keyID, card_mfr::tKey key) override
+	{
+		return m_pCardRW->GetCardClassicSector(static_cast<int>(sectorIdx), keyID, key);
+	}
+
+private:
+	bool ReadCard(card_mfr::tKeyID keyID, card_mfr::tKey key, bool cardEn)
+	{
+		if (cardEn)
+		{
+			if (!m_pCardRW->IsAnyCardPresent())
+				return false;
+
+			std::vector<std::uint8_t> CardID = m_pCardRW->ReadCardID();
+			if (CardID.empty())
+			{
+				m_pCardRW->HaltCard();
+				return false;
+			}
+		}
+
+		for (int i = 0; i < GetSectorQty(); ++i)
+		{
+			std::optional<card_mfr::tSector> Sector = ReadSector(i, keyID, key);
+			if (!Sector.has_value() || Sector->GetStatus() != card_mfr::tStatus::OK)
+				break;
+
+			// [TBD] parse MAD and detect type of card in terms of applications
+		}
+		m_pCardRW->HaltCard();
+		return this->good();
+	}
+};
+
+class tCardConfig : public tCard1KBase
+{
+public:
+	tCardConfigType GetType() const { return tCardConfigType::Email; }
+};
+
+class tCardConfigEmail : private tCardConfig
+{
+public:
+	std::string GetUser() { return {}; }
+	bool SetUser(const std::string& val) { return false; }
+	std::string GetPassword() { return {}; }
+	bool SetPassword(const std::string& val) { return {}; }
+	std::string GetEmail() { return {}; }
+	bool SetEmail(const std::string& val) { return {}; }
+	std::string GetHost() { return {}; }
+	bool SetHost(const std::string& val) { return {}; }
+	std::uint16_t GetPort() { return {}; }
+	void SetPort(std::uint16_t val) {  }
+	bool GetTLS() { return false; }
+	void SetTLS(bool val) { }
+	bool GetAuth() { return false; }
+	void GetAuth(bool val) {  }
+	bool Write()
+	{
+
+		return false;
+	}
+};
+
+//void WriteCard(card_mfr::tCard1K& card)
+//{
+//	static bool OnceDoneIt = false;
+//	if (OnceDoneIt)
+//		return;
+//	OnceDoneIt = true;
+//
+//	tCardConfig CardConfig = static_cast<tCardConfig>(card);
+//
+//	card_mfr::tSector Sector = CardConfig.GetSector(2);
+//	//Sector.Write()
+//
+//	std::cout << "WriteCard: " << (int)CardConfig.GetType() << '\n';
+//
+//	// [TBD] Do it here ...
+//}
+
 int main(int argc, char* argv[])
 {
 	try
@@ -46,7 +155,7 @@ int main(int argc, char* argv[])
 		std::cout << "Scan PICC to see UID, SAK, type, and data blocks...\n";
 
 		
-		utils::card_MIFARE::ultralight::tCard CardToWrite{}; // [TBD] - it needs mutex
+		card_mfr::tCardUL CardToWrite{}; // [TBD] - it needs mutex
 		share::tPipeI<std::string> PipeI(DsConfig.GetPipe().Path, [&](const std::string& value)
 			{
 				// [TBD]
@@ -95,15 +204,15 @@ int main(int argc, char* argv[])
 
 			switch (DevCardRW.GetCardType())
 			{
-			case card::tCardType::MIFARE_UL:
+			case card_mfr::tCardType::MIFARE_UL:
 			{
-				card_ul::tCard Card = DevCardRW.GetCard_MIFARE_Ultralight();
+				card_mfr::tCardUL Card = DevCardRW.GetCardUltralight();
 				std::cout << Card.ToJSON() << '\n';
 				break;
 			}
-			case card::tCardType::MIFARE_1K:
+			case card_mfr::tCardType::MIFARE_1K:
 			{
-				card_classic::tCard1K Card = DevCardRW.GetCard_MIFARE_Classic1K(card_classic::tKeyID::A, {});
+				tCard1KBase Card(&DevCardRW);
 				std::cout << Card.ToJSON() << '\n';
 				break;
 			}

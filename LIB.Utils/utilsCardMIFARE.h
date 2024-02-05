@@ -25,17 +25,23 @@ enum class tCardType : std::uint8_t
 	MIFARE_UL,
 };
 
+enum class tStatus : std::uint8_t
+{
+	Default,		// the sector is just created, and not filled
+	OK,				// the sector read and filled correctly
+	ErrAuth = 0x80,	// Authentification failed
+	ErrRead,		// Reading failed
+};
+
 std::string to_string(tCardType value);
 
 using tUID = std::array<std::uint8_t, 7>;
 
-namespace classic
-{
+using tBlock = std::array<std::uint8_t, 16>;
+using tBlockCRC = std::array<std::uint8_t, 18>;
 
 enum class tKeyID { None, A, B, };
-enum class tBlockID { Block_0, Block_1, Block_2, Block_3_Trailer, };
 
-using tBlock = std::array<std::uint8_t, 16>;
 using tNUID = std::array<std::uint8_t, 4>;
 
 class tAccess
@@ -94,18 +100,28 @@ public:
 	bool IsW_Access(tKeyID keyID) const;
 	//bool IsR_UserData(tKeyID keyID) const { return true; }
 	//bool IsW_UserData(tKeyID keyID) const { return true; }
-	bool IsR_Data(tKeyID keyID, tBlockID blockID) const;
-	bool IsW_Data(tKeyID keyID, tBlockID blockID) const;
-	bool IsIncr_Data(tKeyID keyID, tBlockID blockID) const;
-	bool IsDecr_Data(tKeyID keyID, tBlockID blockID) const;
+	bool IsR_Data(std::size_t sectorIdx, std::size_t blockIdx, tKeyID keyID) const;
+	bool IsW_Data(std::size_t sectorIdx, std::size_t blockIdx, tKeyID keyID) const;
+	bool IsIncr_Data(std::size_t sectorIdx, std::size_t blockIdx, tKeyID keyID) const;
+	bool IsDecr_Data(std::size_t sectorIdx, std::size_t blockIdx, tKeyID keyID) const;
 	//bool IsTransportConfiguration() const { m_Access.Value == 0x698007FF; } // and both Key A and B shall be equal to 0xFFFFFFFFFFFF
 
 	std::uint32_t GetValue() const { return m_Access.Value; }
 
 	std::string ToString() const;
 
+	enum class tCluster
+	{
+		_0,
+		_1,
+		_2,
+		_3_Trailer
+	};
+	static tCluster GetCluster(std::size_t sectorIdx, std::size_t blockIdx);
+
 private:
-	tAccessBlock GetAccessBlock(tBlockID blockID) const;
+	tAccessBlock GetAccessBlock(std::size_t sectorIdx, std::size_t blockIdx) const;
+	static bool IsTrailer(std::size_t sectorIdx, std::size_t blockIdx);
 };
 
 class tKey
@@ -118,7 +134,14 @@ class tKey
 public:
 	tKey() = default;
 	explicit tKey(std::uint64_t value);
-	tKey(std::vector<std::uint8_t>::const_iterator itBegin, std::vector<std::uint8_t>::const_iterator itEnd);
+	template<class T>
+	tKey(T itBegin, T itEnd)
+	{
+		if (std::distance(itBegin, itEnd) != KeySize)
+			m_Value = ValueMAX;
+		m_Value = 0;
+		std::copy_n(itBegin, std::min(KeySize, sizeof(m_Value)), (char*)&m_Value);
+	}
 
 	static constexpr std::size_t size() { return KeySize; }
 
@@ -134,58 +157,80 @@ public:
 
 class tSector
 {
-	static constexpr std::size_t SectorSize = 64;
 	static constexpr std::size_t BlockSize = 16;
-	static constexpr std::size_t AccessPos = 54;
-	static constexpr std::size_t KeyAPos = 48;
-	static constexpr std::size_t KeyBPos = 58;
+	static constexpr std::size_t AccessBlockPos = 6;
+	static constexpr std::size_t KeyABlockPos = 0;
+	static constexpr std::size_t KeyBBlockPos = 10;
 
 	tKeyID m_KeyID = tKeyID::None;
-	tKey m_Key{};
-	std::vector<std::uint8_t> m_Payload;
-	std::string m_Status;
+	tStatus m_Status = tStatus::Default;
+
+protected:
+	std::vector<tBlock> m_Blocks;
 
 public:
 	tSector() = default;
-	explicit tSector(tKeyID keyID) :m_KeyID(keyID) {}
-	tSector(tKeyID keyID, const tKey& key) :m_KeyID(keyID), m_Key(key) {}
-	tSector(tKeyID keyID, const tKey& key, const std::vector<std::uint8_t>& sector);
+	tSector(std::size_t blockQty, tKeyID keyID);
+	tSector(std::size_t blockQty, tKeyID keyID, tStatus status);
 	tSector(const tSector& val) = default;
 
-	std::string GetStatus() const { return m_Status; }
-	void SetStatus(const std::string& val) { m_Status = val; }
+	tStatus GetStatus() const { return m_Status; }
+	void SetStatus(tStatus val) { m_Status = val; }
 
-	tKey GetKey() const { return m_Key; }
+	bool good() const { return m_KeyID != tKeyID::None && GetAccess().good(); } // sector payload size
+	std::size_t size() const { return m_Blocks.size(); }
 
-	void push(std::vector<std::uint8_t> sector);
-	void push_back_block(std::vector<std::uint8_t> block);
-	void push_back_block(tBlock block);
-	bool good() const { return m_KeyID != tKeyID::None && m_Payload.size() == SectorSize && GetAccess().good(); } // sector payload size
 	tAccess GetAccess() const;
 	std::optional<tKey> GetKeyA() const { return {}; }
 	std::optional<tKey> GetKeyB() const;
-	std::optional<tBlock> GetBlock(tBlockID blockID) const;
+	std::optional<tBlock> GetBlock(std::size_t blockIdx) const;
+	bool SetBlock(std::size_t blockIdx, const tBlock& block);
+	bool SetBlock(std::size_t blockIdx, const tBlockCRC& block);
 
 	std::string ToJSON() const;
 	std::string ToString() const;
 
 private:
 	tKey GetKey(int pos) const;
+	virtual std::vector<std::uint8_t> GetPayload() const;
+	virtual std::optional<tBlock> GetBlockSystem() const { return {}; }
+	std::optional<tBlock> GetBlockTrailer() const { return GetBlock(m_Blocks.size() - 1); }
 };
 
-class tSector0 : public tSector
+class tSector0 : public tSector // This kind of sector contains manufacturer data.
 {
 public:
 	tSector0() = default;
-	explicit tSector0(tKeyID keyID) :tSector(keyID) {}
-	tSector0(tKeyID keyID, const tKey& key) :tSector(keyID, key) {}
-	tSector0(tKeyID keyID, const tKey& key, const std::vector<std::uint8_t>& sector) :tSector(keyID, key, sector) {}
+	explicit tSector0(tKeyID keyID) :tSector(4, keyID) {}
+	tSector0(tKeyID keyID, tStatus status) :tSector(4, keyID, status)	{}
 	tSector0(const tSector& val) :tSector(val) {}
 
 	std::optional<tNUID> GetNUID() const;
 	std::optional<tUID> GetUID() const;
 
 	std::string ToString() const;
+
+private:
+	std::vector<std::uint8_t> GetPayload() const override;
+	std::optional<tBlock> GetBlockSystem() const override { return GetBlock(0); }
+};
+
+class tSector4 : public tSector // This kind of sector consists of 4 blocks.
+{
+public:
+	tSector4() = default;
+	explicit tSector4(tKeyID keyID) :tSector(4, keyID) {}
+	tSector4(tKeyID keyID, tStatus status) :tSector(4, keyID, status) {}
+	tSector4(const tSector& val) :tSector(val) {}
+};
+
+class tSector16 : public tSector // This kind of sector consists of 16 blocks.
+{
+public:
+	tSector16() = default;
+	explicit tSector16(tKeyID keyID) :tSector(16, keyID) {}
+	tSector16(tKeyID keyID, tStatus status) :tSector(16, keyID, status) {}
+	tSector16(const tSector& val) :tSector(val) {}
 };
 
 template <tCardType CardType, std::size_t SectorQty>
@@ -199,13 +244,6 @@ public:
 
 	bool good() const { return static_cast<tSector0>(m_Sectors[0]).good(); }
 
-	void insert(std::size_t index, const tSector& sector) // [TBD] std::move
-	{
-		if (index >= SectorQty)
-			return;
-		m_Sectors[index] = sector; // [TBD] std::move
-	}
-
 	std::vector<std::uint8_t> GetID() const { return m_ID; };
 	void SetID(const std::vector<std::uint8_t>& id) { m_ID = id; }
 
@@ -214,41 +252,57 @@ public:
 	std::optional<tUID> GetUID() const { return static_cast<tSector0>(m_Sectors[0]).GetUID(); }
 
 	static constexpr std::size_t GetSectorQty() { return SectorQty; }
-	tSector GetSector(std::size_t index) const
+	tSector GetSector(std::size_t sectorIdx) const
 	{
-		if (index < SectorQty)
-			return m_Sectors[index];
+		if (sectorIdx < SectorQty)
+			return m_Sectors[sectorIdx];
 		return {};
 	}
+	void SetSector(std::size_t sectorIdx, const tSector& sector) // [TBD] std::move
+	{
+		if (sectorIdx >= SectorQty)
+			return; // [TBD] may be an exception should be thrown
+		if (sectorIdx < 32 && sector.size() != 4)
+			return; // [TBD] may be an exception should be thrown
+		if (sectorIdx > 31 && sectorIdx < 40 && sector.size() != 16)
+			return; // [TBD] may be an exception should be thrown
+		m_Sectors[sectorIdx] = sector; // [TBD] std::move
+	}
+
+	std::optional<tSector> ReadSector(std::size_t sectorIdx, tKeyID keyID, tKey key)
+	{
+		std::optional<tSector> Sector = Card_ReadSector(sectorIdx, keyID, key);
+		if (Sector.has_value())
+			SetSector(sectorIdx, *Sector);
+		return Sector;
+	}
+
+protected:
+	virtual std::optional<tSector> Card_ReadSector(std::size_t sectorIdx, tKeyID keyID, tKey key) { return {}; }
 };
 
-class tCardMini : public tCardClassic<tCardType::MIFARE_Mini, 5>
+class tCardClassicMini : public tCardClassic<tCardType::MIFARE_Mini, 5>
 {
 public:
 	std::string ToJSON() const;
 	std::string ToString() const;
 };
 
-class tCard1K : public tCardClassic<tCardType::MIFARE_1K, 16>
+class tCardClassic1K : public tCardClassic<tCardType::MIFARE_1K, 16>
 {
 public:
 	std::string ToJSON() const;
 	std::string ToString() const;
 };
 
-class tCard4K : public tCardClassic<tCardType::MIFARE_4K, 40>
+class tCardClassic4K : public tCardClassic<tCardType::MIFARE_4K, 40>
 {
+public:
 	std::string ToJSON() const;
 	std::string ToString() const;
 };
 
-}
-
-namespace ultralight
-{
-
-enum class tBlockID { Block_0_System, Block_1, Block_2, Block_3, };
-using tBlock = std::array<std::uint8_t, 16>;
+// --- Ultralight
 
 union tLock
 {
@@ -274,7 +328,7 @@ union tLock
 	std::uint16_t Value = 0;
 };
 
-class tCard
+class tCardUL
 {
 	static constexpr std::size_t SectorSize = 64;
 	static constexpr std::size_t BlockSize = 16;
@@ -284,25 +338,17 @@ class tCard
 	static constexpr std::size_t LockPos = 10;
 
 	std::vector<std::uint8_t> m_ID;
-	std::vector<std::uint8_t> m_Payload;
-	std::string m_Status;
+	std::array<tBlock, 4> m_Blocks{};
+	tStatus m_Status = tStatus::Default;
 
 public:
-	tCard() = default;
-	explicit tCard(const std::vector<std::uint8_t>& id)
-		:m_ID(id)
-	{}
-	tCard(const std::vector<std::uint8_t>& id, const std::vector<std::uint8_t>& payload)
-		:m_ID(id), m_Payload(payload)
-	{}
+	tCardUL() = default;
+	explicit tCardUL(const std::vector<std::uint8_t>& id) :m_ID(id) {}
 
-	std::string GetStatus() const { return m_Status; }
-	void SetStatus(const std::string& val) { m_Status = val; }
+	tStatus GetStatus() const { return m_Status; }
+	void SetStatus(tStatus val) { m_Status = val; }
 
-	void push(std::vector<std::uint8_t> sector);
-	void push_back_block(std::vector<std::uint8_t> block);
-	void push_back_block(tBlock block);
-	bool good() const { return m_Payload.size() == SectorSize; }
+	bool good() const { return true; }// return m_Payload.size() == SectorSize; [TBD] remove
 
 	std::vector<std::uint8_t> GetID() const { return m_ID; };
 	void SetID(const std::vector<std::uint8_t>& id) { m_ID = id; }
@@ -312,7 +358,10 @@ public:
 
 	tLock GetLock() const;
 	void SetLock(tLock lock);
-	std::optional<tBlock> GetBlock(tBlockID blockID) const;
+	std::optional<tBlock> GetBlock(std::size_t blockIdx) const;
+	bool SetBlock(std::size_t blockIdx, const tBlock& block);
+	bool SetBlock(std::size_t blockIdx, const tBlockCRC& block);
+
 	std::vector<std::uint8_t> GetUserMemory() const;
 	void SetUserMemory(const std::vector<std::uint8_t>& data); // data size must be equal to UserMemorySize
 	std::size_t GetUserMemoryUnlockedSize() const;
@@ -320,10 +369,13 @@ public:
 	void WriteUserMemoryUnlocked(std::vector<std::uint8_t> data); // data size must be less or equal to UserMemorySize which is not locked
 
 	std::string ToJSON() const;
+	//std::string ToString() const;
 
-	static bool IsPageAvailable(tLock lock, std::size_t pageIndex) { return  pageIndex >= 4 && pageIndex < 16 && !(lock.Value & (1 << pageIndex)); }
+	static bool IsPageAvailable(tLock lock, std::size_t pageIdx) { return  pageIdx >= 4 && pageIdx < 16 && !(lock.Value & (1 << pageIdx)); }
+
+private:
+	static std::size_t GetBlockIdxForPage(int pageIdx);
 };
 
-}
 }
 }

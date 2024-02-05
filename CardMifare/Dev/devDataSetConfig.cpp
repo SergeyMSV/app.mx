@@ -13,11 +13,12 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	boost::property_tree::json_parser::read_json(fileNameMX, PTreeMX);
 	m_Platform = share_config::tPlatform(PTreeMX);
 	m_Pipe = share_config::tPipe("card_mifare", m_Platform.ID, PTreeMX);
+	const std::string SPI_ID = PTreeMX.get<std::string>("spi_mifare.id", "");
+	m_SPI_RST = share_config::tGPIOPort("spi_mifare.reset", PTreeMX);
 
 	boost::property_tree::ptree PTreeConfig;
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
-	m_SPI = share_config::tSPIPort("spi", m_Platform.ID, PTreeConfig);
-	m_SPI_RST = share_config::tGPIOPort("spi-rst", m_Platform.ID, PTreeConfig);
+	m_SPI = share_config::tSPIPort(SPI_ID, "spi_mifare", PTreeConfig);
 	m_Log = config::tLog(PTreeConfig);
 }
 

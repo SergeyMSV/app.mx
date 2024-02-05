@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utilsCardMIFARE.h>
+#include <devConfig.h>
 
 #include <mutex>
 #include <string>
@@ -12,11 +12,11 @@ namespace dev
 class tDataSet
 {
 	mutable std::mutex m_mtx;
-	utils::card_MIFARE::ultralight::tCard m_Card;
+	card_mfr::tCardUL m_Card;
 
 public:
-	utils::card_MIFARE::ultralight::tCard GetCard() const;
-	void SetCard(const utils::card_MIFARE::ultralight::tCard& value);
+	card_mfr::tCardUL GetCard() const;
+	void SetCard(const card_mfr::tCardUL& value);
 	void ClearCard();
 };
 
