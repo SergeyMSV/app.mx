@@ -2,13 +2,13 @@
 
 #include "main.h"
 
-class tTWRServer : public share_network_udp::UDP_Server
+class tTWRServer : public share_network_udp::tUDPServerAsync
 {
 	tVectorUInt8 m_ReceivedData;
 
 public:
 	tTWRServer(boost::asio::io_context& ioc, std::uint16_t port)
-		:UDP_Server(ioc, port)
+		:tUDPServerAsync(ioc, port)
 	{}
 
 	tVectorUInt8 OnReceived(const tVectorUInt8& data) override;

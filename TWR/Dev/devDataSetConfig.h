@@ -6,8 +6,6 @@
 
 #include <string>
 
-#include <boost/property_tree/ptree.hpp>
-
 namespace dev
 {
 
