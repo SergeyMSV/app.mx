@@ -17,7 +17,7 @@ xcopy /Y %LIB_UTILS%\utilsPacketNMEAType.*
 xcopy /Y %LIB_UTILS%\utilsPacketStar.*
 xcopy /Y %LIB_UTILS%\utilsPacketTWR.*
 xcopy /Y %LIB_UTILS%\utilsPath.*
-xcopy /Y %LIB_UTILS%\utilsSerialPort.*
+xcopy /Y %LIB_UTILS%\utilsPortSerial.*
 xcopy /Y %LIB_UTILS%\utilsShell.*
 xcopy /Y %LIB_UTILS%\utilsWeb.*
 
@@ -27,5 +27,9 @@ mkdir %ARCH_7z2201%
 xcopy /Y /S %LIB_UTILS%\%ARCH_7z2201%\* %ARCH_7z2201%\
 del /Q %ARCH_7z2201%\*_Test.cpp
 rmdir /S /Q %ARCH_7z2201%\C\Util
+
+rem DEPRECATED libs. It prevents from deleting utilsSerialPort.
+copy utilsSerialPort.h_dep utilsSerialPort.h
+rem ---------------
 
 pause
