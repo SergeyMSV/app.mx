@@ -16,7 +16,7 @@ xcopy /Y %LIB_UTILS%\utilsPacketNMEAType.*
 xcopy /Y %LIB_UTILS%\utilsPacketStar.*
 xcopy /Y %LIB_UTILS%\utilsPacketTWR.*
 xcopy /Y %LIB_UTILS%\utilsPath.*
-xcopy /Y %LIB_UTILS%\utilsSerialPort.*
+xcopy /Y %LIB_UTILS%\utilsPortSerial.*
 xcopy /Y %LIB_UTILS%\utilsShell.*
 xcopy /Y %LIB_UTILS%\utilsWeb.*
 
