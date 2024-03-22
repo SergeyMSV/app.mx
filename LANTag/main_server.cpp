@@ -2,15 +2,10 @@
 #include <shareLANTag.h>
 #include <utilsLinux.h>
 
-tVectorUInt8 tLANTagServer::OnReceived(const tVectorUInt8& data)
+void tLANTagServer::OnReceived(const share_network_udp::tEndpoint& endpoint, const tVectorUInt8& data)
 {
-	return HandlePacket(data);
-}
-
-tVectorUInt8 tLANTagServer::HandlePacket(const tVectorUInt8& cmd)
-{
-	if (cmd.size() > 20) // [#] max. size of an incoming cmd
-		return {};
+	if (data.size() > 20) // [#] max. size of an incoming data
+		return;
 
 	auto ToVector = [](const std::string& ans)->tVectorUInt8
 	{
@@ -19,17 +14,16 @@ tVectorUInt8 tLANTagServer::HandlePacket(const tVectorUInt8& cmd)
 		return Data;
 	};
 
-	const std::string CmdStr(cmd.begin(), cmd.end());
+	const std::string CmdStr(data.begin(), data.end());
 	if (CmdStr == "get_tag")
 	{
 		std::shared_ptr<dev::tDataSetConfig> DataSetConfig = m_DataSetConfig.lock();
 		if (!DataSetConfig)
-			return {};
+			return;
 		share::tLANTag Tag(DataSetConfig->GetPlatform().ID, utils::linux::CmdLine("hostname"));
-		return ToVector(Tag.ToJSON());
+		Send(endpoint, ToVector(Tag.ToJSON()));
 	}
-
-	return {}; // Send nothing in response to unknown request.
+	// Send nothing in response to unknown request.
 }
 
 void tLANTagServer::OnSent(boost::shared_ptr<tVectorUInt8> packet, const boost::system::error_code& error, std::size_t bytes_transferred)
