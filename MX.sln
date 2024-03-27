@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LANTagLocator", "LANTagLoca
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dallas", "Dallas\Dallas.vcxproj", "{C0371063-0FD3-4451-85E2-F3BE9898C350}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DallasRW", "DallasRW\DallasRW.csproj", "{F176ED38-D90B-4A53-B059-3742EBF93887}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +182,18 @@ Global
 		{C0371063-0FD3-4451-85E2-F3BE9898C350}.Release|x64.Build.0 = Release|x64
 		{C0371063-0FD3-4451-85E2-F3BE9898C350}.Release|x86.ActiveCfg = Release|Win32
 		{C0371063-0FD3-4451-85E2-F3BE9898C350}.Release|x86.Build.0 = Release|Win32
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Debug|x64.Build.0 = Debug|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Debug|x86.Build.0 = Debug|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Release|x64.ActiveCfg = Release|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Release|x64.Build.0 = Release|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Release|x86.ActiveCfg = Release|Any CPU
+		{F176ED38-D90B-4A53-B059-3742EBF93887}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
