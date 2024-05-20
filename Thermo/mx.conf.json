@@ -20,7 +20,7 @@
   },
   "uart": {
     "dallas": {
-      "id": "COM4"
+      "id": "COM7"
     }
   }
 }
