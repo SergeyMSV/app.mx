@@ -26,11 +26,7 @@
     <ClCompile Include="..\LIB.Share\shareConfig.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
-    <ClCompile Include="main_client.cpp" />
     <ClCompile Include="main_server.cpp" />
-    <ClCompile Include="..\LIB.Share\shareLANTag.cpp">
-      <Filter>LIB.Share</Filter>
-    </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
@@ -55,9 +51,6 @@
     </ClInclude>
     <ClInclude Include="main.h" />
     <ClInclude Include="main_server.h" />
-    <ClInclude Include="..\LIB.Share\shareLANTag.h">
-      <Filter>LIB.Share</Filter>
-    </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsLinux.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>

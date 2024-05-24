@@ -160,17 +160,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
-    <ClCompile Include="..\LIB.Share\shareLANTag.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="main_client.cpp" />
     <ClCompile Include="main_server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
-    <ClInclude Include="..\LIB.Share\shareLANTag.h" />
     <ClInclude Include="..\LIB.Share\shareNetwork.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
