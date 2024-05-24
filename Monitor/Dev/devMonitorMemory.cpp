@@ -199,7 +199,7 @@ std::string tMonitorMemory::GetHTMLTableMemFree() const
 		}
 		else
 		{
-			Table << std::put_time(&Time, "...-%m-%d") << "</td>";
+			Table << std::put_time(&Time, "...-%m-%d") << "</td>"; // это вообще не так выглядит... точек нет, нуля нет
 		}		
 		Table << "<td" << share::GetHTMLBgColour(StatFree) << ">" << i.Free << "</td>";
 		Table << "<td" << share::GetHTMLBgColour(StatUsed) << ">" << i.Used << "</td>";
