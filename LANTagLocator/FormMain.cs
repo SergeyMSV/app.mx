@@ -8,12 +8,11 @@ namespace LANTagLocator
 {
     public partial class FormMain : Form
     {
-        private string m_LogFileName;
+        UdpClient m_UDPLocator;
+
         public FormMain()
         {
             InitializeComponent();
-
-            m_LogFileName = "LANTagLocator";
 
             Task.Run(() => { Locator(); });
             Task.Run(() => { ListViewTagClean(); });
@@ -30,7 +29,7 @@ namespace LANTagLocator
                 if (AddrsLocal.Count != 1) // In this case only one is allowed.
                 {
                     foreach (IPAddress ip in AddrsLocal) // Look for in all available networks.
-                        utils.Log.WriteTrace(m_LogFileName, "IPv4: " + ip.ToString());
+                        utils.Log.WriteTrace("IPv4: " + ip.ToString());
                     throw new Exception(string.Format("Found more than one network: {0}", AddrsLocal.Count));
                 }
 
@@ -39,37 +38,32 @@ namespace LANTagLocator
 
                 IPAddress IPAddrBroadcast = utils.Network.MakeBroadcast(IPAddr, SubnetMask);
 
-                Byte[] LocatorRequest = Encoding.ASCII.GetBytes("get_tag");
-
-                UdpClient UDPLocator = new UdpClient(Properties.Settings.Default.UDPPortLocal);
-                UDPLocator.EnableBroadcast = true; // In case of true, the client can send or receive broadcast packets.
-                UDPLocator.DontFragment = true;
+                m_UDPLocator = new UdpClient(Properties.Settings.Default.UDPPortLocal);
+                m_UDPLocator.EnableBroadcast = true; // In case of true, the client can send or receive broadcast packets.
+                m_UDPLocator.DontFragment = true;
 
                 Task.Run(async () =>
                 {
                     while (true)
                     {
-                        UdpReceiveResult RecvResult = await UDPLocator.ReceiveAsync();
-
+                        UdpReceiveResult RecvResult = await m_UDPLocator.ReceiveAsync();
                         Invoke(new Action(() => ListViewDataSet(RecvResult.RemoteEndPoint, RecvResult.Buffer))); // [TBD] is it OK ?
-
-                        //utils.Log.WriteTrace(m_LogFileName, "Receive from " + RecvResult.RemoteEndPoint.ToString(), RecvResult.Buffer);
+                        //utils.Log.WriteTrace("Receive from " + RecvResult.RemoteEndPoint.ToString(), RecvResult.Buffer);
                     }
                 });
 
+                Byte[] LocatorRequest = Encoding.ASCII.GetBytes("{\"cmd\":\"get_tag\"}");
+
                 while (true)
                 {
-                    UDPLocator.Send(LocatorRequest, LocatorRequest.Length, new IPEndPoint(IPAddrBroadcast, Properties.Settings.Default.UDPPortRemote));
-                    //UDPLocator.SendAsync(LocatorRequest, LocatorRequest.Length, new IPEndPoint(IPAddrBroadcast, Properties.Settings.Default.UDPPort));
-
-                    //utils.Log.WriteTrace(m_LogFileName, "Send", LocatorRequest);
-                    
+                    m_UDPLocator.Send(LocatorRequest, LocatorRequest.Length, new IPEndPoint(IPAddrBroadcast, Properties.Settings.Default.UDPPortRemote));
+                    //utils.Log.WriteTrace("Send", LocatorRequest);
                     Thread.Sleep(Properties.Settings.Default.TimePeriod);
                 }
             }
             catch (Exception ex)
             {
-                utils.Log.WriteError(m_LogFileName, ex, true);
+                utils.Log.WriteError(ex, true);
             }
         }
 
@@ -81,35 +75,49 @@ namespace LANTagLocator
 
                 string Message = Encoding.UTF8.GetString(DataRaw);
                 JsonNode Node = JsonNode.Parse(Message)!;
-                JsonNode NodePlatformID = Node!["platform_id"]!;
-                JsonNode NodeHostName = Node!["hostname"]!;
+                JsonNode NodeCmd = Node["cmd"]!;
+
+                if (NodeCmd == null || NodeCmd.ToString() != "get_tag")
+                    return;
+
+                JsonNode NodePlatformID = Node["platform_id"]!;
+                JsonNode NodeHostName = Node["hostname"]!;
+                JsonNode NodeUptime = Node["uptime"]!;
 
                 string RemoteEndPointStr = remoteEndPoint.Address.ToString();
 
+                var SetSubItem = (ListViewItem item, int index, JsonNode node) =>
+                {
+                    if (index < 0 || index >= item.SubItems.Count || node == null)
+                        return;
+                    item.SubItems[index].Text = node.ToString();
+                };
+
                 foreach (ListViewItem i in listViewTags.Items)
                 {
-                    if (i.Text != RemoteEndPointStr)
+                    if (i.Text != RemoteEndPointStr) // looking for a device string by IP-Address
                         continue;
-                    for (int si = 0; si < i.SubItems.Count; ++si)
-                    {
-                        switch (si)
-                        {
-                            case 1: i.SubItems[si].Text = NodePlatformID.ToString(); break;
-                            case 2: i.SubItems[si].Text = NodeHostName.ToString(); break;
-                        }
-                    }
+
+                    SetSubItem(i, 1, NodePlatformID);
+                    SetSubItem(i, 2, NodeHostName);
+                    SetSubItem(i, 3, NodeUptime);
+
                     i.Tag = DateTime.Now;
                     return;
                 }
 
+                // if no string found for the device - one should be created
+
                 ListViewItem item = new ListViewItem(RemoteEndPointStr); // DisplayIndex = 0
+                item.SubItems.Add("-----"); // DisplayIndex = 1; PlatformID
+                item.SubItems.Add("-----"); // DisplayIndex = 2; HostName
+                item.SubItems.Add("-----"); // DisplayIndex = 3; Uptime
+
+                SetSubItem(item, 1, NodePlatformID);
+                SetSubItem(item, 2, NodeHostName);
+                SetSubItem(item, 3, NodeUptime);
+
                 item.Tag = DateTime.Now;
-
-                if (NodePlatformID != null)
-                    item.SubItems.Add(NodePlatformID.ToString()); // DisplayIndex = 1
-
-                if (NodeHostName != null)
-                    item.SubItems.Add(NodeHostName.ToString()); // DisplayIndex = 2
 
                 listViewTags.Items.Add(item);
             }
@@ -127,6 +135,9 @@ namespace LANTagLocator
                 {
                     try
                     {
+                        if (this.Disposing || this.IsDisposed)
+                            return;
+
                         TimeSpan TimePeriodExpiration = Properties.Settings.Default.TimePeriod + new TimeSpan(0, 0, 1);
                         foreach (ListViewItem i in listViewTags.Items) // Remove expired items.
                         {
@@ -138,6 +149,37 @@ namespace LANTagLocator
                 }));
                 Thread.Sleep(500); // [#]
             }
+        }
+
+        void SendCmd(string cmdJSON)
+        {
+            if (m_UDPLocator == null)
+                return;
+
+            try
+            {
+                string IPAddr = "";
+                if (listViewTags.SelectedItems.Count == 1)
+                    IPAddr = listViewTags.SelectedItems[0].SubItems[0].Text; // IP-Address
+
+                Byte[] Req = Encoding.ASCII.GetBytes(cmdJSON);
+                m_UDPLocator.Send(Req, Req.Length, new IPEndPoint(IPAddress.Parse(IPAddr), Properties.Settings.Default.UDPPortRemote));
+
+            }
+            catch (Exception ex)
+            {
+                utils.Log.WriteError(ex, true);
+            }
+        }
+
+        private void toolStripMenuItemReboot_Click(object sender, EventArgs e)
+        {
+            SendCmd("{\"cmd\":\"reboot\"}");
+        }
+
+        private void toolStripMenuItemHalt_Click(object sender, EventArgs e)
+        {
+            SendCmd("{\"cmd\":\"halt\"}");
         }
     }
 }

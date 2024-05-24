@@ -1,4 +1,4 @@
-﻿// utilsLog: 2024-03-03
+﻿// utilsLog: 2024-04-12
 using System.Text;
 
 namespace utils
@@ -11,7 +11,7 @@ namespace utils
             {
                 StreamWriter Stream = File.AppendText(fileName);
 
-                string Str = "[" + DateTime.Now.ToString("mm.ss") + " " + String.Format("{0:d3}", DateTime.Now.Millisecond) + "] " + value;
+                string Str = "[" + DateTime.Now.ToString("HH.mm.ss") + " " + String.Format("{0:d3}", DateTime.Now.Millisecond) + "] " + value;
 
                 Stream.WriteLine(Str);
 
@@ -22,22 +22,14 @@ namespace utils
             catch { }
         }
 
-        private static string GetLogFileName(string fileName)
+        private static string GetLogFileName()
         {
-            if (fileName == "")
-                return DateTime.Now.ToString("yyyy MM dd [HH]")  + ".log";
-
-            return DateTime.Now.ToString("yyyy MM dd [HH]") + " " + fileName + ".log";
-        }
-
-        public static void WriteTrace(string fileName, string message)
-        {
-            WriteLine(GetLogFileName(fileName), message);
+            return System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName + ".log";
         }
 
         public static void WriteTrace(string message)
         {
-            WriteTrace("", message);
+            WriteLine(GetLogFileName(), message);
         }
 
         public static void WriteTrace(string fileName, string message, byte[] value)
@@ -49,7 +41,7 @@ namespace utils
                 Str.Append(string.Format("{0:X2} ", ch));
             }
 
-            WriteLine(GetLogFileName(fileName), message + " " + Str);
+            WriteLine(GetLogFileName(), message + " " + Str);
         }
 
         public static void WriteTrace(string message, byte[] value)
@@ -59,7 +51,7 @@ namespace utils
 
         public static void WriteError(string fileName, string message)
         {
-            WriteLine(GetLogFileName(fileName), message);
+            WriteLine(GetLogFileName(), message);
         }
 
         public static void WriteError(string message)
@@ -71,11 +63,11 @@ namespace utils
         {
             if (shortFormat == true)
             {
-                WriteLine(GetLogFileName(fileName), "[" + ex.Source + "] " + ex.Message);
+                WriteLine(GetLogFileName(), "[" + ex.Source + "] " + ex.Message);
             }
             else
             {
-                WriteLine(GetLogFileName(fileName), "[" + ex.Source + "] " + ex.Message + "\r\n" + ex.StackTrace);
+                WriteLine(GetLogFileName(), "[" + ex.Source + "] " + ex.Message + "\r\n" + ex.StackTrace);
             }
         }
 

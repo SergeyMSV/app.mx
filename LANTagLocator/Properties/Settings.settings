@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="UDPPortLocal" Type="System.UInt16" Scope="User">
-      <Value Profile="(Default)">58187</Value>
+      <Value Profile="(Default)">58101</Value>
     </Setting>
     <Setting Name="UDPPortRemote" Type="System.UInt16" Scope="User">
-      <Value Profile="(Default)">58188</Value>
+      <Value Profile="(Default)">58100</Value>
     </Setting>
     <Setting Name="Network" Type="System.String" Scope="User">
       <Value Profile="(Default)">192.168.10.0/24</Value>

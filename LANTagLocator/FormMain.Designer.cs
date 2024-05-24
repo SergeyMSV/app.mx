@@ -28,55 +28,85 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listViewTags = new System.Windows.Forms.ListView();
-            this.columnIPAddress = new System.Windows.Forms.ColumnHeader();
-            this.columnPlatform = new System.Windows.Forms.ColumnHeader();
-            this.columnHost = new System.Windows.Forms.ColumnHeader();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            listViewTags = new ListView();
+            columnIPAddress = new ColumnHeader();
+            columnPlatform = new ColumnHeader();
+            columnHost = new ColumnHeader();
+            columnUptime = new ColumnHeader();
+            contextMenuStripTags = new ContextMenuStrip(components);
+            toolStripMenuItemReboot = new ToolStripMenuItem();
+            toolStripMenuItemHalt = new ToolStripMenuItem();
+            contextMenuStripTags.SuspendLayout();
+            SuspendLayout();
             // 
             // listViewTags
             // 
-            this.listViewTags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listViewTags.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnIPAddress,
-            this.columnPlatform,
-            this.columnHost});
-            this.listViewTags.Location = new System.Drawing.Point(12, 12);
-            this.listViewTags.Name = "listViewTags";
-            this.listViewTags.Size = new System.Drawing.Size(360, 137);
-            this.listViewTags.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.listViewTags.TabIndex = 0;
-            this.listViewTags.UseCompatibleStateImageBehavior = false;
-            this.listViewTags.View = System.Windows.Forms.View.Details;
+            listViewTags.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            listViewTags.Columns.AddRange(new ColumnHeader[] { columnIPAddress, columnPlatform, columnHost, columnUptime });
+            listViewTags.ContextMenuStrip = contextMenuStripTags;
+            listViewTags.FullRowSelect = true;
+            listViewTags.Location = new Point(12, 12);
+            listViewTags.MultiSelect = false;
+            listViewTags.Name = "listViewTags";
+            listViewTags.Size = new Size(429, 137);
+            listViewTags.Sorting = SortOrder.Ascending;
+            listViewTags.TabIndex = 0;
+            listViewTags.UseCompatibleStateImageBehavior = false;
+            listViewTags.View = View.Details;
             // 
             // columnIPAddress
             // 
-            this.columnIPAddress.Text = "IP-address";
-            this.columnIPAddress.Width = 130;
+            columnIPAddress.Text = "IP-address";
+            columnIPAddress.Width = 100;
             // 
             // columnPlatform
             // 
-            this.columnPlatform.Text = "Platform";
-            this.columnPlatform.Width = 100;
+            columnPlatform.Text = "Platform";
+            columnPlatform.Width = 100;
             // 
             // columnHost
             // 
-            this.columnHost.Text = "Host name";
-            this.columnHost.Width = 100;
+            columnHost.Text = "Host name";
+            columnHost.Width = 100;
+            // 
+            // columnUptime
+            // 
+            columnUptime.Text = "Uptime";
+            columnUptime.TextAlign = HorizontalAlignment.Right;
+            columnUptime.Width = 120;
+            // 
+            // contextMenuStripTags
+            // 
+            contextMenuStripTags.Items.AddRange(new ToolStripItem[] { toolStripMenuItemReboot, toolStripMenuItemHalt });
+            contextMenuStripTags.Name = "contextMenuStripTags";
+            contextMenuStripTags.Size = new Size(113, 48);
+            // 
+            // toolStripMenuItemReboot
+            // 
+            toolStripMenuItemReboot.Name = "toolStripMenuItemReboot";
+            toolStripMenuItemReboot.Size = new Size(112, 22);
+            toolStripMenuItemReboot.Text = "&Reboot";
+            toolStripMenuItemReboot.Click += toolStripMenuItemReboot_Click;
+            // 
+            // toolStripMenuItemHalt
+            // 
+            toolStripMenuItemHalt.Name = "toolStripMenuItemHalt";
+            toolStripMenuItemHalt.Size = new Size(112, 22);
+            toolStripMenuItemHalt.Text = "&Halt";
+            toolStripMenuItemHalt.Click += toolStripMenuItemHalt_Click;
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 161);
-            this.Controls.Add(this.listViewTags);
-            this.MinimumSize = new System.Drawing.Size(400, 200);
-            this.Name = "FormMain";
-            this.Text = "LANTag Locator";
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(453, 161);
+            Controls.Add(listViewTags);
+            MinimumSize = new Size(400, 200);
+            Name = "FormMain";
+            Text = "LANTag Locator";
+            contextMenuStripTags.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         #endregion
@@ -85,5 +115,9 @@
         private ColumnHeader columnPlatform;
         private ColumnHeader columnHost;
         private ColumnHeader columnIPAddress;
+        private ContextMenuStrip contextMenuStripTags;
+        private ToolStripMenuItem toolStripMenuItemReboot;
+        private ToolStripMenuItem toolStripMenuItemHalt;
+        private ColumnHeader columnUptime;
     }
 }
