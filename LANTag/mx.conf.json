@@ -1,0 +1,8 @@
+{
+  "platform": {
+    "id": "win"
+  },
+  "network": {
+    "lantag_port": "58100"
+  }
+}
