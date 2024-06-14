@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8BCADC03-88A9-4AEA-95EC-CE45B1C9699F}</ProjectGuid>
+    <ProjectGuid>{92F24609-9FAE-4B73-B9E5-2C57E3135940}</ProjectGuid>
     <RootNamespace>mxXbull</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -190,7 +190,7 @@
     <None Include=".vscode\tasks.json" />
     <None Include="mx.conf.json" />
     <None Include="mxdev.conf.json" />
-    <None Include="Thermo.code-workspace" />
+    <None Include="RTC.code-workspace" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

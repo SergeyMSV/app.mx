@@ -85,7 +85,7 @@
     <None Include=".vscode\tasks.json">
       <Filter>.vscode</Filter>
     </None>
-    <None Include="Thermo.code-workspace" />
+    <None Include="RTC.code-workspace" />
     <None Include="mx.conf.json" />
     <None Include="mxdev.conf.json" />
   </ItemGroup>
