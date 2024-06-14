@@ -1,0 +1,10 @@
+{
+  "dallas_thermo": {
+    "2426770e64ff": "out",
+    "c63e770e64ff": "in",
+    "8747770e64ff": "chassis",
+    "2426770e64AA": "out",
+    "c63e770e64EE": "in",
+    "c63e770e64BB": "chassis"
+  }
+}
