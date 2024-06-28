@@ -139,10 +139,10 @@ namespace LANTagLocator
                             return;
 
                         TimeSpan TimePeriodExpiration = Properties.Settings.Default.TimePeriod + new TimeSpan(0, 0, 1);
-                        foreach (ListViewItem i in listViewTags.Items) // Remove expired items.
+                        for (int i = 0; i< listViewTags.Items.Count;++i) // Remove expired items.
                         {
-                            if (DateTime.Now - (DateTime)i.Tag > TimePeriodExpiration)
-                                listViewTags.Items.Remove(i);
+                            if (DateTime.Now - (DateTime)listViewTags.Items[i].Tag > TimePeriodExpiration)
+                                listViewTags.Items.RemoveAt(i--);
                         }
                     }
                     catch { }
