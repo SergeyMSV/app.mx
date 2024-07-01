@@ -126,7 +126,10 @@ namespace DallasBus
         void FormSettings_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
+            {
                 Close();
+                e.Handled = true;
+            }
         }
 
         private void textBox_Digit_KeyPress(object sender, KeyPressEventArgs e)

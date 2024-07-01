@@ -440,11 +440,12 @@ namespace DallasBus
                         }
                         StrData += "]}";
 
-
                         if (listViewBus.Items.Count > 0)
                             Clipboard.SetText(StrData);
                         else
                             Clipboard.Clear();
+
+                        e.Handled = true;
                     }
                     break;
             }
