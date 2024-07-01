@@ -87,7 +87,10 @@ namespace DallasRW
         void FormKeyID_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
+            {
                 Close();
+                e.Handled = true;
+            }
         }
 
         private void textBoxKeyID_KeyPress(object sender, KeyPressEventArgs e)

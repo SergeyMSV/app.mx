@@ -496,25 +496,33 @@ namespace DallasRW
             {
                 case Keys.Escape:
                     ResetKeyID();
+                    e.Handled = true;
                     break;
                 case Keys.Enter:
                     SetKeyID();
+                    e.Handled = true;
                     break;
                 case Keys.Delete:
                     RemoveKeyID();
+                    e.Handled = true;
                     break;
                 case Keys.F2:
                     EditKeyID();
+                    e.Handled = true;
                     break;
                 case Keys.C:
                     if (labelRead.Text != m_TextKeyIDEmpty)
                         Clipboard.SetText(labelRead.Text);
                     else
                         Clipboard.Clear();
+                    e.Handled = true;
                     break;
                 case Keys.S:
                     if (e.Control == true)
+                    {
                         SaveKeyID();
+                        e.Handled = true;
+                    }
                     break;
             }
         }
