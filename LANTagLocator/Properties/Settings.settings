@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="LANTagLocator.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="UDPPortLocal" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">58101</Value>
+    </Setting>
+    <Setting Name="UDPPortRemote" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">58100</Value>
+    </Setting>
+    <Setting Name="Network" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.10.0/24</Value>
+    </Setting>
+    <Setting Name="TimePeriod" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:05</Value>
+    </Setting>
+    <Setting Name="FormMainSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
