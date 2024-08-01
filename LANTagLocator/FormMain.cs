@@ -39,7 +39,7 @@ namespace LANTagLocator
             bool LocatorEnabled = m_UDPLocator != null;
 
             timerTagsRequest.Enabled = LocatorEnabled;
-            timerTagsListClean.Enabled = LocatorEnabled;
+            timerTagsListView.Enabled = LocatorEnabled;
 
             RequestTags();
         }
@@ -189,7 +189,7 @@ namespace LANTagLocator
             }
         }
 
-        private void timerTagsClean_Tick(object sender, EventArgs e)
+        private void timerTagsListView_Tick(object sender, EventArgs e)
         {
             try
             {

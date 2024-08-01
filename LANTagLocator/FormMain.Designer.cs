@@ -37,7 +37,7 @@
             contextMenuStripTags = new ContextMenuStrip(components);
             toolStripMenuItemReboot = new ToolStripMenuItem();
             toolStripMenuItemHalt = new ToolStripMenuItem();
-            timerTagsListClean = new System.Windows.Forms.Timer(components);
+            timerTagsListView = new System.Windows.Forms.Timer(components);
             timerTagsRequest = new System.Windows.Forms.Timer(components);
             contextMenuStripTags.SuspendLayout();
             SuspendLayout();
@@ -98,10 +98,10 @@
             toolStripMenuItemHalt.Text = "&Halt";
             toolStripMenuItemHalt.Click += toolStripMenuItemHalt_Click;
             // 
-            // timerTagsListClean
+            // timerTagsListView
             // 
-            timerTagsListClean.Interval = 500;
-            timerTagsListClean.Tick += timerTagsClean_Tick;
+            timerTagsListView.Interval = 500;
+            timerTagsListView.Tick += timerTagsListView_Tick;
             // 
             // timerTagsRequest
             // 
@@ -132,7 +132,7 @@
         private ToolStripMenuItem toolStripMenuItemReboot;
         private ToolStripMenuItem toolStripMenuItemHalt;
         private ColumnHeader columnUptime;
-        private System.Windows.Forms.Timer timerTagsListClean;
+        private System.Windows.Forms.Timer timerTagsListView;
         private System.Windows.Forms.Timer timerTagsRequest;
     }
 }
