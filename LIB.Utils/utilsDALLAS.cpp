@@ -24,16 +24,39 @@ bool operator == (const tROM& a, const tROM& b)
 	return !memcmp(a.Value, b.Value, sizeof(a.Value));
 }
 
-double ToDouble(tTemperature val)
+double ParseTemperature(const std::vector<std::uint8_t>& scratchPad)
 {
-	double Temperature = val.Field.Degree;
-	Temperature += val.Field.Degree_05 * 0.5;
-	Temperature += val.Field.Degree_025 * 0.25;
-	Temperature += val.Field.Degree_0125 * 0.125;
-	Temperature += val.Field.Degree_00625 * 0.0625;
-	if (val.Field.Sign)
-		Temperature = -Temperature;
-	return Temperature;
+	if (scratchPad.size() != 9) // [TBD] check 9 bytes and CRC
+		return -999999; // [#]
+	std::uint8_t CRC = utils::crc::CRC08_DALLAS(scratchPad.data(), scratchPad.size() - 1);
+	if (scratchPad[scratchPad.size() - 1] != CRC)
+		return -999999; // [#]
+
+	enum class tResolution : std::uint8_t
+	{
+		_09_bit,
+		_10_bit,
+		_11_bit,
+		_12_bit,
+	};
+
+	tResolution Resol = static_cast<tResolution>((scratchPad[4] >> 5) & 0x03);
+
+	std::int16_t TempRaw = (std::int16_t)((scratchPad[1] << 8) | scratchPad[0]);
+	std::int16_t TempSign = (std::int16_t)(TempRaw >> 4);
+	double Temp = TempSign;
+
+	if(Resol == tResolution::_12_bit)
+		Temp += (TempRaw & 0x01) == 0 ? 0 : 0.0625;
+
+	if (Resol >= tResolution::_11_bit)
+		Temp += (TempRaw & 0x02) == 0 ? 0 : 0.125;
+
+	if (Resol >= tResolution::_10_bit)
+		Temp += (TempRaw & 0x04) == 0 ? 0 : 0.25;
+
+	Temp += (TempRaw & 0x08) == 0 ? 0 : 0.5;
+	return Temp;
 }
 
 static std::uint8_t GetROMCRC(const tROM& rom)
@@ -97,7 +120,7 @@ std::vector<tROM> tDALLAS::Search()
 	return Search(tFamilyCode::None);
 }
 
-std::vector<tThermal> tDALLAS::GetTemperature(const std::vector<tROM>& devices)
+std::vector<DsDS18B20> tDALLAS::GetDsDS18B20(const std::vector<tROM>& devices)
 {
 	std::vector<tROM> ThermoROMs;
 	for (auto& i : devices)
@@ -130,7 +153,7 @@ std::vector<tThermal> tDALLAS::GetTemperature(const std::vector<tROM>& devices)
 		std::this_thread::sleep_for(std::chrono::milliseconds(800)); // 800ms but 750ms enough
 	}
 
-	std::vector<tThermal> ThermalSens;
+	std::vector<DsDS18B20> ThermalSens;
 	for (auto& i : ThermoROMs)
 	{
 		if (Reset() != tStatus::Success)
@@ -141,14 +164,14 @@ std::vector<tThermal> tDALLAS::GetTemperature(const std::vector<tROM>& devices)
 		CmdMatchROM.insert(CmdMatchROM.end(), static_cast<std::uint8_t*>(i.Value), static_cast<std::uint8_t*>(i.Value) + sizeof(i.Value));
 		Transaction(CmdMatchROM, 0);
 		std::vector<std::uint8_t> Rsp = Transaction({ Cmd_ReadScratchpad }, 9); // Reads the entire scratchpad including the CRC byte (DS18B20 transmits up to 9 data bytes to master)
-		std::uint8_t CRC = utils::crc::CRC08_DALLAS(Rsp.data(), Rsp.size() - 1);
-		if (Rsp.size() != 9 || Rsp[Rsp.size() - 1] != CRC)
+		if (Rsp.size() != 9)
 			continue;
-		tThermal Thermal{};
+		std::uint8_t CRC = utils::crc::CRC08_DALLAS(Rsp.data(), Rsp.size() - 1);
+		if (Rsp[Rsp.size() - 1] != CRC)
+			continue;
+		DsDS18B20 Thermal{};
 		Thermal.ROM = i;
-		Thermal.Temperature.Value = Rsp[0];
-		Thermal.Temperature.Value |= Rsp[1] << 8;
-
+		Thermal.Temperature = ParseTemperature(Rsp);
 		ThermalSens.push_back(Thermal);
 	}
 
@@ -227,13 +250,7 @@ std::optional<tROM> tDALLAS::Search(tFamilyCode familyCode, int& lastDiscrepancy
 	if (!lastDeviceFlag)
 	{
 		if (Reset() != tBoardOneWire::tStatus::Success)
-		{
-			// reset the search
-			lastDiscrepancy = 0;
-			lastDeviceFlag = false;
-			lastFamilyDiscrepancy = 0;
 			return {};
-		}
 
 		Transaction({ Cmd_SearchROM }, 0);
 
@@ -247,54 +264,50 @@ std::optional<tROM> tDALLAS::Search(tFamilyCode familyCode, int& lastDiscrepancy
 			bool cmp_id_bit = RspBit[1];
 
 			if (id_bit && cmp_id_bit) // check for no devices on 1-wire
-			{
 				break;
+
+			// all devices coupled have 0 or 1
+			if (id_bit != cmp_id_bit)
+			{
+				search_direction = id_bit; // bit write value for search
 			}
 			else
 			{
-				// all devices coupled have 0 or 1
-				if (id_bit != cmp_id_bit)
-				{
-					search_direction = id_bit; // bit write value for search
-				}
+				// if this discrepancy if before the Last Discrepancy
+				// on a previous next then pick the same as last time
+				if (id_bit_number < lastDiscrepancy)
+					search_direction = (ROM.Value[rom_byte_number] & rom_byte_mask) > 0;
 				else
+					// if equal to last pick 1, if not then pick 0
+					search_direction = id_bit_number == lastDiscrepancy;
+
+				// if 0 was picked then record its position in LastZero
+				if (!search_direction)
 				{
-					// if this discrepancy if before the Last Discrepancy
-					// on a previous next then pick the same as last time
-					if (id_bit_number < lastDiscrepancy)
-						search_direction = (ROM.Value[rom_byte_number] & rom_byte_mask) > 0;
-					else
-						// if equal to last pick 1, if not then pick 0
-						search_direction = id_bit_number == lastDiscrepancy;
-
-					// if 0 was picked then record its position in LastZero
-					if (!search_direction)
-					{
-						last_zero = id_bit_number;
-						// check for Last discrepancy in family
-						if (last_zero < 9)
-							lastFamilyDiscrepancy = last_zero;
-					}
+					last_zero = id_bit_number;
+					// check for Last discrepancy in family
+					if (last_zero < 9)
+						lastFamilyDiscrepancy = last_zero;
 				}
+			}
 
-				// set or clear the bit in the ROM byte rom_byte_number with mask rom_byte_mask
-				if (search_direction)
-					ROM.Value[rom_byte_number] |= rom_byte_mask;
-				else
-					ROM.Value[rom_byte_number] &= ~rom_byte_mask;
+			// set or clear the bit in the ROM byte rom_byte_number with mask rom_byte_mask
+			if (search_direction)
+				ROM.Value[rom_byte_number] |= rom_byte_mask;
+			else
+				ROM.Value[rom_byte_number] &= ~rom_byte_mask;
 
-				SendBit(search_direction); // serial number search direction write bit
+			SendBit(search_direction); // serial number search direction write bit
 
-				// increment the byte counter id_bit_number and shift the mask rom_byte_mask
-				id_bit_number++;
-				rom_byte_mask <<= 1;
-				// if the mask is 0 then go to new SerialNum byte rom_byte_number and reset mask
-				if (rom_byte_mask == 0)
-				{
-					ROM_CRC = utils::crc::CRC08_DALLAS(ROM.Value[rom_byte_number], ROM_CRC);
-					rom_byte_number++;
-					rom_byte_mask = 1;
-				}
+			// increment the byte counter id_bit_number and shift the mask rom_byte_mask
+			id_bit_number++;
+			rom_byte_mask <<= 1;
+			// if the mask is 0 then go to new SerialNum byte rom_byte_number and reset mask
+			if (rom_byte_mask == 0)
+			{
+				ROM_CRC = utils::crc::CRC08_DALLAS(ROM.Value[rom_byte_number], ROM_CRC);
+				rom_byte_number++;
+				rom_byte_mask = 1;
 			}
 		} while (rom_byte_number < 8); // loop until through all ROM bytes 0-7
 		// if the search was successful then
@@ -310,14 +323,6 @@ std::optional<tROM> tDALLAS::Search(tFamilyCode familyCode, int& lastDiscrepancy
 	}
 	// if no device found then reset counters so next 'search' will be like a first
 	if (!search_result || !ROM.Value[0])
-	{
-		lastDiscrepancy = 0;
-		lastDeviceFlag = false;
-		lastFamilyDiscrepancy = 0;
-		search_result = false;
-	}
-
-	if (!search_result)
 		return {};
 
 	return ROM;
