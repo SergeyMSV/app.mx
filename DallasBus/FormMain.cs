@@ -13,7 +13,7 @@ namespace DallasBus
         bool m_DallasRequestInProgress = false;
         readonly Mutex m_DallasProcessMtx = new Mutex();
         readonly string m_Text;
-        int m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
+        uint m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
         int m_AutoGetValuePeriodCounter = 0;
 
         public FormMain()

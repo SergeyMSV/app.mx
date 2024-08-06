@@ -82,8 +82,8 @@ namespace DallasBus
 
                 if (textBoxAutoGetValuePeriod.Text != Properties.Settings.Default.AutoGetValuePeriod.ToString())
                 {
-                    int Value = int.Parse(textBoxAutoGetValuePeriod.Text);
-                    if (Value <= 0)
+                    uint Value = uint.Parse(textBoxAutoGetValuePeriod.Text);
+                    if (Value == 0)
                     {
                         MessageBox.Show("AutoGetValuePeriod must be greater of zero", "Settings");
                         return;
