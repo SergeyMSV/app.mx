@@ -216,15 +216,15 @@ void ThreadDallas(std::promise<void>& promise, const std::shared_ptr<dev::tDataS
 
 						if (!ROMs.empty())
 						{
-							std::vector<dallas::tThermal> Thermo = Port.GetTemperature(ROMs);
-							if (!Thermo.empty())
+							std::vector<dallas::DsDS18B20> Temp = Port.GetDsDS18B20(ROMs);
+							if (!Temp.empty())
 							{
 								boost::property_tree::ptree PTreeChildren;
-								for (const auto& i : Thermo)
+								for (const auto& i : Temp)
 								{
 									boost::property_tree::ptree PTreeChild;
 									PTreeChild.put("id", ToString(i.ROM.Field.ID));
-									PTreeChild.put("temperature", ToDouble(i.Temperature));
+									PTreeChild.put("temperature", i.Temperature);
 									PTreeChildren.push_back(std::make_pair("", PTreeChild));
 								}
 								PTree.add_child("measurements", PTreeChildren);

@@ -31,22 +31,6 @@ enum class tFamilyCode : std::uint8_t
 	DS18B20 = 0x28, // Thermometer
 };
 
-union tTemperature
-{
-	struct
-	{
-		std::uint16_t Degree_00625 : 1;
-		std::uint16_t Degree_0125  : 1;
-		std::uint16_t Degree_025   : 1;
-		std::uint16_t Degree_05    : 1;
-		std::uint16_t Degree       : 7;
-		std::uint16_t Sign         : 5; // if Sign > 0 then Value is negative
-	}Field;
-	std::uint16_t Value = 0;
-};
-
-double ToDouble(tTemperature val);
-
 using tBoardOneWire = utils::port_serial::tPortOneWireSync; // [TBD] put in libConfig
 
 struct tID
@@ -71,10 +55,10 @@ bool operator == (const tROM& a, const tROM& b);
 
 tROM MakeROM(tFamilyCode familyCode, tID id);
 
-struct tThermal
+struct DsDS18B20
 {
 	tROM ROM;
-	tTemperature Temperature;
+	double Temperature;
 };
 
 enum class tCodeError
@@ -99,7 +83,7 @@ public:
 	std::vector<tROM> Search(tFamilyCode familyCode);
 	std::vector<tROM> Search();
 
-	std::vector<tThermal> GetTemperature(const std::vector<tROM>& devices);
+	std::vector<DsDS18B20> GetDsDS18B20(const std::vector<tROM>& devices);
 
 	std::optional<tID> ReadKey(); // Only one device (key) can be connected to the bus.
 	tCodeError WriteKey(const tID& value); // It writes ROM if only one device connected to the bus. In other words only one key must be connected to the bus and not original one.
