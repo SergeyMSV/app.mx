@@ -1,7 +1,7 @@
 {
-  "name": "web-ui-state",
+  "name": "webstate",
   "version": "0.0.0",
-  "description": "WebUIState",
+  "description": "WebState",
   "main": "server.js",
   "author": {
     "name": ""
