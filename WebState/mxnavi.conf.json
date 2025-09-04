@@ -1,0 +1,29 @@
+{
+  "gnss": {
+    "path": "/tmpram",
+    "prefix": "mxgnss_"
+  },
+  "picture": {
+    "path": "/tmpram",
+    "prefix": "mxcam_"
+  },
+  "mxspy_out_glo": {
+    "path": "/tmpram",
+    "prefix": "mxspyglo_"
+  },
+  "mxspy_out_gps": {
+    "path": "/tmpram",
+    "prefix": "mxspygps_"
+  },
+  "out_pic": {
+    "path": "/tmpram",
+    "prefix": "pic_",
+    "qtyMax": 2
+  },
+  "log": {
+    "path": "/tmpram",
+    "prefix": "mxnavi_",
+    "capacity": 102400,
+    "qtyMax": 2
+  }
+}

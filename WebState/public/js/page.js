@@ -41,6 +41,20 @@ function update() {
                             }
                         }
                         break;
+                    case 'gnss':
+                        {
+                            for (const key2 in data[key]) {
+                                //console.log(key2 + ' : ' + data[key][key2]);
+                                switch (key2) {
+                                    case 'gnss':
+                                        SetElemText(key2, data[key][key2]);
+                                        break;
+                                    case 'gnss_status':
+                                        SetElemBgColour(key2, data[key][key2]);
+                                        break;
+                                }
+                            }
+                        }
                     default:
                         //console.log(key);
                         break;

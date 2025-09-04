@@ -28,7 +28,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="config.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="mx.conf.json" />
+    <Content Include="mxnavi.conf.json" />
     <Content Include="package-lock.json" />
     <Content Include="public\css\content.css" />
     <Content Include="public\favicon.ico" />
@@ -38,6 +42,7 @@
     <Content Include="server_data.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="server_data_gnss.js" />
     <Content Include="start.sh">
       <SubType>Code</SubType>
     </Content>
@@ -47,6 +52,9 @@
     <Content Include="README.md" />
     <Content Include="server.conf.json" />
     <Content Include="server_cpu.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="status.js">
       <SubType>Code</SubType>
     </Content>
   </ItemGroup>
