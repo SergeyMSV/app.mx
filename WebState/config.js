@@ -13,7 +13,50 @@ exports.GetConfig = function () { return config; }
 
 exports.GetConfigMXGNSS = function () {
     try {
-        return ReadConfigMXGNSS();
+        let conf = ReadConfigMXGNSS();
+
+        // if (!PRODUICTION)
+        //    conf - // [TBD] add prefixes with temp_file_system - just for out
+
+
+       /* "out": {
+            "path": "/tmpram",
+                "prefix": "mxgnss_",
+                    "qtyMax": 2
+        }
+        
+        .....
+          "gnss": {
+    "path": "/tmpram",
+    "prefix": "mxgnss_"
+  },
+  "picture": {
+    "path": "/tmpram",
+    "prefix": "mxcam_"
+  },
+        */
+
+       /*
+        {
+            "hostname": "/etc/hostname",
+                "loadavg": "/proc/loadavg",
+                    "uptime": "/proc/uptime",
+                        "cpu_thermal": "/sys/devices/virtual/thermal/thermal_zone0/temp",
+                            "cpu_thermaldiv_win": 1000,
+                               "cpu_thermaldiv_vsom": 2000,
+                                    "cpu_thermaldiv_opio": 1000
+        }
+
+        ---- PUT POSTFIX PATH HERE !!
+        OR 
+        hostname:{
+        path: "/etc"
+        filename: "hostname"
+        }
+
+        */
+
+        return conf;
     }
     catch { } // console.error(err); - it can be absent
 }
