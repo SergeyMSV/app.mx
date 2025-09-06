@@ -11,6 +11,13 @@ exports.GetHostname = function () { return hostname; }
 
 exports.GetConfig = function () { return config; }
 
+exports.GetConfigMXGNSS = function () {
+    try {
+        return ReadConfigMXGNSS();
+    }
+    catch { } // console.error(err); - it can be absent
+}
+
 exports.GetConfigMXNavi = function () {
     try {
         return ReadConfigMXNavi();
@@ -61,6 +68,11 @@ function ReadConfig(a_filepath) {
 function ReadConfigMX() {
     const filename = 'mx.conf.json';
     return ReadConfig(!PRODUICTION ? filename : '/etc/' + filename);
+}
+
+function ReadConfigMXGNSS() {
+    const filename = 'mxgnss.conf.json';
+    return ReadConfig(!PRODUICTION ? filename : '/usr/local/etc/' + filename);
 }
 
 function ReadConfigMXNavi() {

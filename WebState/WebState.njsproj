@@ -32,6 +32,7 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="mx.conf.json" />
+    <Content Include="mxgnss.conf.json" />
     <Content Include="mxnavi.conf.json" />
     <Content Include="package-lock.json" />
     <Content Include="public\css\content.css" />

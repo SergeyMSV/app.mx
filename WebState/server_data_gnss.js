@@ -4,6 +4,7 @@ const sc_config = require('./config.js');
 
 //const sc_status = require('./status.js'); - it's needed in order to set GNSS colour mark
 
+const g_confMXGNSS = sc_config.GetConfigMXGNSS();
 const g_confMXNavi = sc_config.GetConfigMXNavi();
 
 exports.GetPage = function () {
@@ -11,6 +12,9 @@ exports.GetPage = function () {
 }
 
 exports.GetPageData = function () {
+
+    let files = fs.readdirSync(g_confMXNavi.gnss.path);
+
     let data = {};
     if (g_confMXNavi !== undefined) {
         data.gnss_status = "yellow";
