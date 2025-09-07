@@ -14,7 +14,7 @@ let app = np_express();
 app.use(np_favicon(__dirname + '/public/favicon.ico'));
 
 const sc_server_cpu = require('./server_cpu');
-const sc_server_data = require('./server_data');
+const sc_server_state = require('./server_state');
 
 const g_config = (() => {
     try {
@@ -66,8 +66,8 @@ app.get('/', (req, res) => {
     if (req.query.content == 'data') {
         let data = {};
         data.cpu = sc_server_cpu.GetPageData(g_config);
-        data.datetime = sc_server_data.GetDateTime();
-        data.uptime = sc_server_data.GetUptime(g_config.uptime);
+        data.datetime = sc_server_state.GetDateTime();
+        data.uptime = sc_server_state.GetUptime(g_config.uptime);
         data.update_period = 500; // ms
         res.status(200).json(data);
         return;
