@@ -28,7 +28,7 @@ function GetText(a_fileName) {
         return dataRaw;
     }
     catch (err) {
-        console.error(err);
+        return 'error'; //console.error(err);
     }
 }
 
