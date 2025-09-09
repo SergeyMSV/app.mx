@@ -11,8 +11,8 @@ exports.GetPage = function () {
 
 exports.GetPageData = function (a_config) {
     let data = {};
-    data.cpu_loadavg = GetText(a_config.loadavg);
-    const thermal = (GetThermal(a_config.cpu_thermal) / a_config.cpu_thermaldiv).toFixed(2);
+    data.cpu_loadavg = GetText(a_config.loadavg.path);
+    const thermal = (GetThermal(a_config.cpu_thermal.path) / a_config.cpu_thermaldiv).toFixed(2);
     data.cpu_thermal = thermal + ' \xB0C'; // 0xB0 - celsius degree sign
     data.cpu_thermal_status = GetThermalStatus(thermal);
     return data;

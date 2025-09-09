@@ -38,7 +38,7 @@ const config = (() => {
 
 const hostname = (() => {
     try {
-        return np_fs.readFileSync(config.hostname, 'utf-8');
+        return np_fs.readFileSync(config.hostname.path, 'utf-8');
     }
     catch (err) {
         console.error(err); // it can be written only once when the device is started.
@@ -59,8 +59,11 @@ function ReadConfigMX() {
 function SetTestRootPaths(a_confServer) {
     for (const i in a_confServer) { // add prefixes to paths in accordance with the platform id
         let val = a_confServer[i];
-        if (val != undefined && typeof (val) === 'string' && val.length > 0 && val[0] === '/') {
-            a_confServer[i] = 'test_root_fs' + val;
+        if (Array.isArray(val)) {
+            SetTestRootPaths(val);
+        }
+        else if (val.path != undefined && typeof (val.path) === 'string' && val.path.length > 0 && val.path[0] === '/') {
+            val.path = 'test_root_fs' + val.path;
         }
     }
 }

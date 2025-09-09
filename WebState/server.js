@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
         let data = {};
         data.cpu = sc_server_cpu.GetPageData(g_conf);
         data.datetime = sc_server_state.GetDateTime();
-        data.uptime = sc_server_state.GetUptime(g_conf.uptime);
+        data.uptime = sc_server_state.GetUptime(g_conf.uptime.path);
         data.update_period = 500; // ms
         res.status(200).json(data);
         return;
