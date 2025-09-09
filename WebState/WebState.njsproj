@@ -28,6 +28,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="config.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="mx.conf.json" />
     <Content Include="package-lock.json" />
     <Content Include="public\css\content.css" />
@@ -47,6 +50,9 @@
     <Content Include="README.md" />
     <Content Include="server.conf.json" />
     <Content Include="server_cpu.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="status.js">
       <SubType>Code</SubType>
     </Content>
   </ItemGroup>
