@@ -19,3 +19,13 @@ exports.CPU_Thermal = {
     Hot: { text: '', color: 'orange' },
     Critical: { text: '', color: 'red' },
 }
+
+exports.GNSS = {
+    None: { text: '', color: 'gray' },
+    NotSupported: { text: 'not supported', color: 'gray' },
+    NoData: { text: 'no data', color: 'orange' },
+    FileNameError: { text: 'file name format error', color: 'orange' },
+    FormatError: { text: 'data format error', color: 'orange' },
+    Invalid: { text: 'invalid', color: 'yellow' },
+    Valid: { text: '', color: 'green' },
+}

@@ -32,6 +32,27 @@ function update() {
                             SetElemBgColour('cpu_thermal_color', data[key]['cpu_thermal']['color']);
                         }
                         break;
+                    case 'gnss':
+                        {
+                            for (const key2 in data[key]) {
+                                //console.log(key2 + ' : ' + data[key][key2]);
+                                switch (key2) {
+                                    case 'status':
+                                        SetElemText('status_text', data[key][key2]['text']);
+                                        SetElemBgColour('status_color', data[key][key2]['color']);
+                                        break;
+                                    case 'mode':
+                                        SetElemText('mode_text', data[key][key2]);
+                                        break;
+                                    case 'utc':
+                                        SetElemText('utc_text', data[key][key2]);
+                                        break;
+                                    case 'location':
+                                        SetElemText('location_text', data[key][key2]);
+                                        break;
+                                }
+                            }
+                        }
                     default:
                         //console.log(key);
                         break;

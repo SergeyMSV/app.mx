@@ -11,6 +11,18 @@ exports.GetHostname = function () { return hostname; }
 
 exports.GetConfig = function () { return config; }
 
+exports.GetConfigMXGNSS = function () {
+    try {
+        let conf = ReadConfigMXGNSS();
+
+        if (!PRODUICTION)
+            SetTestRootPaths(conf);
+
+        return conf;
+    }
+    catch { } // console.error(err); - it can be absent
+}
+
 const config = (() => {
     try {
         const conf_mx = ReadConfigMX(); // get platform id in order to select appropriate settings
@@ -54,6 +66,11 @@ function ReadConfig(a_filepath) {
 function ReadConfigMX() {
     const filename = 'mx.conf.json';
     return ReadConfig(!PRODUICTION ? filename : '/etc/' + filename);
+}
+
+function ReadConfigMXGNSS() {
+    const filename = 'mxgnss.conf.json';
+    return ReadConfig(!PRODUICTION ? filename : '/usr/local/etc/' + filename);
 }
 
 function SetTestRootPaths(a_confServer) {

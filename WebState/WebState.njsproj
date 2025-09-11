@@ -32,6 +32,7 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="mx.conf.json" />
+    <Content Include="mxgnss.conf.json" />
     <Content Include="package-lock.json" />
     <Content Include="public\css\content.css" />
     <Content Include="public\favicon.ico" />
@@ -41,6 +42,7 @@
     <Content Include="server_state.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="server_gnss.js" />
     <Content Include="start.sh">
       <SubType>Code</SubType>
     </Content>
