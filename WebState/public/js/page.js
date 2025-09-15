@@ -27,18 +27,9 @@ function update() {
                         break;
                     case 'cpu':
                         {
-                            for (const key2 in data[key]) {
-                                //console.log(key2 + ' : ' + data[key][key2]);
-                                switch (key2) {
-                                    case 'cpu_loadavg':
-                                    case 'cpu_thermal':
-                                        SetElemText(key2, data[key][key2]);
-                                        break;
-                                    case 'cpu_thermal_status':
-                                        SetElemBgColour(key2, data[key][key2]);
-                                        break;
-                                }
-                            }
+                            SetElemText('cpu_loadavg', data[key]['cpu_loadavg']);
+                            SetElemText('cpu_thermal_text', data[key]['cpu_thermal']['text']);
+                            SetElemBgColour('cpu_thermal_color', data[key]['cpu_thermal']['color']);
                         }
                         break;
                     default:
