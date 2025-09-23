@@ -2,6 +2,8 @@
 
 'use strict';
 
+const version = 'v.0.1.2';
+
 const np_fs = require('fs');
 const np_express = require('express');
 const np_favicon = require('express-favicon');
@@ -43,7 +45,7 @@ app.get('/', (req, res) => {
     HtmlHead += '<script>$(document).ready(function () { update(); });</script>';
 
     let HtmlBodyMain = '<table>';
-    HtmlBodyMain += `<tr><td width=1px></td><td>Host name:</td><td id="hostname">${g_hostname}</td></tr>`;
+    HtmlBodyMain += `<tr><td width=1px></td><td>Host name:</td><td id="hostname">${g_hostname} (${version})</td></tr>`;
     HtmlBodyMain += '<tr><td width=1px></td><td>Date:</td><td id="datetime"></td></tr>';
     HtmlBodyMain += '<tr><td></td><td>Uptime:</td><td id="uptime"></td></tr>';
     HtmlBodyMain += sc_server_cpu.GetPage();
