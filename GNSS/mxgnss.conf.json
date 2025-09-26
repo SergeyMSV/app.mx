@@ -26,6 +26,7 @@
           "RspHead": "PMTK001,314,",
           "RspBody": "3",
           "RspWait_us": 2000000,
+          "_comment": "[TBD] change CaseRspWrong to IfRspWrongTo_task_id",
           "CaseRspWrong": "",
           "Pause_us": 0
         }
