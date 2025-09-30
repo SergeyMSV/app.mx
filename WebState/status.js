@@ -40,3 +40,14 @@ const CPU_Thermal_RangesInit = (() => {
         CPU_Thermal_Ranges[i].t_min = CPU_Thermal_Ranges[i - 1].t_max;
     }
 })();
+
+exports.GNSS = {
+    None: { text: '', color: 'gray' },
+    NotSupported: { text: 'not supported', color: 'gray' },
+    NoData: { text: 'no data', color: 'orange' },
+    FileNameError: { text: 'file name format error', color: 'orange' },
+    FormatError: { text: 'data format error', color: 'orange' },
+    TimeError: { text: 'time error', color: 'orange' }, // e.g. GPS spoofing
+    Invalid: { text: 'not valid', color: 'yellow' },
+    Valid: { text: '', color: 'green' },
+}

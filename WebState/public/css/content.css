@@ -6,3 +6,23 @@ body {
 td {
     padding: 0px 5px;
 }
+
+.text_blue {
+	color: blue;
+}
+
+.text_green {
+	color: green;
+}
+
+.text_orange {
+    color: orange;
+}
+
+.text_red {
+	color: red;
+}
+
+.text_yellow {
+    color: yellow;
+}
