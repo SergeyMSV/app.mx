@@ -1,0 +1,110 @@
+{
+ "utc": "15.03.23 21.21.07.000",
+ "valid": "A",
+ "mode_indicator": "Autonomous",
+ "latitude": 12.567890,
+ "longitude": 34.098765,
+ "altitude": 0.000000,
+ "speed": 0.32,
+ "course": 300.69,
+ "satellite": [
+  {
+   "id": 1,
+   "elevation": 10,
+   "azimuth": 100,
+   "snr": 39
+  },
+  {
+   "id": 21,
+   "elevation": 11,
+   "azimuth": 101,
+   "snr": 18
+  },
+  {
+   "id": 17,
+   "elevation": 12,
+   "azimuth": 102,
+   "snr": 21
+  },
+  {
+   "id": 19,
+   "elevation": 13,
+   "azimuth": 103,
+   "snr": 0
+  },
+  {
+   "id": 12,
+   "elevation": 14,
+   "azimuth": 104,
+   "snr": 0
+  },
+  {
+   "id": 45,
+   "elevation": 0,
+   "azimuth": 0,
+   "snr": 0
+  },
+  {
+   "id": 66,
+   "elevation": 20,
+   "azimuth": 200,
+   "snr": 41
+  },
+  {
+   "id": 81,
+   "elevation": 21,
+   "azimuth": 202,
+   "snr": 48
+  },
+  {
+   "id": 82,
+   "elevation": 22,
+   "azimuth": 203,
+   "snr": 23
+  },
+  {
+   "id": 65,
+   "elevation": 23,
+   "azimuth": 204,
+   "snr": 0
+  },
+  {
+   "id": 67,
+   "elevation": 24,
+   "azimuth": 204,
+   "snr": 37
+  },
+  {
+   "id": 74,
+   "elevation": 25,
+   "azimuth": 205,
+   "snr": 17
+  },
+  {
+   "id": 75,
+   "elevation": 26,
+   "azimuth": 206,
+   "snr": 27
+  },
+  {
+   "id": 88,
+   "elevation": 27,
+   "azimuth": 207,
+   "snr": 16
+  },
+  {
+   "id": 83,
+   "elevation": 28,
+   "azimuth": 208,
+   "snr": 0
+  },
+  {
+   "id": 73,
+   "elevation": 29,
+   "azimuth": 209,
+   "snr": 0
+  }
+ ],
+ "jamming": [
+ ]
+}

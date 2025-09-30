@@ -29,9 +29,23 @@ function update() {
                         {
                             SetElemText('cpu_loadavg', data[key]['cpu_loadavg']);
                             SetElemText('cpu_thermal_text', data[key]['cpu_thermal']['text']);
-                            SetElemBgColour('cpu_thermal_color', data[key]['cpu_thermal']['color']);
+                            SetElemBgColor('cpu_thermal_color', data[key]['cpu_thermal']['color']);
                         }
                         break;
+                    case 'gnss':
+                        {
+                            SetElemText('gnss_status_text', data[key]['status']?.['text']);
+                            SetElemClass('gnss_status_text', data[key]['status']?.['class'] ?? '')
+                            SetElemBgColor('gnss_status_color', data[key]['status']?.['color']);
+                            SetElemText('gnss_utc_file_text', data[key]['utc_file'] ?? '');
+                            SetElemText('gnss_mode_text', data[key]['mode'] ?? '');
+                            SetElemText('gnss_utc_text', data[key]['utc'] ?? '');
+                            SetElemText('gnss_sats_gps', data[key]['sats']?.['gps']?.['text'] ?? '');
+                            SetElemClass('gnss_sats_gps', data[key]['sats']?.['gps']?.['class'] ?? '')
+                            SetElemText('gnss_sats_glo', data[key]['sats']?.['glo']?.['text'] ?? '');
+                            SetElemClass('gnss_sats_glo', data[key]['sats']?.['glo']?.['class'] ?? '')
+                            SetElemText('gnss_location_text', data[key]['location'] ?? '');
+                        }
                     default:
                         //console.log(key);
                         break;
@@ -60,8 +74,10 @@ function SetElemText(a_key, a_data) {
         elem.innerText = a_data;
 }
 
-function SetElemBgColour(a_key, a_data) {
-    const elem = document.getElementById(a_key);
-    if (elem != null)
-        elem.setAttribute('bgcolor', a_data);
+function SetElemBgColor(a_key, a_data) {
+    document.getElementById(a_key)?.setAttribute('bgcolor', a_data);
+}
+
+function SetElemClass(a_key, a_class) {
+    document.getElementById(a_key)?.setAttribute('class', a_class);
 }
