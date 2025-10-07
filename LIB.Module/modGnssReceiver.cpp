@@ -5,7 +5,7 @@
 namespace mod
 {
 
-tGnssReceiver::tGnssReceiver(utils::tLog& log)
+tGnssReceiver::tGnssReceiver(utils::log::tLog& log)
 	:m_Log(log)
 {
 	ChangeState(new tStateHalt(this, "the very start"));
@@ -107,17 +107,17 @@ void tGnssReceiver::ClearReceivedData()
 
 void tGnssReceiver::LogError(const std::string& msg) const
 {
-	m_Log.WriteLine(true, utils::tLogColour::LightRed, msg);
+	m_Log.WriteLine(true, msg, utils::log::tColor::LightRed);
 }
 
 void tGnssReceiver::LogTrace(const std::string& msg) const
 {
-	m_Log.WriteLine(true, utils::tLogColour::LightYellow, msg);
+	m_Log.WriteLine(true, msg, utils::log::tColor::LightYellow);
 }
 
 void tGnssReceiver::LogStateStarted(const std::string& msg) const
 {
-	m_Log.WriteLine(true, utils::tLogColour::Default, msg);
+	m_Log.WriteLine(true, msg, utils::log::tColor::Default);
 }
 
 //void tGnssReceiver::LogStateStopped() const
@@ -126,12 +126,12 @@ void tGnssReceiver::LogStateStarted(const std::string& msg) const
 
 void tGnssReceiver::LogTaskScriptDone(bool operation) const
 {
-	m_Log.WriteLine(false, operation ? utils::tLogColour::LightGreen : utils::tLogColour::LightYellow, "OnTaskScriptDone");
+	m_Log.WriteLine(false, "OnTaskScriptDone", operation ? utils::log::tColor::LightGreen : utils::log::tColor::LightYellow);
 }
 
 void tGnssReceiver::LogTaskScriptFailed(const std::string& msg, bool operation) const
 {
-	m_Log.WriteLine(false, operation ? utils::tLogColour::LightRed : utils::tLogColour::LightYellow, "OnTaskScriptFailed: " + msg);
+	m_Log.WriteLine(false, "OnTaskScriptFailed: " + msg, operation ? utils::log::tColor::LightRed : utils::log::tColor::LightYellow);
 }
 
 void tGnssReceiver::ChangeState(tState* state)
@@ -141,7 +141,7 @@ void tGnssReceiver::ChangeState(tState* state)
 	delete Prev;
 }
 
-tGnssReceiverPacketLog::tGnssReceiverPacketLog(utils::tLog& log, std::chrono::time_point<tClock>& startTime)
+tGnssReceiverPacketLog::tGnssReceiverPacketLog(utils::log::tLog& log, std::chrono::time_point<tClock>& startTime)
 	:m_Log(log), m_StartTime(startTime)
 {
 
@@ -161,30 +161,30 @@ void tGnssReceiverPacketLog::OnReceived(size_t size)
 
 void tGnssReceiverPacketLog::OnReceived(const std::string& id, const tMsgGSV& msg)
 {
-	Write(utils::tLogColour::LightMagenta, id + " " + msg.MsgQty.ToString() + " " + msg.MsgNum.ToString() + " " + msg.SatelliteQty.ToString());
+	Write(utils::log::tColor::LightMagenta, id + " " + msg.MsgQty.ToString() + " " + msg.MsgNum.ToString() + " " + msg.SatelliteQty.ToString());
 }
 
 void tGnssReceiverPacketLog::OnReceived(const std::string& id, const tMsgRMC_Ft4& msg)
 {
-	Write(utils::tLogColour::LightMagenta, id + " " + msg.Date.ToString() + " " + msg.Time.ToString());
+	Write(utils::log::tColor::LightMagenta, id + " " + msg.Date.ToString() + " " + msg.Time.ToString());
 }
 
 void tGnssReceiverPacketLog::OnReceived(const std::string& id, const tMsgRMC_Ft6& msg)
 {
-	Write(utils::tLogColour::LightMagenta, id + " " + msg.Date.ToString() + " " + msg.Time.ToString());
+	Write(utils::log::tColor::LightMagenta, id + " " + msg.Date.ToString() + " " + msg.Time.ToString());
 }
 
 void tGnssReceiverPacketLog::OnReceived(const std::string& id, const utils::packet_NMEA::tPayloadPTWS_JAM_SIGNAL_VAL& msg)
 {
-	Write(utils::tLogColour::LightMagenta, id + " " + msg.Index.ToString() + " " + msg.Frequency.ToString());
+	Write(utils::log::tColor::LightMagenta, id + " " + msg.Index.ToString() + " " + msg.Frequency.ToString());
 }
 
 void tGnssReceiverPacketLog::OnReceived(const std::string& id)
 {
-	Write(utils::tLogColour::Yellow, id + " - NOT PARSED");
+	Write(utils::log::tColor::Yellow, id + " - NOT PARSED");
 }
 
-void tGnssReceiverPacketLog::Write(utils::tLogColour colour, std::string msg)
+void tGnssReceiverPacketLog::Write(utils::log::tColor color, std::string msg)
 {
 	m_MsgTime += "; ";
 	m_MsgTime += GetTimePeriodString(m_StartTime);
@@ -193,8 +193,8 @@ void tGnssReceiverPacketLog::Write(utils::tLogColour colour, std::string msg)
 	int Align = 26 - static_cast<int>(msg.size());
 	if (Align > 0)
 		msg += std::string(Align, ' ');
-	m_Log.Write(true, colour, msg);
-	m_Log.WriteLine(false, utils::tLogColour::Default, m_MsgTime);
+	m_Log.Write(true, msg, color);
+	m_Log.WriteLine(false, m_MsgTime, utils::log::tColor::Default);
 }
 
 std::string tGnssReceiverPacketLog::GetTimePeriodString(const std::chrono::time_point<tClock>& timePoint) const

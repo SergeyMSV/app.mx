@@ -95,6 +95,12 @@
     <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsVersion.cpp">
+      <Filter>Lib.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsException.cpp">
+      <Filter>Lib.Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Lib.Utils\utilsBase.h">
@@ -161,6 +167,15 @@
     </ClInclude>
     <ClInclude Include="..\LIB.Share\shareUtilsFile.h">
       <Filter>LIB.Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsVersion.h">
+      <Filter>Lib.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsException.h">
+      <Filter>Lib.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsExits.h">
+      <Filter>Lib.Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

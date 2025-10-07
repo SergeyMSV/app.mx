@@ -61,7 +61,7 @@ class tGNSS
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 	friend class tModGnssReceiver;
 
-	utils::tLog& m_Log;
+	utils::log::tLog& m_Log;
 
 	boost::asio::io_context& m_ioc;
 
@@ -71,7 +71,7 @@ class tGNSS
 
 public:
 	tGNSS() = delete;
-	tGNSS(utils::tLog& log, boost::asio::io_context& ioc);
+	tGNSS(utils::log::tLog& log, boost::asio::io_context& ioc);
 	tGNSS(const tGNSS&) = delete;
 	tGNSS(tGNSS&&) = delete;
 	~tGNSS();

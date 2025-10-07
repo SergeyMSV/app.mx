@@ -195,11 +195,13 @@
     <ClCompile Include="..\Lib.Module\modGnssReceiver_State_CmdREQ.cpp" />
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
     <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsException.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp" />
     <ClCompile Include="..\Lib.Utils\utilsLog.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPacketNMEAType.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="..\Lib.Utils\utilsShell.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="Dev\devGNSS.cpp" />
     <ClCompile Include="Dev\devGNSS_ModGnssReceiver.cpp" />
@@ -216,6 +218,8 @@
     <ClInclude Include="..\LIB.Share\shareUtilsFile.h" />
     <ClInclude Include="..\Lib.Utils\utilsBase.h" />
     <ClInclude Include="..\Lib.Utils\utilsCRC.h" />
+    <ClInclude Include="..\LIB.Utils\utilsException.h" />
+    <ClInclude Include="..\LIB.Utils\utilsExits.h" />
     <ClInclude Include="..\LIB.Utils\utilsFile.h" />
     <ClInclude Include="..\Lib.Utils\utilsLog.h" />
     <ClInclude Include="..\Lib.Utils\utilsPacket.h" />
@@ -226,6 +230,7 @@
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
     <ClInclude Include="..\LIB.Utils\utilsSerialPort.h" />
     <ClInclude Include="..\Lib.Utils\utilsShell.h" />
+    <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="devConfig.h" />
     <ClInclude Include="Dev\devDataSetConfig.h" />
     <ClInclude Include="Dev\devGNSS.h" />

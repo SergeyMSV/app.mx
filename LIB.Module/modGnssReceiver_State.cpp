@@ -1,5 +1,7 @@
 #include "modGnssReceiver.h"
 
+#include <utilsException.h>
+
 namespace mod
 {
 
@@ -31,7 +33,7 @@ bool tGnssReceiver::tState::operator()()
 
 		if (DataChunk.size() > 0)
 		{
-			//m_pObj->m_pLog->WriteHex(true, utils::tLogColour::LightRed, "Received", DataChunk);
+			//m_pObj->m_pLog->WriteHex(true, utils::log::tColor::LightRed, "Received", DataChunk);
 
 			m_ReceivedData.insert(m_ReceivedData.end(), DataChunk.cbegin(), DataChunk.cend());
 
@@ -100,7 +102,7 @@ void tGnssReceiver::tState::TaskScript()
 			}
 			default://ERROR
 			{
-				m_pObj->m_Log.WriteLine(true, utils::tLogColour::LightRed, "ERR: unknown task");
+				m_pObj->m_Log.WriteLine(true, "ERR: unknown task", utils::log::tColor::LightRed);
 
 				THROW_INVALID_ARGUMENT("Unknown task");
 				//[TBD] throw an exception or do nothing
@@ -164,7 +166,7 @@ bool tGnssReceiver::tState::SetTaskScript(const std::string& taskScriptID, bool 
 
 	if (Script.empty())
 	{
-		m_pObj->m_Log.WriteLine(false, utils::tLogColour::LightRed, "SetTaskScript - NO SCRIPT LOADED: " + taskScriptID);
+		m_pObj->m_Log.WriteLine(false, "SetTaskScript - NO SCRIPT LOADED: " + taskScriptID, utils::log::tColor::LightRed);
 		return false;
 	}
 
@@ -184,7 +186,7 @@ bool tGnssReceiver::tState::OnCmdFailed()
 
 bool tGnssReceiver::tState::OnReceived(const tPacketNMEA_Template& value)
 {
-	m_pObj->m_Log.WriteLine(false, utils::tLogColour::LightYellow, "OnReceived: " + value.GetPayloadValue());
+	m_pObj->m_Log.WriteLine(false, "OnReceived: " + value.GetPayloadValue(), utils::log::tColor::LightYellow);
 	return false;
 }
 

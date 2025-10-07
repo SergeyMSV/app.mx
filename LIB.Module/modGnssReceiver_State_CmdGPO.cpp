@@ -1,5 +1,7 @@
 #include "modGnssReceiver.h"
 
+#include <utilsException.h>
+
 namespace mod
 {
 

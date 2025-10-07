@@ -3,7 +3,7 @@
 namespace dev
 {
 
-tGNSS::tGNSS(utils::tLog& log, boost::asio::io_context& ioc)
+tGNSS::tGNSS(utils::log::tLog& log, boost::asio::io_context& ioc)
 	:m_Log(log), m_ioc(ioc)
 {
 	m_pMod = new tModGnssReceiver(this);
