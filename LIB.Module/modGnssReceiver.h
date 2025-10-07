@@ -7,7 +7,6 @@
 
 #include "modGnss.h"
 
-#include <utilsBase.h>
 #include <utilsLog.h>
 #include <utilsPacket.h>
 #include <utilsPacketNMEA.h>
@@ -245,7 +244,7 @@ class tGnssReceiver
 		void OnTaskScriptFailed(const std::string& msg) override;
 	};
 
-	utils::tLog& m_Log;
+	utils::log::tLog& m_Log;
 
 	//mutable std::mutex m_MtxState;
 	tState* m_pState = nullptr;
@@ -262,7 +261,7 @@ class tGnssReceiver
 
 public:
 	tGnssReceiver() = delete;
-	explicit tGnssReceiver(utils::tLog& log);
+	explicit tGnssReceiver(utils::log::tLog& log);
 	tGnssReceiver(const tGnssReceiver&) = delete;
 	tGnssReceiver(tGnssReceiver&&) = delete;
 	virtual ~tGnssReceiver() {}
@@ -322,14 +321,14 @@ private:
 
 class tGnssReceiverPacketLog
 {
-	utils::tLog& m_Log;
+	utils::log::tLog& m_Log;
 
 	std::chrono::time_point<tClock>& m_StartTime;
 	std::string m_MsgTime;
 
 public:
 	tGnssReceiverPacketLog() = delete;
-	tGnssReceiverPacketLog(utils::tLog& log, std::chrono::time_point<tClock>& startTime);
+	tGnssReceiverPacketLog(utils::log::tLog& log, std::chrono::time_point<tClock>& startTime);
 	~tGnssReceiverPacketLog();
 
 	void OnReceived(size_t size);
@@ -340,7 +339,7 @@ public:
 	void OnReceived(const std::string& id);
 
 private:
-	void Write(utils::tLogColour colour, std::string msg);
+	void Write(utils::log::tColor color, std::string msg);
 	std::string GetTimePeriodString(const std::chrono::time_point<tClock>& timePoint) const;
 	std::string GetBaudrateString(const std::chrono::time_point<tClock>& timePoint, std::size_t sizeBytes) const;
 };
