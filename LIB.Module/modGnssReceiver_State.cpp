@@ -100,7 +100,7 @@ void tGnssReceiver::tState::TaskScript()
 			}
 			default://ERROR
 			{
-				m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightRed, "ERR: unknown task");
+				m_pObj->m_Log.WriteLine(true, utils::tLogColour::LightRed, "ERR: unknown task");
 
 				THROW_INVALID_ARGUMENT("Unknown task");
 				//[TBD] throw an exception or do nothing
@@ -164,7 +164,7 @@ bool tGnssReceiver::tState::SetTaskScript(const std::string& taskScriptID, bool 
 
 	if (Script.empty())
 	{
-		m_pObj->m_pLog->WriteLine(false, utils::tLogColour::LightRed, "SetTaskScript - NO SCRIPT LOADED: " + taskScriptID);
+		m_pObj->m_Log.WriteLine(false, utils::tLogColour::LightRed, "SetTaskScript - NO SCRIPT LOADED: " + taskScriptID);
 		return false;
 	}
 
@@ -184,7 +184,7 @@ bool tGnssReceiver::tState::OnCmdFailed()
 
 bool tGnssReceiver::tState::OnReceived(const tPacketNMEA_Template& value)
 {
-	m_pObj->m_pLog->WriteLine(false, utils::tLogColour::LightYellow, "OnReceived: " + value.GetPayloadValue());
+	m_pObj->m_Log.WriteLine(false, utils::tLogColour::LightYellow, "OnReceived: " + value.GetPayloadValue());
 	return false;
 }
 

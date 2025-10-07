@@ -5,8 +5,8 @@
 namespace mod
 {
 
-tGnssReceiver::tGnssReceiver(utils::tLog* log)
-	:m_pLog(log)
+tGnssReceiver::tGnssReceiver(utils::tLog& log)
+	:m_Log(log)
 {
 	ChangeState(new tStateHalt(this, "the very start"));
 	return;
@@ -105,6 +105,35 @@ void tGnssReceiver::ClearReceivedData()
 	}
 }
 
+void tGnssReceiver::LogError(const std::string& msg) const
+{
+	m_Log.WriteLine(true, utils::tLogColour::LightRed, msg);
+}
+
+void tGnssReceiver::LogTrace(const std::string& msg) const
+{
+	m_Log.WriteLine(true, utils::tLogColour::LightYellow, msg);
+}
+
+void tGnssReceiver::LogStateStarted(const std::string& msg) const
+{
+	m_Log.WriteLine(true, utils::tLogColour::Default, msg);
+}
+
+//void tGnssReceiver::LogStateStopped() const
+//{
+//}
+
+void tGnssReceiver::LogTaskScriptDone(bool operation) const
+{
+	m_Log.WriteLine(false, operation ? utils::tLogColour::LightGreen : utils::tLogColour::LightYellow, "OnTaskScriptDone");
+}
+
+void tGnssReceiver::LogTaskScriptFailed(const std::string& msg, bool operation) const
+{
+	m_Log.WriteLine(false, operation ? utils::tLogColour::LightRed : utils::tLogColour::LightYellow, "OnTaskScriptFailed: " + msg);
+}
+
 void tGnssReceiver::ChangeState(tState* state)
 {
 	tState* Prev = m_pState;
@@ -112,8 +141,8 @@ void tGnssReceiver::ChangeState(tState* state)
 	delete Prev;
 }
 
-tGnssReceiverPacketLog::tGnssReceiverPacketLog(utils::tLog* log, std::chrono::time_point<tClock>& startTime)
-	:m_pLog(log), m_StartTime(startTime)
+tGnssReceiverPacketLog::tGnssReceiverPacketLog(utils::tLog& log, std::chrono::time_point<tClock>& startTime)
+	:m_Log(log), m_StartTime(startTime)
 {
 
 }
@@ -164,8 +193,8 @@ void tGnssReceiverPacketLog::Write(utils::tLogColour colour, std::string msg)
 	int Align = 26 - static_cast<int>(msg.size());
 	if (Align > 0)
 		msg += std::string(Align, ' ');
-	m_pLog->Write(true, colour, msg);
-	m_pLog->WriteLine(false, utils::tLogColour::Default, m_MsgTime);
+	m_Log.Write(true, colour, msg);
+	m_Log.WriteLine(false, utils::tLogColour::Default, m_MsgTime);
 }
 
 std::string tGnssReceiverPacketLog::GetTimePeriodString(const std::chrono::time_point<tClock>& timePoint) const

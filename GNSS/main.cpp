@@ -34,13 +34,13 @@ void Thread_GNSS_Handler(std::promise<bool>& promise)
 
 	Log.LogSettings.Field.GNSS = 1;
 
-	boost::asio::io_context IO_context;
+	boost::asio::io_context ioc;
 
 	try
 	{
-		dev::tGNSS Dev(&Log, IO_context);
+		dev::tGNSS Dev(Log, ioc);
 
-		std::thread Thread_IO([&]() { IO_context.run(); });
+		std::thread Thread_IO([&]() { ioc.run(); });
 
 		std::atomic<bool> Thread_Dev_Exists = true;
 		std::atomic<bool> Thread_Dev_ExitOnError = false;
@@ -104,7 +104,7 @@ void Thread_GNSS_Handler(std::promise<bool>& promise)
 
 		Thread_Dev.join();
 
-		IO_context.stop();
+		ioc.stop();
 
 		Thread_IO.join();
 

@@ -6,34 +6,31 @@ namespace mod
 tGnssReceiver::tStateStart::tStateStart(tGnssReceiver* obj, const std::string& value)
 	:tState(obj, "StateStart")
 {
-	m_pObj->m_pLog->WriteLine(true, utils::tLogColour::Default, "tStateStart: " + value);
+	m_pObj->LogStateStarted("tStateStart: " + value);
 
 	if (m_pObj->IsControlRestart())
-	{
 		m_pObj->m_Control_Restart = false;
-	}
 }
 
 void tGnssReceiver::tStateStart::OnTaskScriptDone()
 {
-	m_pObj->m_pLog->WriteLine(false, utils::tLogColour::LightYellow, "OnTaskScriptDone");
+	m_pObj->LogTaskScriptDone();
 
 	if (m_NextState_Stop)
 	{
 		ChangeState(new tStateStop(m_pObj, "start single"));
-		return;
 	}
-
-	ChangeState(new tStateOperation(m_pObj));
-	return;
+	else
+	{
+		ChangeState(new tStateOperation(m_pObj));
+	}
 }
 
 void tGnssReceiver::tStateStart::OnTaskScriptFailed(const std::string& msg)
 {
-	m_pObj->m_pLog->WriteLine(false, utils::tLogColour::LightYellow, "OnTaskScriptFailed: " + msg);
+	m_pObj->LogTaskScriptFailed(msg);
 
 	ChangeState(new tStateError(m_pObj, "start"));
-	return;
 }
 
 }

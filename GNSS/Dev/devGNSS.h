@@ -1,12 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// devGNSS.h
-//
-// Standard ISO/IEC 114882, C++11
-//
-// |   version  |    release    | Description
-// |------------|---------------|---------------------------------
-// |      1     |   2020 03 03  |
-// |            |               | 
+// devGNSS
+// 2020-03-03
+// C++11
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -66,9 +61,9 @@ class tGNSS
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 	friend class tModGnssReceiver;
 
-	utils::tLog *m_pLog = nullptr;
+	utils::tLog& m_Log;
 
-	boost::asio::io_context* m_pIO = nullptr;
+	boost::asio::io_context& m_ioc;
 
 	tModGnssReceiver *m_pMod = nullptr;
 
@@ -76,7 +71,7 @@ class tGNSS
 
 public:
 	tGNSS() = delete;
-	tGNSS(utils::tLog* log, boost::asio::io_context& io);
+	tGNSS(utils::tLog& log, boost::asio::io_context& ioc);
 	tGNSS(const tGNSS&) = delete;
 	tGNSS(tGNSS&&) = delete;
 	~tGNSS();
