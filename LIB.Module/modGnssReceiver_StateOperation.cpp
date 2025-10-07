@@ -9,7 +9,7 @@ namespace mod
 tGnssReceiver::tStateOperation::tStateOperation(tGnssReceiver* obj)
 	:tState(obj, "StateOperation"), m_StartTime(tClock::now()), m_SettingsNMEA(m_pObj->GetSettingsNMEA())
 {
-	m_pObj->m_pLog->WriteLine(true, utils::tLogColour::Default, "tStateOperation");
+	m_pObj->LogStateStarted("tStateOperation");
 }
 
 bool tGnssReceiver::tStateOperation::SetUserTaskScript(const std::string& taskScriptID)
@@ -19,12 +19,12 @@ bool tGnssReceiver::tStateOperation::SetUserTaskScript(const std::string& taskSc
 
 void tGnssReceiver::tStateOperation::OnTaskScriptDone()
 {
-	m_pObj->m_pLog->WriteLine(false, utils::tLogColour::LightGreen, "OnTaskScriptDone");
+	m_pObj->LogTaskScriptDone(true);
 }
 
 void tGnssReceiver::tStateOperation::OnTaskScriptFailed(const std::string& msg)
 {
-	m_pObj->m_pLog->WriteLine(false, utils::tLogColour::LightRed, "OnTaskScriptFailed: " + msg);
+	m_pObj->LogTaskScriptFailed(msg, true);
 }
 
 bool tGnssReceiver::tStateOperation::Go()
@@ -100,7 +100,7 @@ bool tGnssReceiver::tStateOperation::OnReceived(const tPacketNMEA_Template& valu
 
 	const tPacketNMEA::payload_type PacketData(Payload.cbegin(), Payload.cend());
 
-	tGnssReceiverPacketLog Log(m_pObj->m_pLog, m_StartTime);
+	tGnssReceiverPacketLog Log(m_pObj->m_Log, m_StartTime);
 	Log.OnReceived(Payload.size());
 
 	//[TBD] it's possible to use std::map instead of following statement... just reg in map new handler...

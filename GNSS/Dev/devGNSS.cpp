@@ -3,8 +3,8 @@
 namespace dev
 {
 
-tGNSS::tGNSS(utils::tLog* log, boost::asio::io_context& io)
-	:m_pLog(log), m_pIO(&io)
+tGNSS::tGNSS(utils::tLog& log, boost::asio::io_context& ioc)
+	:m_Log(log), m_ioc(ioc)
 {
 	m_pMod = new tModGnssReceiver(this);
 }
@@ -16,79 +16,53 @@ tGNSS::~tGNSS()
 
 void tGNSS::operator()()
 {
-	if (m_pMod)
+	if (m_StartAuto)
 	{
-		if (m_StartAuto)
-		{
-			m_StartAuto = false;
+		m_StartAuto = false;
 
-			m_pMod->Start(true);
-		}
-
-		(*m_pMod)();
+		m_pMod->Start(true);
 	}
+
+	(*m_pMod)();
 }
 
 void tGNSS::Start()
 {
-	if (m_pMod)
-	{
-		m_pMod->Start();
-	}
+	m_pMod->Start();
 }
 
 void tGNSS::Restart()
 {
-	if (m_pMod)
-	{
-		m_pMod->Restart();
-	}
+	m_pMod->Restart();
 }
 
 void tGNSS::Halt()
 {
-	if (m_pMod)
-	{
-		m_pMod->Halt();
-	}
+	m_pMod->Halt();
 }
 
 void tGNSS::Exit()
 {
-	if (m_pMod)
-	{
-		m_pMod->Exit();
-	}
+	m_pMod->Exit();
 }
 
 bool tGNSS::StartUserTaskScript(const std::string& taskScriptID)
 {
-	if (m_pMod)
-	{
-		return m_pMod->StartUserTaskScript(taskScriptID);
-	}
-
-	return false;
+	return m_pMod->StartUserTaskScript(taskScriptID);
 }
 
 utils::tDevStatus tGNSS::GetStatus() const
 {
-	if (m_pMod)
-	{
-		return m_pMod->GetStatus();
-	}
-
-	return utils::tDevStatus::Unknown;
+	if (!m_pMod)
+		return utils::tDevStatus::Unknown;
+	return m_pMod->GetStatus();
 }
 
 std::string tGNSS::GetLastErrorMsg() const
 {
-	if (m_pMod)
-	{
-		return m_pMod->GetLastErrorMsg();
-	}
-
-	return {};
+	if (!m_pMod)
+		return {};
+	return m_pMod->GetLastErrorMsg();
 }
 
 }

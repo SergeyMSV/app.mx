@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // modGnssReceiver
 // 2020-03-03
-// Standard ISO/IEC 114882, C++14
+// C++14
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -245,7 +245,7 @@ class tGnssReceiver
 		void OnTaskScriptFailed(const std::string& msg) override;
 	};
 
-	utils::tLog* m_pLog = nullptr;
+	utils::tLog& m_Log;
 
 	//mutable std::mutex m_MtxState;
 	tState* m_pState = nullptr;
@@ -262,7 +262,7 @@ class tGnssReceiver
 
 public:
 	tGnssReceiver() = delete;
-	explicit tGnssReceiver(utils::tLog* log);
+	explicit tGnssReceiver(utils::tLog& log);
 	tGnssReceiver(const tGnssReceiver&) = delete;
 	tGnssReceiver(tGnssReceiver&&) = delete;
 	virtual ~tGnssReceiver() {}
@@ -310,19 +310,26 @@ private:
 
 	void ClearReceivedData();
 
+	void LogError(const std::string& msg) const;
+	void LogTrace(const std::string& msg) const;
+	void LogStateStarted(const std::string& msg) const;
+	//void LogStateStopped() const;
+	void LogTaskScriptDone(bool operation = false) const;
+	void LogTaskScriptFailed(const std::string& msg, bool operation = false) const;
+
 	void ChangeState(tState* state);
 };
 
 class tGnssReceiverPacketLog
 {
-	utils::tLog* m_pLog = nullptr;
+	utils::tLog& m_Log;
 
 	std::chrono::time_point<tClock>& m_StartTime;
 	std::string m_MsgTime;
 
 public:
 	tGnssReceiverPacketLog() = delete;
-	tGnssReceiverPacketLog(utils::tLog* log, std::chrono::time_point<tClock>& startTime);
+	tGnssReceiverPacketLog(utils::tLog& log, std::chrono::time_point<tClock>& startTime);
 	~tGnssReceiverPacketLog();
 
 	void OnReceived(size_t size);

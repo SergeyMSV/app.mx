@@ -29,7 +29,7 @@ bool tGnssReceiver::tState::tCmdGPO::operator()()
 		}
 		else
 		{
-			m_pObjState->m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightRed, "ERR: unknown GPO");
+			m_pObjState->m_pObj->LogError("ERR: unknown GPO");
 
 			//[TBD] throw an exception or do nothing
 			THROW_INVALID_ARGUMENT("Unknown GPO");

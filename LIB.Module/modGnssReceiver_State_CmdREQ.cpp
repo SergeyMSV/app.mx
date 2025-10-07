@@ -84,7 +84,7 @@ bool tGnssReceiver::tState::tCmdREQ::OnReceived(const tPacketNMEA_Template& valu
 				auto Time_us = std::chrono::duration_cast<std::chrono::microseconds>(tClock::now() - m_StartTime).count();//C++11
 				std::stringstream StrTime;
 				StrTime << value.GetPayloadValue() << " --- " << Time_us << " us";
-				m_pObjState->m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightYellow, StrTime.str());
+				m_pObjState->m_pObj->LogTrace(StrTime.str());
 			}
 			////
 
