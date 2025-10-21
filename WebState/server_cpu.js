@@ -5,7 +5,7 @@ const np_fs = require('fs');
 const sc_status = require('./status.js');
 
 exports.GetPage = function () {
-    return '<tr><td></td><td>Load avg.:</td><td id="cpu_loadavg"></td></tr>' +
+    return '<tr><td></td><td>- load avg.:</td><td id="cpu_loadavg"></td></tr>' +
         '<tr><td id="cpu_thermal_color" bgcolor="white"></td><td>CPU thermal:</td><td id="cpu_thermal_text"></td></tr>';
 }
 

@@ -17,6 +17,7 @@ exports.GetPage = function () {
         str += '<tr><td></td><td> - mode:</td><td id="gnss_mode_text"></td></tr>';
         str += '<tr><td></td><td> - satellites:</td><td><span id="gnss_sats_gps"></span> <span id="gnss_sats_glo"></span></td></tr>';
         str += '<tr><td></td><td> - location:</td><td id="gnss_location_text"></td></tr>';
+        str += '<tr><td></td><td> - speed:</td><td id="gnss_speed_text"></td></tr>';
     }
     return str;
 }
@@ -56,7 +57,8 @@ exports.GetPageData = function () {
 
         data.mode = gnssData.mode_indicator.toLowerCase();
         data.sats = GetSatStatus(gnssData);
-        data.location = gnssData.latitude.toFixed(4) + ' ' + gnssData.longitude.toFixed(4) + '; ' + gnssData.speed + ' km/h';
+        data.location = gnssData.latitude.toFixed(4) + ' ' + gnssData.longitude.toFixed(4);
+        data.speed = gnssData.speed.toFixed(0) + ' km/h'
 
         const utcGNSS = GNSS_UTC_ToDT(gnssData.utc);
         const utcNow = Date.now();

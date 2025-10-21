@@ -14,16 +14,17 @@ function update() {
         success: (data) => {
             for (const key in data) {
                 switch (key) {
+                    //console.log(key + ' : ' + data[key]);
                     case 'update_period':
                         //console.log(key + ' : ' + data[key]);
                         g_update_period = data[key];
                         if (g_update_period < g_update_period_min)
                             g_update_period = g_update_period_min;
                         break;
-                    case 'datetime':
-                    case 'uptime':
-                        //console.log(key + ' : ' + data[key]);
-                        SetElemText(key, data[key]);
+                    case 'host':
+                        SetElemText('host_utc', data[key]['utc']);
+                        SetElemText('host_uptime', data[key]['uptime']);
+                        SetElemBgColor('host_color', data[key]['color'] ?? '');
                         break;
                     case 'cpu':
                         {
@@ -45,6 +46,7 @@ function update() {
                             SetElemText('gnss_sats_glo', data[key]['sats']?.['glo']?.['text'] ?? '');
                             SetElemClass('gnss_sats_glo', data[key]['sats']?.['glo']?.['class'] ?? '')
                             SetElemText('gnss_location_text', data[key]['location'] ?? '');
+                            SetElemText('gnss_speed_text', data[key]['speed'] ?? '');
                         }
                     default:
                         //console.log(key);
