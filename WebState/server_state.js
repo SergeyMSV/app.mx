@@ -3,10 +3,6 @@
 const np_fs = require('fs');
 const sc_utils = require('./utils.js');
 
-exports.GetDateTime = function () {
-    return sc_utils.DateToString(new Date);
-}
-
 exports.GetUptime = function (a_config) {
     let val = GetText(a_config);
     val = val.split(' ');

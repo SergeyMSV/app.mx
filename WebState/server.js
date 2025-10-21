@@ -2,7 +2,7 @@
 
 'use strict';
 
-const version = 'v.0.1.4';
+const version = 'v.0.1.11';
 
 const np_fs = require('fs');
 const np_express = require('express');
@@ -15,6 +15,7 @@ const sc_config = require('./config.js');
 const sc_server_cpu = require('./server_cpu.js');
 const sc_server_state = require('./server_state.js');
 const sc_server_gnss = require('./server_gnss.js');
+const sc_utils = require('./utils.js');
 
 const g_conf = sc_config.GetConfig();
 const g_hostname = sc_config.GetHostname();
@@ -27,8 +28,10 @@ app.get('/', (req, res) => {
     if (req.query.content == 'data') {
         let data = {};
         data.cpu = sc_server_cpu.GetPageData(g_conf);
-        data.datetime = sc_server_state.GetDateTime();
-        data.uptime = sc_server_state.GetUptime(g_conf.uptime.path);
+        data.host = {};
+        data.host.utc = sc_utils.DateToString(new Date);
+        data.host.uptime = sc_server_state.GetUptime(g_conf.uptime.path);
+        data.host.color = 'green'; // [TBD] it is to be more useful
         data.gnss = sc_server_gnss.GetPageData();
         data.update_period = 500; // ms
         res.status(200).json(data);
@@ -47,9 +50,9 @@ app.get('/', (req, res) => {
     HtmlHead += '<script>$(document).ready(function () { update(); });</script>';
 
     let HtmlBodyMain = '<table>';
-    HtmlBodyMain += `<tr><td width=1px></td><td>Host name:</td><td id="hostname">${g_hostname} (${version})</td></tr>`;
-    HtmlBodyMain += '<tr><td width=1px></td><td>Date:</td><td id="datetime"></td></tr>';
-    HtmlBodyMain += '<tr><td></td><td>Uptime:</td><td id="uptime"></td></tr>';
+    HtmlBodyMain += `<tr><td id="host_color" width=1px></td><td>Host:</td><td id="host_name">${g_hostname} (${version})</td></tr>`;
+    HtmlBodyMain += '<tr><td width=1px></td><td>- UTC:</td><td id="host_utc"></td></tr>';
+    HtmlBodyMain += '<tr><td></td><td>- uptime:</td><td id="host_uptime"></td></tr>';
     HtmlBodyMain += sc_server_cpu.GetPage();
     HtmlBodyMain += sc_server_gnss.GetPage();
     HtmlBodyMain += '</table>';
