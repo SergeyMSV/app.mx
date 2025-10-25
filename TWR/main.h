@@ -19,7 +19,7 @@ using tPacketTWRRsp = utils::packet_TWR::tPacketTWRRsp;
 template<class T>
 struct tPack
 {
-	share_network_udp::tEndpoint Endpoint;
+	share::network::udp::tEndpoint Endpoint;
 	T Value;
 };
 
