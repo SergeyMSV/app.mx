@@ -12,14 +12,14 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 {
 	boost::property_tree::ptree PTreeMX;
 	boost::property_tree::json_parser::read_json(fileNameMX, PTreeMX);
-	m_Platform = share_config::tPlatform(PTreeMX);
-	m_UDPPort = share_config::tUDPPort("network.twr_port", PTreeMX);
+	m_Platform = share::config::tPlatform(PTreeMX);
+	m_UDPPort = share::config::port::tUDP_Config("network.twr_port", PTreeMX);
 	const std::string SPI0_CS0_ID = PTreeMX.get<std::string>("spi.twr.id", "");
-	m_SPI0_CS0_RST = share_config::tGPIOPort("spi.twr.reset", PTreeMX);
+	m_SPI0_CS0_RST = share::config::port::tGPIO_Config("spi.twr.reset", PTreeMX);
 
 	boost::property_tree::ptree PTreeConfig;
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
-	m_SPI0_CS0 = share_config::tSPIPort(SPI0_CS0_ID, "spi", PTreeConfig);
+	m_SPI0_CS0 = share::config::port::tSPI_Config(SPI0_CS0_ID, "spi", PTreeConfig);
 }
 
 }

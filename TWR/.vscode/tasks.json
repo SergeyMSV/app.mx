@@ -24,7 +24,9 @@
         "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
         "${workspaceFolder}/../LIB.Share/sharePortGPIO.cpp",
         "${workspaceFolder}/../LIB.Share/sharePortSPI.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsException.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsVersion.cpp",
         "-o",
         "${workspaceFolder}/mxtwr",
         "-lpthread"
@@ -63,7 +65,9 @@
         "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
         "${workspaceFolder}/../LIB.Share/sharePortGPIO.cpp",
         "${workspaceFolder}/../LIB.Share/sharePortSPI.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsException.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsVersion.cpp",
         "-o",
         "${workspaceFolder}/mxtwr_dbg",
         "-lpthread"

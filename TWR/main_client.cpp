@@ -77,7 +77,7 @@ void UDP_ClientTest(std::uint16_t port)
 
 			///
 
-			std::array<char, share_network_udp::PacketSizeMax> ReceiveBuffer;
+			std::array<char, share::network::udp::PacketSizeMax> ReceiveBuffer;
 			asio_ip::udp::endpoint SenderEndpoint;
 			std::size_t Size = Socket.receive_from(boost::asio::buffer(ReceiveBuffer), SenderEndpoint);
 			if (Size)

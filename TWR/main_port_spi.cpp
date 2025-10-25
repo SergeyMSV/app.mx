@@ -11,15 +11,15 @@ void Thread_Port_SPI(const std::shared_ptr<dev::tDataSetConfig>& dataSetConfig, 
 {
 	std::weak_ptr<dev::tDataSetConfig> DataSetConfig_WeakPtr(dataSetConfig);
 
-	const share_config::tSPIPort ConfSPI = dataSetConfig->GetSPI0_CS0();
+	const share::config::port::tSPI_Config ConfSPI = dataSetConfig->GetSPI0_CS0();
 	if (ConfSPI.IsWrong())
 		return;
-	const share_config::tGPIOPort ConfRST = dataSetConfig->GetSPI0_CS0_RST();
+	const share::config::port::tGPIO_Config ConfRST = dataSetConfig->GetSPI0_CS0_RST();
 	if (ConfRST.IsWrong())
 		return;
 
-	share_port::tSPI SPI(ConfSPI.ID, ConfSPI.Mode, ConfSPI.Bits, ConfSPI.Frequency_hz, ConfSPI.Delay_us);
-	share_port::tGPIO RST(ConfRST.ID);
+	share::port::tSPI SPI(ConfSPI.ID, ConfSPI.Mode, ConfSPI.Bits, ConfSPI.Frequency_hz, ConfSPI.Delay_us);
+	share::port::tGPIO RST(ConfRST.ID);
 
 	int PeriodCounter = 0;
 
