@@ -2,7 +2,7 @@
 
 #include "main.h"
 
-class tTWRServer : public share_network_udp::tUDPServerAsync
+class tTWRServer : public share::network::udp::tUDPServerAsync
 {
 	tVectorUInt8 m_ReceivedData;
 
@@ -11,7 +11,7 @@ public:
 		:tUDPServerAsync(ioc, port)
 	{}
 
-	void OnReceived(const share_network_udp::tEndpoint& endpoint, const utils::tVectorUInt8& data) override;
+	void OnReceived(const share::network::udp::tEndpoint& endpoint, const utils::tVectorUInt8& data) override;
 
 private:
 	void OnSent(boost::shared_ptr<tVectorUInt8> packet, const boost::system::error_code& error, std::size_t bytes_transferred) override { }

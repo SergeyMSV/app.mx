@@ -1,12 +1,12 @@
 #include "main_server.h"
 
-void tTWRServer::OnReceived(const share_network_udp::tEndpoint& endpoint, const utils::tVectorUInt8& data)
+void tTWRServer::OnReceived(const share::network::udp::tEndpoint& endpoint, const utils::tVectorUInt8& data)
 {
 	m_ReceivedData.insert(m_ReceivedData.end(), data.begin(), data.end());
 
 	tPacketTWRCmdEp Cmd;
 	std::size_t PackSize = tPacketTWRCmd::Find(m_ReceivedData, Cmd.Value);
-	if (PackSize || m_ReceivedData.size() > share_network_udp::PacketSizeMax)
+	if (PackSize || m_ReceivedData.size() > share::network::udp::PacketSizeMax)
 		m_ReceivedData.clear();
 	Cmd.Endpoint = endpoint;
 
@@ -20,6 +20,7 @@ void tTWRServer::HandlePacket(tPacketTWRCmdEp& cmd)
 	switch (cmd.Value.GetMsgId())
 	{
 	case TWR::tMsgId::GetVersion: Pack = tPacketTWRRsp::Make(cmd.Value, settings::Version).ToVector();
+		[[fallthrough]];
 	case TWR::tMsgId::DEMO_Request:
 	case TWR::tMsgId::SPI_Request:
 	case TWR::tMsgId::SPI_GetSettings:
