@@ -1,13 +1,16 @@
 #pragma once
 
-#include <utilsBase.h>
-
 #include <array>
 #include <boost/bind/bind.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/asio.hpp>
 
-namespace share_network_udp
+namespace share
+{
+namespace network
+{
+namespace udp
 {
 
 namespace asio_ip = boost::asio::ip;
@@ -37,8 +40,8 @@ private:
 			boost::bind(&tUDPServerAsync::OnReceivedAsync, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}
 
-	virtual void OnReceived(const tEndpoint& endpoint, const utils::tVectorUInt8& data) = 0;
-	virtual void OnSent(boost::shared_ptr<utils::tVectorUInt8> packet, const boost::system::error_code& error, std::size_t bytes_transferred) = 0;
+	virtual void OnReceived(const tEndpoint& endpoint, const std::vector<std::uint8_t>& data) = 0;
+	virtual void OnSent(boost::shared_ptr<std::vector<std::uint8_t>> packet, const boost::system::error_code& error, std::size_t bytes_transferred) = 0;
 
 	void OnReceivedAsync(const boost::system::error_code& error, std::size_t recvSize)
 	{
@@ -49,7 +52,7 @@ private:
 	}
 
 public:
-	void Send(const tEndpoint& endpoint, boost::shared_ptr<utils::tVectorUInt8> packet)
+	void Send(const tEndpoint& endpoint, boost::shared_ptr<std::vector<std::uint8_t>> packet)
 	{
 		if (!packet || packet->empty())
 			return;
@@ -59,11 +62,19 @@ public:
 			boost::bind(&tUDPServerAsync::OnSent, this, packet, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}
 
-	void Send(const tEndpoint& endpoint, const utils::tVectorUInt8& packet)
+	void Send(const tEndpoint& endpoint, const std::vector<std::uint8_t>& packet)
 	{
-		boost::shared_ptr<utils::tVectorUInt8> Packet(new utils::tVectorUInt8(packet));
+		auto Packet = boost::make_shared<std::vector<std::uint8_t>>(packet);
+		Send(endpoint, Packet);
+	}
+
+	void Send(const tEndpoint& endpoint, const std::string& packet)
+	{
+		auto Packet = boost::make_shared<std::vector<std::uint8_t>>(packet.begin(), packet.end());
 		Send(endpoint, Packet);
 	}
 };
 
+}
+}
 }

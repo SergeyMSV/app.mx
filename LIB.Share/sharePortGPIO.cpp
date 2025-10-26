@@ -2,10 +2,12 @@
 
 #ifdef MXTWR_CLIENT
 
-namespace share_port
+namespace share
+{
+namespace port
 {
 
-tGPIO::tGPIO(boost::asio::io_context& ioc, TWR::tEndpoint ep)
+tGPIO::tGPIO(boost::asio::io_context& ioc, tTWREndpoint ep)
 	:tTWRClient(ioc), m_Endpoint(ep)
 {
 }
@@ -21,11 +23,12 @@ bool tGPIO::GetState()
 
 void tGPIO::SetState(bool state)
 {
-	TWR::tChipControl ChipControl;
+	tTWRChipControl ChipControl;
 	ChipControl.Field.Reset = state ? 1 : 0;
 	Transaction_SPI_SetChipControl(m_Endpoint, ChipControl);
 }
 
+}
 }
 #else // MXTWR_CLIENT
 
@@ -33,7 +36,9 @@ void tGPIO::SetState(bool state)
 
 #include <fstream>
 
-namespace share_port
+namespace share
+{
+namespace port
 {
 
 tGPIO::tGPIO(const std::string& id)
@@ -75,6 +80,7 @@ void tGPIO::SetState(bool state)
 	File.close();
 }
 
+}
 }
 #endif // MXTWR_SERVER
 #endif // MXTWR_CLIENT

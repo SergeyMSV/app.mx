@@ -1,10 +1,12 @@
 #pragma once
 
-#include <utilsBase.h>
+#include <utilsVersion.h>
 
 #include <boost/property_tree/ptree.hpp>
 
-namespace share_config
+namespace share
+{
+namespace config
 {
 
 struct tDevice
@@ -57,18 +59,33 @@ struct tOutFileCap : public tOutFile
 	bool IsWrong() const;
 };
 
-struct tSerialPort
+struct tPipe
 {
-	std::string ID;
-	std::uint32_t BR = 0;
+	std::string Path;
 
-	tSerialPort() = default;
-	tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree);
+	tPipe() = default;
+	tPipe(const std::string& pipeName, const boost::property_tree::ptree& pTree);
 
 	bool IsWrong() const;
 };
 
-struct tSPIPort
+namespace port
+{
+
+struct tUART_Config // Universal Asynchronous Receiver/Transmitter
+{
+	std::string ID;
+	std::uint32_t BR = 0;
+
+	tUART_Config() = default;
+	tUART_Config(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree);
+
+	bool IsWrong() const;
+};
+
+using tSerial_Config = tUART_Config;
+
+struct tSPI_Config
 {
 	std::string ID;
 	std::uint8_t Mode = 0;
@@ -76,34 +93,36 @@ struct tSPIPort
 	std::uint32_t Frequency_hz = 0;
 	std::uint16_t Delay_us = 0;
 
-	tSPIPort() = default;
-	tSPIPort(const std::string& portID, const std::string& baseName, const boost::property_tree::ptree& pTree);
+	tSPI_Config() = default;
+	tSPI_Config(const std::string& portID, const std::string& baseName, const boost::property_tree::ptree& pTree);
 
 	bool IsWrong() const;
 };
 
-struct tGPIOPort
+struct tGPIO_Config
 {
 	std::string ID;
 
-	tGPIOPort() = default;
-	tGPIOPort(const std::string& baseName, const boost::property_tree::ptree& pTree);
+	tGPIO_Config() = default;
+	tGPIO_Config(const std::string& baseName, const boost::property_tree::ptree& pTree);
 
 	bool IsWrong() const;
 };
 
-struct tIPPort
+struct tIP_Config
 {
 	std::uint16_t Value = 0;
 
-	tIPPort() = default;
-	explicit tIPPort(std::uint16_t value) :Value(value) {}
-	tIPPort(const std::string& baseName, const boost::property_tree::ptree& pTree);
+	tIP_Config() = default;
+	explicit tIP_Config(std::uint16_t value) :Value(value) {}
+	tIP_Config(const std::string& baseName, const boost::property_tree::ptree& pTree);
 
 	bool IsWrong() const;
 };
 
-using tUDPPort = tIPPort;
-using tTCPPort = tIPPort;
+using tUDP_Config = tIP_Config;
+using tTCP_Config = tIP_Config;
 
+}
+}
 }

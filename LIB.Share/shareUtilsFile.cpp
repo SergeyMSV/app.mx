@@ -9,7 +9,7 @@
 namespace share
 {
 
-tLogFileLine::tLogFileLine(const share_config::tOutFileCap& conf)
+tLogFileLine::tLogFileLine(const share::config::tOutFileCap& conf)
 {
 	auto LogList = GetFilePaths(conf);
 	m_FilePath = LogList.empty() ? "" : LogList.back();
@@ -60,17 +60,17 @@ void tLogFileLine::WriteData(const std::string& msg)
 	File.close();
 }
 
-std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf)
+std::deque<std::string> GetFilePaths(const share::config::tOutFile& conf)
 {
 	return utils::file::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
 }
 
-void RemoveFilesOutdated(const share_config::tOutFile& conf)
+void RemoveFilesOutdated(const share::config::tOutFile& conf)
 {
 	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
 }
 
-void RemoveFilesOutdated(const share_config::tOutFile& conf, const std::string& prefixTemp)
+void RemoveFilesOutdated(const share::config::tOutFile& conf, const std::string& prefixTemp)
 {
 	utils::file::RemoveFilesOutdated(conf.Path, prefixTemp + conf.Prefix, 0);
 }

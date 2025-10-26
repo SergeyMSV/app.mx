@@ -2,10 +2,12 @@
 
 #ifdef MXTWR_CLIENT
 
-namespace share_port
+namespace share
+{
+namespace port
 {
 
-tSPI::tSPI(boost::asio::io_context& ioc, TWR::tEndpoint ep)
+tSPI::tSPI(boost::asio::io_context& ioc, tTWREndpoint ep)
 	:tTWRClient(ioc), m_Endpoint(ep)
 {
 }
@@ -53,6 +55,7 @@ std::vector<std::uint8_t> tSPI::Transaction(const std::vector<std::uint8_t>& tx)
 }
 
 }
+}
 #else // MXTWR_CLIENT
 
 #if !defined(_WIN32)
@@ -64,7 +67,9 @@ std::vector<std::uint8_t> tSPI::Transaction(const std::vector<std::uint8_t>& tx)
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 
-namespace share_port
+namespace share
+{
+namespace port
 {
 
 tSPI::tSPI(const std::string& id, std::uint8_t mode, std::uint8_t bits, std::uint32_t speed_hz, std::uint16_t delay_us)
@@ -172,6 +177,7 @@ std::vector<std::uint8_t> tSPI::Transaction(const std::vector<std::uint8_t>& tx)
 }
 
 }
+}
 #else // _WIN32
 
 #include <algorithm>
@@ -180,7 +186,9 @@ std::vector<std::uint8_t> tSPI::Transaction(const std::vector<std::uint8_t>& tx)
 #include <iterator>
 
 #ifdef MXTWR_SERVER
-namespace share_port
+namespace share
+{
+namespace port
 {
 
 tSPI::tSPI(const std::string& id, std::uint8_t mode, std::uint8_t bits, std::uint32_t speed_hz, std::uint16_t delay_us)
@@ -239,6 +247,7 @@ std::vector<std::uint8_t> tSPI::Transaction(const std::vector<std::uint8_t>& tx)
 	return rx;
 }
 
+}
 }
 #endif // MXTWR_SERVER
 #endif // _WIN32

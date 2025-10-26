@@ -14,7 +14,7 @@ class tLogFileLine
 
 public:
 	tLogFileLine() = delete;
-	explicit tLogFileLine(const share_config::tOutFileCap& conf);
+	explicit tLogFileLine(const share::config::tOutFileCap& conf);
 	tLogFileLine(const tLogFileLine&) = delete;
 	tLogFileLine(const tLogFileLine&&) = delete;
 	~tLogFileLine();
@@ -25,8 +25,8 @@ private:
 	void WriteData(const std::string& msg);
 };
 
-std::deque<std::string> GetFilePaths(const share_config::tOutFile& conf);
-void RemoveFilesOutdated(const share_config::tOutFile& conf);
-void RemoveFilesOutdated(const share_config::tOutFile& conf, const std::string& prefixTemp);
+std::deque<std::string> GetFilePaths(const share::config::tOutFile& conf);
+void RemoveFilesOutdated(const share::config::tOutFile& conf);
+void RemoveFilesOutdated(const share::config::tOutFile& conf, const std::string& prefixTemp);
 
 }

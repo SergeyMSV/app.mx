@@ -10,7 +10,9 @@
 namespace asio_ip = boost::asio::ip;
 #endif // MXTWR_CLIENT
 
-namespace share_port
+namespace share
+{
+namespace port
 {
 
 class tSPI
@@ -25,17 +27,19 @@ class tSPI
 #endif // MXTWR_CLIENT || MXTWR_SERVER
 	std::uint16_t m_Delay = 0; // us
 
+#if !defined(_WIN32)
 	int m_FileSPI = 0;
+#endif // _WIN32
 	std::string m_ErrMsg;
 
 #ifdef MXTWR_CLIENT
-	TWR::tEndpoint m_Endpoint = TWR::tEndpoint::DEMO;
+	tTWREndpoint m_Endpoint = tTWREndpoint::DEMO;
 #endif // MXTWR_CLIENT
 
 public:
 	tSPI() = delete;
 #ifdef MXTWR_CLIENT
-	tSPI(boost::asio::io_context& ioc, TWR::tEndpoint ep);
+	tSPI(boost::asio::io_context& ioc, tTWREndpoint ep);
 #else // MXTWR_CLIENT
 	tSPI(const std::string& id, std::uint8_t mode, std::uint8_t bits, std::uint32_t speed_hz, std::uint16_t delay_us);
 #endif // MXTWR_CLIENT
@@ -57,4 +61,5 @@ public:
 	std::vector<std::uint8_t> Transaction(const std::vector<std::uint8_t>& tx);
 };
 
+}
 }
