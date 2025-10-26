@@ -10,7 +10,9 @@
 namespace asio_ip = boost::asio::ip;
 #endif // MXTWR_CLIENT
 
-namespace share_port
+namespace share
+{
+namespace port
 {
 
 class tGPIO
@@ -26,13 +28,13 @@ class tGPIO
 	std::string m_ErrMsg;
 
 #ifdef MXTWR_CLIENT
-	TWR::tEndpoint m_Endpoint = TWR::tEndpoint::DEMO;
+	tTWREndpoint m_Endpoint = tTWREndpoint::DEMO;
 #endif // MXTWR_CLIENT
 
 public:
 	tGPIO() = delete;
 #ifdef MXTWR_CLIENT
-	tGPIO(boost::asio::io_context& ioc, TWR::tEndpoint ep);
+	tGPIO(boost::asio::io_context& ioc, tTWREndpoint ep);
 #else // MXTWR_CLIENT
 	tGPIO(const std::string& id);
 #endif // MXTWR_CLIENT
@@ -46,4 +48,5 @@ public:
 	void SetState(bool state);
 };
 
+}
 }

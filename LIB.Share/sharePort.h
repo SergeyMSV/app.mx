@@ -14,13 +14,16 @@
 #include <boost/asio.hpp>
 namespace asio_ip = boost::asio::ip;
 
-namespace share_port
+namespace share
+{
+namespace port
 {
 
-namespace TWR = utils::packet_TWR;
-using tPacketTWR = utils::packet_TWR::tPacketTWR;
-using tPacketTWRCmd = utils::packet_TWR::tPacketTWRCmd;
-using tPacketTWRRsp = utils::packet_TWR::tPacketTWRRsp;
+using tTWREndpoint = utils::packet::twr::tEndpoint;
+using tTWRChipControl = utils::packet::twr::tChipControl;
+using tTWRPacketBase = utils::packet::twr::tPacketBase;
+using tTWRPacketCmd = utils::packet::twr::tPacketCmd;
+using tTWRPacketRsp = utils::packet::twr::tPacketRsp;
 
 class tTWRClient
 {
@@ -49,16 +52,17 @@ public:
 	tTWRClient& operator=(const tTWRClient&) = delete;
 	tTWRClient& operator=(tTWRClient&&) = delete;
 
-	std::vector<std::uint8_t> Transaction_SPI_Request(TWR::tEndpoint ep, const std::vector<std::uint8_t>& tx);
-	void Transaction_SPI_SetChipControl(TWR::tEndpoint ep, TWR::tChipControl tx);
+	std::vector<std::uint8_t> Transaction_SPI_Request(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
+	void Transaction_SPI_SetChipControl(tTWREndpoint ep, tTWRChipControl tx);
 
 private:
-	tPacketTWRRsp Transaction(const tPacketTWRCmd& cmd);
+	tTWRPacketRsp Transaction(const tTWRPacketCmd& cmd);
 
 	void SetState(tState state);
 	void CtrlState();
 	static void CtrlStateThread(void* obj);
 };
 
+}
 }
 #endif // MXTWR_CLIENT
