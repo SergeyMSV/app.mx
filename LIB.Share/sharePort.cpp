@@ -3,7 +3,9 @@
 
 #ifdef MXTWR_CLIENT
 
-namespace share_port
+namespace share
+{
+namespace port
 {
 
 tTWRClient::tTWRClient(boost::asio::io_context& ioc)
@@ -23,26 +25,26 @@ tTWRClient::~tTWRClient()
 	m_Socket.close();
 }
 
-std::vector<std::uint8_t> tTWRClient::Transaction_SPI_Request(TWR::tEndpoint ep, const std::vector<std::uint8_t>& tx)
+std::vector<std::uint8_t> tTWRClient::Transaction_SPI_Request(tTWREndpoint ep, const std::vector<std::uint8_t>& tx)
 {
-	return Transaction(tPacketTWRCmd::Make_SPI_Request(ep, tx)).GetPayload();
+	return Transaction(tTWRPacketCmd::Make_SPI_Request(ep, tx)).GetPayload();
 }
 
-void tTWRClient::Transaction_SPI_SetChipControl(TWR::tEndpoint ep, TWR::tChipControl tx)
+void tTWRClient::Transaction_SPI_SetChipControl(tTWREndpoint ep, tTWRChipControl tx)
 {
-	Transaction(tPacketTWRCmd::Make_SPI_SetChipControl(ep, tx)).GetPayload();
+	Transaction(tTWRPacketCmd::Make_SPI_SetChipControl(ep, tx)).GetPayload();
 }
 
-tPacketTWRRsp tTWRClient::Transaction(const tPacketTWRCmd& cmd)
+tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
 {
 	SetState(tState::Write);
 
-	tVectorUInt8 Pack = cmd.ToVector();
+	std::vector<std::uint8_t> Pack = cmd.ToVector();
 	m_Socket.send_to(boost::asio::buffer(Pack.data(), Pack.size()), m_ReceiverEndpoint);
 
 	SetState(tState::Read);
 
-	std::array<char, share_network_udp::PacketSizeMax> ReceiveBuffer;
+	std::array<char, share::network::udp::PacketSizeMax> ReceiveBuffer;
 	asio_ip::udp::endpoint SenderEndpoint;
 	std::size_t Size = m_Socket.receive_from(boost::asio::buffer(ReceiveBuffer), SenderEndpoint);
 
@@ -50,9 +52,9 @@ tPacketTWRRsp tTWRClient::Transaction(const tPacketTWRCmd& cmd)
 
 	if (!Size)
 		return {};
-	tVectorUInt8 ReceivedData(ReceiveBuffer.begin(), ReceiveBuffer.begin() + Size);
-	tPacketTWRRsp Rsp;
-	std::size_t PackSize = tPacketTWRRsp::Find(ReceivedData, Rsp);
+	std::vector<std::uint8_t> ReceivedData(ReceiveBuffer.begin(), ReceiveBuffer.begin() + Size);
+	tTWRPacketRsp Rsp;
+	std::size_t PackSize = tTWRPacketRsp::Find(ReceivedData, Rsp);
 	if (!PackSize)
 		return {};
 	return Rsp;
@@ -98,5 +100,6 @@ void tTWRClient::CtrlStateThread(void* obj)
 	TWRClient->CtrlState();
 }
 
+}
 }
 #endif // MXTWR_CLIENT

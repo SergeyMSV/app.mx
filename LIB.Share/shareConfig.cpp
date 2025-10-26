@@ -6,7 +6,9 @@
 
 #include <boost/property_tree/json_parser.hpp>
 
-namespace share_config
+namespace share
+{
+namespace config
 {
 
 static std::string GetPostfix(const std::string& value)
@@ -61,18 +63,31 @@ bool tOutFileCap::IsWrong() const
 	return tOutFile::IsWrong() || Capacity == 0;
 }
 
-tSerialPort::tSerialPort(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
+tPipe::tPipe(const std::string& pipeName, const boost::property_tree::ptree& pTree)
+{
+	Path = pTree.get<std::string>("pipe." + pipeName, "");
+}
+
+bool tPipe::IsWrong() const
+{
+	return Path.empty();
+}
+
+namespace port
+{
+
+tUART_Config::tUART_Config(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
 {
 	ID = pTree.get<std::string>(baseName + ".id" + GetPostfix(platformID));
 	BR = pTree.get<uint32_t>(baseName + ".br");
 }
 
-bool tSerialPort::IsWrong() const
+bool tUART_Config::IsWrong() const
 {
 	return ID.empty() || BR == 0;
 }
 
-tSPIPort::tSPIPort(const std::string& portID, const std::string& baseName, const boost::property_tree::ptree& pTree)
+tSPI_Config::tSPI_Config(const std::string& portID, const std::string& baseName, const boost::property_tree::ptree& pTree)
 	:ID(portID)
 {
 	Mode = pTree.get<std::uint8_t>(baseName + ".mode", 0);
@@ -81,29 +96,31 @@ tSPIPort::tSPIPort(const std::string& portID, const std::string& baseName, const
 	Delay_us = pTree.get<std::uint16_t>(baseName + ".delay_us", 0);
 }
 
-bool tSPIPort::IsWrong() const
+bool tSPI_Config::IsWrong() const
 {
 	return ID.empty() || !Bits || !Frequency_hz;
 }
 
-tGPIOPort::tGPIOPort(const std::string& baseName, const boost::property_tree::ptree& pTree)
+tGPIO_Config::tGPIO_Config(const std::string& baseName, const boost::property_tree::ptree& pTree)
 {
 	ID = pTree.get<std::string>(baseName, "");
 }
 
-bool tGPIOPort::IsWrong() const
+bool tGPIO_Config::IsWrong() const
 {
 	return ID.empty();
 }
 
-tIPPort::tIPPort(const std::string& baseName, const boost::property_tree::ptree& pTree)
+tIP_Config::tIP_Config(const std::string& baseName, const boost::property_tree::ptree& pTree)
 {
 	Value = pTree.get<std::uint16_t>(baseName, 0);
 }
 
-bool tIPPort::IsWrong() const
+bool tIP_Config::IsWrong() const
 {
 	return Value == 0;
 }
 
+}
+}
 }
