@@ -2,6 +2,8 @@
 
 #include <libConfig.h>
 
+#include "utilsException.h"
+
 #include <iostream>
 
 #include <boost/asio.hpp>
@@ -164,7 +166,7 @@ std::optional<T> HttpsReqSync(const std::string& a_host, const std::string& a_ta
 	}
 	catch (std::exception const& e)
 	{
-		std::cerr << utils::GetLogMessage(e.what(), __FILE__, __LINE__) << '\n';
+		std::cerr << utils::log_ex::GetLogMessage(e.what(), __FILE__, __LINE__) << '\n';
 		return {};
 	}
 

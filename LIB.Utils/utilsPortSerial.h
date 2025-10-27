@@ -1,3 +1,8 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// utilsPortSerial
+// 2021-11-02
+// C++20
+///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <libConfig.h>
@@ -10,8 +15,11 @@
 
 namespace utils
 {
-	namespace port_serial
-	{
+namespace port
+{
+namespace serial
+{
+
 using tCharSize = boost::asio::serial_port_base::character_size;
 using tStopBits = boost::asio::serial_port_base::stop_bits::type;
 using tParity = boost::asio::serial_port_base::parity::type;
@@ -219,5 +227,6 @@ protected:
 	static std::uint32_t ToBaudRate(tSpeed val);
 };
 
-	}
+}
+}
 }

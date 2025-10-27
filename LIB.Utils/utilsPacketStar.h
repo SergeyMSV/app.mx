@@ -1,16 +1,19 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // utilsPacketStar
 // 2015-07-17
-// Standard ISO/IEC 114882, C++20
+// C++20
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+#include "utilsBase.h"
 #include "utilsCRC.h"
 #include "utilsPacket.h"
 
 namespace utils
 {
-namespace packet_Star
+namespace packet
+{
+namespace star
 {
 
 template <class TPayload>
@@ -21,56 +24,52 @@ struct tFormatStar
 	enum : std::uint8_t { STX = '*' };
 
 protected:
-	static tVectorUInt8 TestPacket(tVectorUInt8::const_iterator cbegin, tVectorUInt8::const_iterator cend)
+	static std::vector<std::uint8_t> TestPacket(std::vector<std::uint8_t>::const_iterator cbegin, std::vector<std::uint8_t>::const_iterator cend)
 	{
 		const std::size_t Size = std::distance(cbegin, cend);
 
-		if (Size >= GetSize(0) && *cbegin == STX)
-		{
-			tFieldDataSize DataSize = 0;
+		if (Size < GetSize(0) || *cbegin != STX)
+			return {};
 
-			const tVectorUInt8::const_iterator Begin = cbegin + 1;
-			const tVectorUInt8::const_iterator End = Begin + sizeof(tFieldDataSize);
+		tFieldDataSize DataSize = 0;
 
-			std::copy(Begin, End, reinterpret_cast<std::uint8_t*>(&DataSize));
+		const std::vector<std::uint8_t>::const_iterator Begin = cbegin + 1;
+		const std::vector<std::uint8_t>::const_iterator End = Begin + sizeof(tFieldDataSize);
 
-			if (Size >= GetSize(DataSize) && VerifyCRC(Begin, sizeof(tFieldDataSize) + DataSize))
-			{
-				return tVectorUInt8(cbegin, cbegin + GetSize(DataSize));
-			}
-		}
+		std::copy(Begin, End, reinterpret_cast<std::uint8_t*>(&DataSize));
 
-		return {};
+		if (Size < GetSize(DataSize) || !VerifyCRC(Begin, sizeof(tFieldDataSize) + DataSize))
+			return {};
+
+		return std::vector<std::uint8_t>(cbegin, cbegin + GetSize(DataSize));
 	}
 
-	static bool TryParse(const tVectorUInt8& packetVector, TPayload& payload)
+	static bool TryParse(const std::vector<std::uint8_t>& packetVector, TPayload& payload)
 	{
-		if (packetVector.size() >= GetSize(0) && packetVector[0] == STX)
-		{
-			tFieldDataSize DataSize = 0;
+		if (packetVector.size() < GetSize(0) || packetVector[0] != STX)
+			return false;
 
-			tVectorUInt8::const_iterator Begin = packetVector.cbegin() + 1;
-			tVectorUInt8::const_iterator End = Begin + sizeof(tFieldDataSize);
+		tFieldDataSize DataSize = 0;
 
-			std::copy(Begin, End, reinterpret_cast<std::uint8_t*>(&DataSize));
+		std::vector<std::uint8_t>::const_iterator Begin = packetVector.cbegin() + 1;
+		std::vector<std::uint8_t>::const_iterator End = Begin + sizeof(tFieldDataSize);
 
-			if (packetVector.size() == GetSize(DataSize) && VerifyCRC(Begin, sizeof(tFieldDataSize) + DataSize))
-			{
-				Begin = End;
-				End += DataSize;
+		std::copy(Begin, End, reinterpret_cast<std::uint8_t*>(&DataSize));
 
-				payload = TPayload(Begin, End);
+		if (packetVector.size() != GetSize(DataSize) || !VerifyCRC(Begin, sizeof(tFieldDataSize) + DataSize))
+			return false;
 
-				return true;
-			}
-		}
+		Begin = End;
+		End += DataSize;
 
-		return false;
+		payload = TPayload(Begin, End);
+
+		return true;
 	}
 
-	static std::size_t GetSize(std::size_t payloadSize) { return sizeof(STX) + sizeof(tFieldDataSize) + payloadSize + 2; }//2 - for CRC
+	static std::size_t GetSize(std::size_t payloadSize) { return sizeof(STX) + sizeof(tFieldDataSize) + payloadSize + 2; } // 2 - for CRC
 
-	void Append(tVectorUInt8& dst, const TPayload& payload) const
+	void Append(std::vector<std::uint8_t>& dst, const TPayload& payload) const
 	{
 		dst.reserve(GetSize(payload.size()));
 
@@ -83,21 +82,21 @@ protected:
 			dst.push_back(i);
 		}
 
-		const std::size_t DataSize = sizeof(tFieldDataSize) + payload.size();
+		std::size_t DataSize = sizeof(tFieldDataSize) + payload.size();
 
-		const std::uint16_t CRC = utils::crc::CRC16_CCITT(dst.end() - DataSize, dst.end());
+		std::uint16_t CRC = utils::crc::CRC16_CCITT(dst.end() - DataSize, dst.end());
 
 		utils::Append(dst, CRC);
 	}
 
 private:
-	static bool VerifyCRC(tVectorUInt8::const_iterator begin, std::size_t crcDataSize)
+	static bool VerifyCRC(std::vector<std::uint8_t>::const_iterator begin, std::size_t crcDataSize)
 	{
-		const std::uint16_t CRC = utils::crc::CRC16_CCITT(begin, begin + crcDataSize);
+		std::uint16_t CRC = utils::crc::CRC16_CCITT(begin, begin + crcDataSize);
 
-		const tVectorUInt8::const_iterator CRCBegin = begin + crcDataSize;
+		std::vector<std::uint8_t>::const_iterator CRCBegin = begin + crcDataSize;
 
-		const std::uint16_t CRCReceived = utils::Read<std::uint16_t>(CRCBegin, CRCBegin + sizeof(CRC));
+		std::uint16_t CRCReceived = utils::Read<std::uint16_t>(CRCBegin, CRCBegin + sizeof(CRC));
 
 		return CRC == CRCReceived;
 	}
@@ -105,7 +104,7 @@ private:
 
 namespace example
 {
-// Payload: tVectorUInt8
+// Payload: std::vector<std::uint8_t>
 // [STX='*' 1-Byte][PayloadSize 2-Bytes LittleEndian][Payload, its size can be up to 1024-Bytes][CRC16 CCITT 2-Bytes (PayloadSize and Payload, except STX) LittleEndian]
 
 // Payload: tPayload<tDataCmd>
@@ -113,27 +112,27 @@ namespace example
 
 
 // [Payload, its size can be up to 1024-Bytes]
-using tPacketSimple = packet::tPacket<tFormatStar, tVectorUInt8>;
+using tPacketSimple = utils::packet::tPacket<tFormatStar, std::vector<std::uint8_t>>;
 
 // [MsgId 1-Byte][Payload, its size can be up to 1023-Bytes]
 struct tPayloadMsgData
 {
 	std::uint8_t MsgId = 0;
-	tVectorUInt8 Payload;
+	std::vector<std::uint8_t> Payload;
 
 	tPayloadMsgData() = default;
-	tPayloadMsgData(std::uint8_t msgId, const tVectorUInt8& payload)
+	tPayloadMsgData(std::uint8_t msgId, const std::vector<std::uint8_t>& payload)
 		:MsgId(msgId), Payload(payload)
 	{}
 
-	tPayloadMsgData(tVectorUInt8::const_iterator cbegin, tVectorUInt8::const_iterator cend)
+	tPayloadMsgData(std::vector<std::uint8_t>::const_iterator cbegin, std::vector<std::uint8_t>::const_iterator cend)
 	{
 		const std::size_t DataSize = std::distance(cbegin, cend);
 		if (DataSize < 1)
 			return;
 
 		MsgId = *cbegin++;
-		Payload = tVectorUInt8(cbegin, cend);
+		Payload = std::vector<std::uint8_t>(cbegin, cend);
 	}
 
 	std::size_t size() const
@@ -157,15 +156,15 @@ struct tPayloadMsgData
 	bool operator != (const tPayloadMsgData& val) const = default;
 };
 
-struct tPayloadMsg : public packet::tPayload<tPayloadMsgData>
+struct tPayloadMsg : public utils::packet::tPayload<tPayloadMsgData>
 {
 	tPayloadMsg() = default;
-	tPayloadMsg(tVectorUInt8::const_iterator cbegin, tVectorUInt8::const_iterator cend)
+	tPayloadMsg(std::vector<std::uint8_t>::const_iterator cbegin, std::vector<std::uint8_t>::const_iterator cend)
 		:tPayload(cbegin, cend)
 	{}
 };
 
-class tPacketMsg : public packet::tPacket<tFormatStar, tPayloadMsg>
+class tPacketMsg : public utils::packet::tPacket<tFormatStar, tPayloadMsg>
 {
 	explicit tPacketMsg(const payload_value_type& payloadValue)
 		:tPacket(payloadValue)
@@ -174,10 +173,9 @@ class tPacketMsg : public packet::tPacket<tFormatStar, tPayloadMsg>
 public:
 	tPacketMsg() = default;
 
-	static tPacketMsg MakeSomeMessage_01(const tVectorUInt8& msgData)
+	static tPacketMsg MakeSomeMessage_01(const std::vector<std::uint8_t>& msgData)
 	{
-		tPayloadMsgData Pld;
-		//tPayloadTWR::value_type Pld; // GCC: "'struct utils::packet_TWR::tPayloadTWR utils::packet_TWR::tPayloadTWR::tPayloadTWR' is inaccessible within this context"
+		payload_value_type Pld;
 		Pld.MsgId = 0x01;
 		Pld.Payload = msgData;
 		return tPacketMsg(Pld);
@@ -185,6 +183,7 @@ public:
 	// ... Make-functions for other packets
 };
 
+}
 }
 }
 }

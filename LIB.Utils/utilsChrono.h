@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// utilsChrono.h
+// utilsChrono
 // 2021-12-29
-// Standard ISO/IEC 114882, C++20
+// C++20
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -10,8 +10,13 @@
 
 namespace utils
 {
+namespace chrono
+{
 
-using tClock = std::chrono::steady_clock;
+// system_clock - It is the current time according to the system (regular clock which we see on the toolbar of the computer). - That's better to show current time or something like that.
+// steady_clock - It is a monotonic clock that will never be adjusted. It goes at a uniform rate. - That's better for measurements of durations of different operations.
+
+using tClock = std::chrono::steady_clock; // this clock is for measurements.
 using tTimePoint = std::chrono::time_point<tClock>;
 
 using ttime_ns = std::chrono::nanoseconds;
@@ -21,18 +26,30 @@ using ttime_ms = std::chrono::milliseconds;
 template<class _Period, class T>
 std::uint32_t GetDuration(std::chrono::time_point<T> timeStart, std::chrono::time_point<T> timeNow)
 {
-	if (timeStart >= timeNow)//[!]time can be changed backwards by OS (Windows)
+	if (timeStart >= timeNow) // [!] time can be changed backwards by OS (Windows)
 		return 0;
 
 	auto Duration = std::chrono::duration_cast<_Period>(timeNow - timeStart).count();
 	return static_cast<std::uint32_t>(Duration);
 }
 
+class tTimeDuration
+{
+	tTimePoint m_TimeStart = tClock::now();
+
+public:
+	tTimeDuration() = default;
+	virtual ~tTimeDuration() {}
+
+	template<typename T>
+	std::uint32_t Get() const { return GetDuration<T>(m_TimeStart, tClock::now()); }
+};
+
 class tTimePeriod
 {
 	std::uint32_t m_Period = 0;//in seconds
 
-	utils::tTimePoint m_StartTime = utils::tClock::now();
+	tTimePoint m_StartTime = tClock::now();
 
 protected:
 	const bool m_Sync = false;
@@ -50,17 +67,17 @@ public:
 protected:
 	bool IsReady(const tTimePoint& timePointNow);
 
-	utils::tTimePoint GetStartTime(const tTimePoint& timePointNow, const utils::tTimePoint& startTime, std::uint32_t period) const;
-	utils::tTimePoint GetStartTime() const { return m_StartTime; }
+	tTimePoint GetStartTime(const tTimePoint& timePointNow, const tTimePoint& startTime, std::uint32_t period) const;
+	tTimePoint GetStartTime() const { return m_StartTime; }
 };
 
 class tTimePeriodCount : private tTimePeriod
 {
-	std::uint32_t m_RepPeriod = 0;//in seconds
+	std::uint32_t m_RepPeriod = 0; // in seconds
 	int m_RepQty = 0;
 	int m_RepQtyCount = 0;
 
-	utils::tTimePoint m_RepStartTime = GetStartTime();
+	tTimePoint m_RepStartTime = GetStartTime();
 
 public:
 	explicit tTimePeriodCount(bool sync);
@@ -78,4 +95,5 @@ private:
 	void SetRep(uint32_t repPeriod, int repQty);
 };
 
+}
 }
