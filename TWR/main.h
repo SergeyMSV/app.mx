@@ -29,10 +29,15 @@ using tPacketTWRCmdEp = tPack<tTWRPacketCmd>;
 using tTWRQueueDEMOCmd = utils::multithread::tQueue<tPacketTWRCmdEp, 2>;
 using tTWRQueueSPICmd = utils::multithread::tQueue<tPacketTWRCmdEp, 2>;
 
+using tPacketTWRDALLASCmdEp = tPack<std::string>;
+
+using tTWRQueueDALLASCmd = utils::multithread::tQueue<tPacketTWRDALLASCmdEp, 1>;
+
 struct tTWRQueue
 {
 	tTWRQueueDEMOCmd DEMO;
 	tTWRQueueSPICmd SPI0_CS0;
+	tTWRQueueDALLASCmd DALLAS;
 };
 
 extern tTWRQueue TWRQueue;

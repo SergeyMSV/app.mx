@@ -4,5 +4,10 @@
     "bits": "8",
     "frequency_hz": "4000000",
     "delay_us": "0"
+  },
+  "uart_dallas": {
+    "id_win": "COM4",
+    "id_opio": "/dev/ttyS3",
+    "br": 115200
   }
 }

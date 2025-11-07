@@ -1,19 +1,34 @@
 #include "main_server.h"
 
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+
 void tTWRServer::OnReceived(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& data)
 {
-	m_ReceivedData.insert(m_ReceivedData.end(), data.begin(), data.end());
+	// One UDP packet must contain only one full JSON-packet.
+	if (HandlePacketJson(endpoint, data))
+		return;
+
+	std::vector<std::uint8_t>& ReceivedData = m_ReceivedData[endpoint.port()];
+
+	ReceivedData.insert(ReceivedData.end(), data.begin(), data.end()); // [TBD] it shall collect data from different endpoints separately for each enpoint.
+
+	// The rest is for binary protocol.
+	//m_ReceivedData.insert(m_ReceivedData.end(), data.begin(), data.end()); // [TBD] it shall collect data from different endpoints separately for each enpoint.
+	
+	// data[0] == '{' -> JSON
+	// data[0] == '*' -> Star (binary)
 
 	tPacketTWRCmdEp Cmd;
-	std::size_t PackSize = tTWRPacketCmd::Find(m_ReceivedData, Cmd.Value);
-	if (PackSize || m_ReceivedData.size() > share::network::udp::PacketSizeMax)
-		m_ReceivedData.clear();
+	std::size_t PackSize = tTWRPacketCmd::Find(ReceivedData, Cmd.Value);
+	if (PackSize || ReceivedData.size() > share::network::udp::PacketSizeMax)
+		ReceivedData.clear();
 	Cmd.Endpoint = endpoint;
 
-	HandlePacket(Cmd);
+	HandlePacketBinary(Cmd);
 }
 
-void tTWRServer::HandlePacket(const tPacketTWRCmdEp& cmd)
+void tTWRServer::HandlePacketBinary(const tPacketTWRCmdEp& cmd)
 {
 	std::vector<std::uint8_t> Pack;
 
@@ -33,6 +48,33 @@ void tTWRServer::HandlePacket(const tPacketTWRCmdEp& cmd)
 
 	Pack = tTWRPacketRsp::Make_ERR(cmd.Value, tTWRMsgStatus::NotSupported).ToVector();
 	Send(cmd.Endpoint, Pack);
+}
+
+bool tTWRServer::HandlePacketJson(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& cmd)
+{
+	if (cmd.empty() || cmd[0] != '{')
+		return false;
+
+	boost::property_tree::ptree PTree;
+	try
+	{
+		std::string CmdStr(cmd.begin(), cmd.end());
+		std::stringstream SStr(CmdStr);
+		boost::property_tree::json_parser::read_json(SStr, PTree);
+
+		const std::string Ep = PTree.get<std::string>("ep", "unknown");
+		if (Ep == "dallas")
+		{
+			tPacketTWRDALLASCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
+			TWRQueue.DALLAS.push_back(std::move(Cmd));
+			return true;
+		}
+
+		return true; // [TBD] maybe false... maybe not...
+	}
+	catch (...) {} // Format JSON shall be verified on the receiver's side (e.g. in UDP-Server).
+
+	return false;
 }
 
 bool tTWRServer::PutInQueue(const tPacketTWRCmdEp& cmd)

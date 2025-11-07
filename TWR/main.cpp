@@ -15,7 +15,7 @@
 #include <memory>
 #include <string>
 
-tTWRQueue TWRQueue;
+tTWRQueue TWRQueue; // [TBD] it is to be TWRQueueIn
 
 #ifdef UDP_SERVER_TEST
 void UDP_ClientTest(std::uint16_t port);
@@ -23,6 +23,7 @@ void UDP_ClientTest(std::uint16_t port);
 
 void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueDEMOCmd& queueIn);
 void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueSPICmd& queueIn);
+void ThreadDALLAS(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueDALLASCmd& queueIn);
 
 int main(int argc, char* argv[])
 {
@@ -44,6 +45,7 @@ int main(int argc, char* argv[])
 		// Each port must be in its own separate thread.
 		std::thread Thread_DEMO([&DsConfig, &Server]() { ThreadPortDEMO(DsConfig, Server, TWRQueue.DEMO); });
 		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { ThreadPortSPI(DsConfig, Server, TWRQueue.SPI0_CS0); });
+		std::thread Thread_DALLAS([&DsConfig, &Server]() { ThreadDALLAS(DsConfig, Server, TWRQueue.DALLAS); });
 
 #ifdef UDP_SERVER_TEST
 		UDP_ClientTest(DsConfig->GetUDPPort().Value);
@@ -61,6 +63,7 @@ int main(int argc, char* argv[])
 		Thread_ioc.join();
 		Thread_DEMO.join();
 		Thread_SPI0_CS0.join();
+		Thread_DALLAS.join();
 	}
 	catch (const std::exception& e)
 	{
