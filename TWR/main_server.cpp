@@ -1,11 +1,11 @@
 #include "main_server.h"
 
-void tTWRServer::OnReceived(const share::network::udp::tEndpoint& endpoint, const utils::tVectorUInt8& data)
+void tTWRServer::OnReceived(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& data)
 {
 	m_ReceivedData.insert(m_ReceivedData.end(), data.begin(), data.end());
 
 	tPacketTWRCmdEp Cmd;
-	std::size_t PackSize = tPacketTWRCmd::Find(m_ReceivedData, Cmd.Value);
+	std::size_t PackSize = tTWRPacketCmd::Find(m_ReceivedData, Cmd.Value);
 	if (PackSize || m_ReceivedData.size() > share::network::udp::PacketSizeMax)
 		m_ReceivedData.clear();
 	Cmd.Endpoint = endpoint;
@@ -13,25 +13,25 @@ void tTWRServer::OnReceived(const share::network::udp::tEndpoint& endpoint, cons
 	HandlePacket(Cmd);
 }
 
-void tTWRServer::HandlePacket(tPacketTWRCmdEp& cmd)
+void tTWRServer::HandlePacket(const tPacketTWRCmdEp& cmd)
 {
-	utils::tVectorUInt8 Pack;
+	std::vector<std::uint8_t> Pack;
 
 	switch (cmd.Value.GetMsgId())
 	{
-	case TWR::tMsgId::GetVersion: Pack = tPacketTWRRsp::Make(cmd.Value, settings::Version).ToVector();
+	case tTWRMsgId::GetVersion: Pack = tTWRPacketRsp::Make(cmd.Value, settings::Version).ToVector();
 		[[fallthrough]];
-	case TWR::tMsgId::DEMO_Request:
-	case TWR::tMsgId::SPI_Request:
-	case TWR::tMsgId::SPI_GetSettings:
-	case TWR::tMsgId::SPI_SetChipControl:
+	case tTWRMsgId::DEMO_Request:
+	case tTWRMsgId::SPI_Request:
+	case tTWRMsgId::SPI_GetSettings:
+	case tTWRMsgId::SPI_SetChipControl:
 	{
 		if (PutInQueue(cmd))
 			return;
 	}
 	}
 
-	Pack = tPacketTWRRsp::Make_ERR(cmd.Value, TWR::tMsgStatus::NotSupported).ToVector();
+	Pack = tTWRPacketRsp::Make_ERR(cmd.Value, tTWRMsgStatus::NotSupported).ToVector();
 	Send(cmd.Endpoint, Pack);
 }
 
@@ -39,18 +39,18 @@ bool tTWRServer::PutInQueue(const tPacketTWRCmdEp& cmd)
 {
 	switch (cmd.Value.GetEndpoint())
 	{
-	case TWR::tEndpoint::DEMO:
+	case tTWREndpoint::DEMO:
 	{
 		TWRQueue.DEMO.push_back(cmd);
 		return true;
 	}
-	case TWR::tEndpoint::SPI0_CS0:
+	case tTWREndpoint::SPI0_CS0:
 	{
 		TWRQueue.SPI0_CS0.push_back(cmd);
 		return true;
 	}
-	//case TWR::tEndpoint::SPI0_CS1:
-	//case TWR::tEndpoint::SPI0_CS2:
+	//case tTWREndpoint::SPI0_CS1:
+	//case tTWREndpoint::SPI0_CS2:
 	}
 	return false;
 }

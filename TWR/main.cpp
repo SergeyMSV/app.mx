@@ -4,6 +4,8 @@
 #include <devDataSetConfig.h>
 
 #include <utilsBase.h>
+#include <utilsException.h>
+#include <utilsExits.h>
 #include <utilsPath.h>
 
 #include <sharePortSPI.h>
@@ -19,8 +21,8 @@ tTWRQueue TWRQueue;
 void UDP_ClientTest(std::uint16_t port);
 #endif // UDP_SERVER_TEST
 
-void Thread_Port_DEMO(const std::shared_ptr<dev::tDataSetConfig>& dataSetConfig, tTWRServer& twrServer, tTWRQueueDEMOCmd& twrQueue);
-void Thread_Port_SPI(const std::shared_ptr<dev::tDataSetConfig>& dataSetConfig, tTWRServer& twrServer, tTWRQueueSPICmd& twrQueue);
+void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueDEMOCmd& queueIn);
+void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueSPICmd& queueIn);
 
 int main(int argc, char* argv[])
 {
@@ -40,12 +42,12 @@ int main(int argc, char* argv[])
 		std::thread Thread_ioc([&]() { ioc.run(); });
 
 		// Each port must be in its own separate thread.
-		std::thread Thread_DEMO([&DsConfig, &Server]() { Thread_Port_DEMO(DsConfig, Server, TWRQueue.DEMO); });
-		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { Thread_Port_SPI(DsConfig, Server, TWRQueue.SPI0_CS0); });
+		std::thread Thread_DEMO([&DsConfig, &Server]() { ThreadPortDEMO(DsConfig, Server, TWRQueue.DEMO); });
+		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { ThreadPortSPI(DsConfig, Server, TWRQueue.SPI0_CS0); });
 
 #ifdef UDP_SERVER_TEST
 		UDP_ClientTest(DsConfig->GetUDPPort().Value);
-#else
+#else // UDP_SERVER_TEST
 		while (true) // [TBD] It must be stopped if the application is being terminated.
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -60,11 +62,11 @@ int main(int argc, char* argv[])
 		Thread_DEMO.join();
 		Thread_SPI0_CS0.join();
 	}
-	catch (std::exception& e)
+	catch (const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
-		return static_cast<int>(utils::tExitCode::EX_IOERR);
+		return static_cast<int>(utils::exit_code::EX_IOERR);
 	}
 
-	return static_cast<int>(utils::tExitCode::EX_OK);
+	return static_cast<int>(utils::exit_code::EX_OK);
 }
