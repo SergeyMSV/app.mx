@@ -3,7 +3,7 @@
 
 #include <devDataSetConfig.h>
 
-#include <utilsBase.h>
+#include <utilsExits.h>
 #include <utilsPath.h>
 
 #include <array>
@@ -50,8 +50,8 @@ int main(int argc, char* argv[])
 	catch (std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
-		return static_cast<int>(utils::tExitCode::EX_IOERR);
+		return static_cast<int>(utils::exit_code::EX_IOERR);
 	}
 
-	return static_cast<int>(utils::tExitCode::EX_OK);
+	return static_cast<int>(utils::exit_code::EX_OK);
 }

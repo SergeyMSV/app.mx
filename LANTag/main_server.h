@@ -1,4 +1,5 @@
 #pragma once
+
 #include "main.h"
 
 #include <shareNetwork.h>
@@ -7,7 +8,7 @@
 
 #include <memory>
 
-class tLANTagServer : public share_network_udp::tUDPServerAsync
+class tLANTagServer : public share::network::udp::tUDPServerAsync
 {
 	std::weak_ptr<dev::tDataSetConfig> m_DataSetConfig;
 
@@ -16,8 +17,8 @@ public:
 		:tUDPServerAsync(ioc, port), m_DataSetConfig(dataSetConfig)
 	{}
 
-	void OnReceived(const share_network_udp::tEndpoint& endpoint, const tVectorUInt8& data) override;
+	void OnReceived(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& data) override;
 
 private:
-	void OnSent(boost::shared_ptr<tVectorUInt8> packet, const boost::system::error_code& error, std::size_t bytes_transferred) override;
+	void OnSent(boost::shared_ptr<std::vector<std::uint8_t>> packet, const boost::system::error_code& error, std::size_t bytes_transferred) override;
 };
