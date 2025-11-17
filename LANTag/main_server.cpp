@@ -8,7 +8,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-void tLANTagServer::OnReceived(const share_network_udp::tEndpoint& endpoint, const tVectorUInt8& data)
+void tLANTagServer::OnReceived(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& data)
 {
 	if (data.size() > 64) // [#] max. size of an incoming data
 		return;
@@ -18,7 +18,7 @@ void tLANTagServer::OnReceived(const share_network_udp::tEndpoint& endpoint, con
 			pTree.put("rsp", rsp);
 			boost::property_tree::json_parser::write_json(sstr, pTree);
 			std::string RspStr = sstr.str();
-			tVectorUInt8 Data(RspStr.begin(), RspStr.end());
+			std::vector<std::uint8_t> Data(RspStr.begin(), RspStr.end());
 			Data.push_back(0);
 			Send(endpoint, Data);
 		};
@@ -60,7 +60,7 @@ void tLANTagServer::OnReceived(const share_network_udp::tEndpoint& endpoint, con
 	catch (...) {} // Format JSON shall be verified in the receiver (e.g. in UDP-Server)
 }
 
-void tLANTagServer::OnSent(boost::shared_ptr<tVectorUInt8> packet, const boost::system::error_code& error, std::size_t bytes_transferred)
+void tLANTagServer::OnSent(boost::shared_ptr<std::vector<std::uint8_t>> packet, const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	//std::cout << "HandleSend: " << packet->size() << " cerr: " << error << " --- bytes: " << bytes_transferred << '\n';
 }
