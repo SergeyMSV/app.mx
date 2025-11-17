@@ -1,4 +1,5 @@
 #pragma once
+
 #include <devConfig.h>
 
 #include <utilsPacketTWR.h>
@@ -7,14 +8,14 @@
 
 #include <utilsMultithread.h>
 
-#include <thread>
-
-namespace asio_ip = boost::asio::ip;
-namespace TWR = utils::packet_TWR;
-
-using tPacketTWR = utils::packet_TWR::tPacketTWR;
-using tPacketTWRCmd = utils::packet_TWR::tPacketTWRCmd;
-using tPacketTWRRsp = utils::packet_TWR::tPacketTWRRsp;
+using tTWRMsgId = utils::packet::twr::tMsgId;
+using tTWRMsgStatus = utils::packet::twr::tMsgStatus;
+using tTWREndpoint = utils::packet::twr::tEndpoint;
+using tTWRChipControl = utils::packet::twr::tChipControl;
+using tTWRSPIPortSettings = utils::packet::twr::tSPIPortSettings;
+using tTWRPacketBase = utils::packet::twr::tPacketBase;
+using tTWRPacketCmd = utils::packet::twr::tPacketCmd;
+using tTWRPacketRsp = utils::packet::twr::tPacketRsp;
 
 template<class T>
 struct tPack
@@ -23,7 +24,7 @@ struct tPack
 	T Value;
 };
 
-using tPacketTWRCmdEp = tPack<tPacketTWRCmd>;
+using tPacketTWRCmdEp = tPack<tTWRPacketCmd>;
 
 using tTWRQueueDEMOCmd = utils::multithread::tQueue<tPacketTWRCmdEp, 2>;
 using tTWRQueueSPICmd = utils::multithread::tQueue<tPacketTWRCmdEp, 2>;

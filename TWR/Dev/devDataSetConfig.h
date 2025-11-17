@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utilsBase.h>
+#include <devConfig.h>
 
 #include <shareConfig.h>
 
