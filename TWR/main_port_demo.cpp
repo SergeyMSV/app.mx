@@ -5,39 +5,35 @@
 #include <algorithm>
 #include <memory>
 
-void Thread_Port_DEMO(const std::shared_ptr<dev::tDataSetConfig>& dataSetConfig, tTWRServer& twrServer, tTWRQueueDEMOCmd& twrQueue)
+void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueSPICmd& queueIn)
 {
-	std::weak_ptr<dev::tDataSetConfig> DataSetConfig_WeakPtr(dataSetConfig);
+	std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
 
-	while (true)
+	while (!ConfigWeak.expired())
 	{
-		if (DataSetConfig_WeakPtr.expired())
-			return;
-
-		if (!twrQueue.empty())
-		{
-			boost::shared_ptr<tVectorUInt8> PacketRsp;
-
-			tPacketTWRCmdEp Cmd = twrQueue.get_front();
-			switch (Cmd.Value.GetMsgId())
-			{
-			case TWR::tMsgId::DEMO_Request:
-			{
-				tVectorUInt8 Data = Cmd.Value.GetPayload();
-				std::reverse(Data.begin(), Data.end());
-				PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make(Cmd.Value, Data).ToVector()));
-				break;
-			}
-			}
-
-			if (PacketRsp.get() == nullptr)
-				PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make_ERR(Cmd.Value, TWR::tMsgStatus::NotSupported).ToVector()));
-
-			twrServer.Send(Cmd.Endpoint, PacketRsp);
-		}
-		else
+		if (queueIn.empty())
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			continue;
 		}
+
+		boost::shared_ptr<std::vector<std::uint8_t>> PacketRsp;
+
+		tPacketTWRCmdEp Cmd = queueIn.get_front();
+		switch (Cmd.Value.GetMsgId())
+		{
+		case tTWRMsgId::DEMO_Request:
+		{
+			std::vector<std::uint8_t> Data = Cmd.Value.GetPayload();
+			std::reverse(Data.begin(), Data.end());
+			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value, Data).ToVector()));
+			break;
+		}
+		}
+
+		if (PacketRsp.get() == nullptr)
+			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::NotSupported).ToVector()));
+
+		server.Send(Cmd.Endpoint, PacketRsp);
 	}
 }

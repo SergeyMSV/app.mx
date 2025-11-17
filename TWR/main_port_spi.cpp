@@ -7,90 +7,93 @@
 
 #include <memory>
 
-void Thread_Port_SPI(const std::shared_ptr<dev::tDataSetConfig>& dataSetConfig, tTWRServer& twrServer, tTWRQueueSPICmd& twrQueue)
+void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueSPICmd& queueIn)
 {
-	std::weak_ptr<dev::tDataSetConfig> DataSetConfig_WeakPtr(dataSetConfig);
+	std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
 
-	const share::config::port::tSPI_Config ConfSPI = dataSetConfig->GetSPI0_CS0();
-	if (ConfSPI.IsWrong())
-		return;
-	const share::config::port::tGPIO_Config ConfRST = dataSetConfig->GetSPI0_CS0_RST();
-	if (ConfRST.IsWrong())
-		return;
+	share::config::port::tSPI_Config ConfSPI;
+	share::config::port::tGPIO_Config ConfRST;
+	{
+		std::shared_ptr<dev::tDataSetConfig> Conf = ConfigWeak.lock();
+		ConfSPI = Conf->GetSPI0_CS0();
+		if (ConfSPI.IsWrong())
+			return; // [TBD] throw an exception
+		ConfRST = Conf->GetSPI0_CS0_RST();
+		if (ConfRST.IsWrong())
+			return; // [TBD] throw an exception
+	}
 
 	share::port::tSPI SPI(ConfSPI.ID, ConfSPI.Mode, ConfSPI.Bits, ConfSPI.Frequency_hz, ConfSPI.Delay_us);
 	share::port::tGPIO RST(ConfRST.ID);
 
 	int PeriodCounter = 0;
 
-	while (true)
+	while (!ConfigWeak.expired())
 	{
-		if (DataSetConfig_WeakPtr.expired())
-			return;
-
-		if (!twrQueue.empty())
+		if (queueIn.empty())
 		{
-			PeriodCounter = 0;
-
-			boost::shared_ptr<tVectorUInt8> PacketRsp;
-
-			tPacketTWRCmdEp Cmd = twrQueue.get_front();
-			switch (Cmd.Value.GetMsgId())
+			if (PeriodCounter < 100) // if SPI is not requested within 100 ms, the thread frequency must be reduced
 			{
-			case TWR::tMsgId::SPI_Request:
+				++PeriodCounter;
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+			else
 			{
-				if (!SPI.IsReady())
-				{
-					PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make_ERR(Cmd.Value, TWR::tMsgStatus::Message, SPI.GetErrMsg()).ToVector()));
-					break;
-				}
-				tVectorUInt8 Data = SPI.Transaction(Cmd.Value.GetPayload());
-				PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make(Cmd.Value, Data).ToVector()));
+				std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 100 ms
+			}
+		}
+
+		PeriodCounter = 0;
+
+		boost::shared_ptr<std::vector<std::uint8_t>> PacketRsp;
+
+		tPacketTWRCmdEp Cmd = queueIn.get_front();
+		switch (Cmd.Value.GetMsgId())
+		{
+		case tTWRMsgId::SPI_Request:
+		{
+			if (!SPI.IsReady())
+			{
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::Message, SPI.GetErrMsg()).ToVector()));
 				break;
 			}
-			case TWR::tMsgId::SPI_GetSettings:
+			std::vector<std::uint8_t> Data = SPI.Transaction(Cmd.Value.GetPayload());
+			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value, Data).ToVector()));
+			break;
+		}
+		case tTWRMsgId::SPI_GetSettings:
+		{
+			std::uint8_t Mode = SPI.GetMode();
+			std::uint8_t Bits = SPI.GetBits();
+			std::uint32_t Speed = SPI.GetSpeed();
+			std::uint16_t Delay = SPI.GetDelay();
+			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value, tTWRSPIPortSettings{ Mode, Bits, Speed, Delay }).ToVector()));
+			break;
+		}
+		case tTWRMsgId::SPI_SetChipControl:
+		{
+			if (!RST.IsReady())
 			{
-				std::uint8_t Mode = SPI.GetMode();
-				std::uint8_t Bits = SPI.GetBits();
-				std::uint32_t Speed = SPI.GetSpeed();
-				std::uint16_t Delay = SPI.GetDelay();
-				PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make(Cmd.Value, TWR::tSPIPortSettings{ Mode, Bits, Speed, Delay }).ToVector()));
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::Message, RST.GetErrMsg()).ToVector()));
 				break;
 			}
-			case TWR::tMsgId::SPI_SetChipControl:
+			std::vector<std::uint8_t> Data = Cmd.Value.GetPayload();
+			if (Data.size() != sizeof(tTWRChipControl))
 			{
-				if (!RST.IsReady())
-				{
-					PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make_ERR(Cmd.Value, TWR::tMsgStatus::Message, RST.GetErrMsg()).ToVector()));
-					break;
-				}
-				tVectorUInt8 Data = Cmd.Value.GetPayload();
-				if (Data.size() != sizeof(TWR::tChipControl))
-				{
-					PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make_ERR(Cmd.Value, TWR::tMsgStatus::WrongPayloadSize).ToVector()));
-					break;
-				}
-				TWR::tChipControl ChipCtrl;
-				ChipCtrl.Value = Data[0];
-				RST.SetState(ChipCtrl.Field.Reset);
-				PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make(Cmd.Value).ToVector()));
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::WrongPayloadSize).ToVector()));
 				break;
 			}
-			}
+			tTWRChipControl ChipCtrl;
+			ChipCtrl.Value = Data[0];
+			RST.SetState(ChipCtrl.Field.Reset);
+			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value).ToVector()));
+			break;
+		}
+		}
 
-			if (PacketRsp.get() == nullptr)
-				PacketRsp.reset(new tVectorUInt8(tPacketTWRRsp::Make_ERR(Cmd.Value, TWR::tMsgStatus::NotSupported).ToVector()));
+		if (PacketRsp.get() == nullptr)
+			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::NotSupported).ToVector()));
 
-			twrServer.Send(Cmd.Endpoint, PacketRsp);
-		}
-		else if (PeriodCounter < 100) // if SPI is not requested within 100 ms, the thread frequency must be reduced
-		{
-			++PeriodCounter;
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-		else
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 100 ms
-		}
+		server.Send(Cmd.Endpoint, PacketRsp);
 	}
 }
