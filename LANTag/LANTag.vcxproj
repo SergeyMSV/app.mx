@@ -160,8 +160,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsException.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_server.cpp" />
@@ -170,8 +172,11 @@
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
     <ClInclude Include="..\LIB.Share\shareNetwork.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
+    <ClInclude Include="..\LIB.Utils\utilsException.h" />
+    <ClInclude Include="..\LIB.Utils\utilsExits.h" />
     <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
+    <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="devConfig.h" />
     <ClInclude Include="Dev\devDataSetConfig.h" />
     <ClInclude Include="libConfig.h" />

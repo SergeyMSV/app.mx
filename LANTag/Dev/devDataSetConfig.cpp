@@ -11,8 +11,8 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameMX)
 {
 	boost::property_tree::ptree PTreeMX;
 	boost::property_tree::json_parser::read_json(fileNameMX, PTreeMX);
-	m_Platform = share_config::tPlatform(PTreeMX);
-	m_UDPPort = share_config::tUDPPort("network.lantag_port", PTreeMX);
+	m_Platform = share::config::tPlatform(PTreeMX);
+	m_UDPPort = share::config::port::tUDP_Config("network.lantag_port", PTreeMX);
 }
 
 }

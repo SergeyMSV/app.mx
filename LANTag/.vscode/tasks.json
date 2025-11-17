@@ -19,8 +19,10 @@
         "${workspaceFolder}/main.cpp",
         "${workspaceFolder}/main_server.cpp",
         "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsException.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsVersion.cpp",
         "-o",
         "${workspaceFolder}/mxlantag",
         "-lpthread"
@@ -54,8 +56,10 @@
         "${workspaceFolder}/main.cpp",
         "${workspaceFolder}/main_server.cpp",
         "${workspaceFolder}/../LIB.Share/shareConfig.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsException.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsLinux.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsPath.cpp",
+        "${workspaceFolder}/../LIB.Utils/utilsVersion.cpp",
         "-o",
         "${workspaceFolder}/mxlantag_dbg",
         "-lpthread"
