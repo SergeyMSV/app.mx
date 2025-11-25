@@ -169,6 +169,8 @@
     <ClInclude Include="..\LIB.Share\shareUtilsFile.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsChrono.h" />
+    <ClInclude Include="..\LIB.Utils\utilsException.h" />
+    <ClInclude Include="..\LIB.Utils\utilsExits.h" />
     <ClInclude Include="..\LIB.Utils\utilsFile.h" />
     <ClInclude Include="..\LIB.Utils\utilsLog.h" />
     <ClInclude Include="..\LIB.Utils\utilsPacket.h" />
@@ -176,6 +178,7 @@
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
     <ClInclude Include="..\LIB.Utils\utilsSerialPort.h" />
     <ClInclude Include="..\LIB.Utils\utilsShell.h" />
+    <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="devConfig.h" />
     <ClInclude Include="Dev\devCamera.h" />
     <ClInclude Include="Dev\devDataSet.h" />
@@ -195,11 +198,13 @@
     <ClCompile Include="..\LIB.Module\modCameraVC0706_StateStop.cpp" />
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
     <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsException.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLog.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPacketCameraVC0706.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsShell.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
     <ClCompile Include="Dev\devCamera.cpp" />
     <ClCompile Include="Dev\devCamera_ModCamera.cpp" />
     <ClCompile Include="Dev\devCamera_ModCamera_Board.cpp" />

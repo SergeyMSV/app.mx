@@ -26,27 +26,27 @@ struct tDevice
 	explicit tDevice(boost::property_tree::ptree a_PTree);
 };
 
-struct tSerialPortCtrl : public share_config::tSerialPort
+struct tSerialPortCtrl : public share::config::port::tSerial_Config
 {
 	tSerialPortCtrl() = default;
 	tSerialPortCtrl(boost::property_tree::ptree pTree, const std::string& platformID)
-		:share_config::tSerialPort("serial_port_ctrl", platformID, pTree)
+		:share::config::port::tSerial_Config("serial_port_ctrl", platformID, pTree)
 	{}
 };
 
-struct tSerialPortData : public share_config::tSerialPort
+struct tSerialPortData : public share::config::port::tSerial_Config
 {
 	tSerialPortData() = default;
 	tSerialPortData(boost::property_tree::ptree pTree, const std::string& platformID)
-		:share_config::tSerialPort("serial_port_data", platformID, pTree)
+		:share::config::port::tSerial_Config("serial_port_data", platformID, pTree)
 	{}
 };
 
-struct tOutPicture : public share_config::tOutFile
+struct tOutPicture : public share::config::tOutFile
 {
 	tOutPicture() = default;
 	explicit tOutPicture(boost::property_tree::ptree pTree)
-		:share_config::tOutFile("out", pTree)
+		:share::config::tOutFile("out", pTree)
 	{}
 };
 
@@ -54,11 +54,11 @@ struct tOutPicture : public share_config::tOutFile
 
 class tDataSetConfig
 {
-	share_config::tPlatform m_Platform;
+	share::config::tPlatform m_Platform;
 	config::tSerialPortCtrl m_SerialPortCtrl;
 	config::tSerialPortData m_SerialPortData;
 	config::tOutPicture m_OutPicture;
-	mod::tCameraVC0706Settings m_Camera;
+	mod::vc0706::tSettings m_Camera;
 
 public:
 	tDataSetConfig() = default;
@@ -67,7 +67,7 @@ public:
 	config::tOutPicture GetOutPicture() const { return m_OutPicture; }
 	config::tSerialPortCtrl GetSerialPortCtrl() const { return  m_SerialPortCtrl; }
 	config::tSerialPortData GetSerialPortData() const { return  m_SerialPortData; }
-	mod::tCameraVC0706Settings GetCamera() { return m_Camera; }
+	mod::vc0706::tSettings GetCamera() { return m_Camera; }
 };
 
 extern tDataSetConfig g_Settings;
