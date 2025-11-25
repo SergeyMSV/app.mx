@@ -40,7 +40,8 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	m_Camera.ImageChunkDelayFromReq_us = PTree.get<std::uint32_t>("camera.image_chunk_delay_from_req_us");
 
 	m_Camera.SetPortCtrlBR(m_SerialPortCtrl.BR);
-	m_Camera.SetPortDataBR(m_SerialPortData.BR);
+	if (!m_SerialPortData.ID.empty())
+		m_Camera.SetPortDataBR(m_SerialPortData.BR);
 }
 
 }
