@@ -20,35 +20,35 @@
 namespace dev
 {
 
-class tCamera
+class tCam
 {
-	class tModCamera : public mod::tCameraVC0706
+	class tModCam : public mod::vc0706::tCamera
 	{
 		class tBoardCtrl : public utils::serial_port::tSerialPort<>
 		{
-			tModCamera* m_pObj = nullptr;
+			tModCam* m_pObj = nullptr;
 
 		public:
-			tBoardCtrl(tModCamera* obj, boost::asio::io_context& io);
+			tBoardCtrl(tModCam* obj, boost::asio::io_context& io);
 			virtual ~tBoardCtrl();
 
 		protected:
-			void OnReceived(utils::tVectorUInt8& data) override;
+			void OnReceived(std::vector<std::uint8_t>& data) override;
 		};
 
 		class tBoardData : public utils::serial_port::tSerialPort<4096>
 		{
-			tModCamera* m_pObj = nullptr;
+			tModCam* m_pObj = nullptr;
 
 		public:
-			tBoardData(tModCamera* obj, boost::asio::io_context& io);
+			tBoardData(tModCam* obj, boost::asio::io_context& io);
 			virtual ~tBoardData();
 
 		protected:
-			void OnReceived(utils::tVectorUInt8& data) override;
+			void OnReceived(std::vector<std::uint8_t>& data) override;
 		};
 
-		tCamera* m_pObj = nullptr;
+		tCam* m_pObj = nullptr;
 
 		tBoardCtrl m_BoardCtrl;
 		tBoardData* m_BoardData = nullptr;
@@ -58,11 +58,11 @@ class tCamera
 		std::string m_FileNameTemp;
 
 	public:
-		explicit tModCamera(tCamera* obj);
-		virtual ~tModCamera();
+		explicit tModCam(tCam* obj);
+		virtual ~tModCam();
 
 	protected:
-		mod::tCameraVC0706Settings GetSettings() override;
+		mod::vc0706::tSettings GetSettings() override;
 
 		void OnStart() override;
 		void OnReady() override;
@@ -71,35 +71,35 @@ class tCamera
 		//void OnFailed(mod::tCameraVC0706Error cerr) override;
 
 		void OnImageReady() override;
-		void OnImageChunk(utils::tVectorUInt8& data) override;
+		void OnImageChunk(std::vector<std::uint8_t>& data) override;
 		void OnImageComplete() override;
 
 		void Board_PowerSupply(bool state) override;
 		void Board_Reset(bool state) override;
 
-		bool Board_SendCtrl(const utils::tVectorUInt8& data) override;
-		void OnReceivedCtrl(utils::tVectorUInt8& data);
+		bool Board_SendCtrl(const std::vector<std::uint8_t>& data) override;
+		void OnReceivedCtrl(std::vector<std::uint8_t>& data);
 
-		void OnReceivedData(utils::tVectorUInt8& data);
+		void OnReceivedData(std::vector<std::uint8_t>& data);
 	};
 
-	utils::tLog* m_pLog = nullptr;
+	utils::log::tLog* m_pLog = nullptr;
 
 	boost::asio::io_context* m_pIO = nullptr;
 
-	tModCamera* m_pMod = nullptr;
+	tModCam* m_pMod = nullptr;
 
 	bool m_StartAuto = true;
 
 public:
-	tCamera() = delete;
-	tCamera(utils::tLog* log, boost::asio::io_context& io);
-	tCamera(const tCamera&) = delete;
-	tCamera(tCamera&&) = delete;
-	~tCamera();
+	tCam() = delete;
+	tCam(utils::log::tLog* log, boost::asio::io_context& io);
+	tCam(const tCam&) = delete;
+	tCam(tCam&&) = delete;
+	~tCam();
 
-	tCamera& operator=(const tCamera&) = delete;
-	tCamera& operator=(tCamera&&) = delete;
+	tCam& operator=(const tCam&) = delete;
+	tCam& operator=(tCam&&) = delete;
 	void operator()();
 
 	void Start();
@@ -107,7 +107,7 @@ public:
 	void Halt();
 	void Exit();
 
-	utils::tDevStatus GetStatus() const;
+	mod::vc0706::tStatus GetStatus() const;
 	std::string GetLastErrorMsg() const;
 };
 

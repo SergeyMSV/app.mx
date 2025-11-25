@@ -7,15 +7,15 @@ namespace dev
 
 tLog::tSettings tLog::LogSettings;
 
-tLog::tLog(tLog::tID id, const char* sign)
-	:utils::tLog(true), m_ID(id), m_Sign(sign)
+tLog::tLog(tLog::tID id, const std::string& label)
+	:m_ID(id), m_Label(label)
 {
 
 }
 
-const char* tLog::GetSign() const
+std::string tLog::GetLabel() const
 {
-	return m_Sign;
+	return m_Label;
 }
 
 void tLog::WriteLog(const std::string& msg)

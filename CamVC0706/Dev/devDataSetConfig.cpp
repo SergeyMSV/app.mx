@@ -26,14 +26,14 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 
 	boost::property_tree::ptree PTreePrivate;
 	boost::property_tree::json_parser::read_json(fileNamePrivate, PTreePrivate);
-	m_Platform = share_config::tPlatform(PTreePrivate);
+	m_Platform = share::config::tPlatform(PTreePrivate);
 
 	m_SerialPortCtrl = config::tSerialPortCtrl(PTree, m_Platform.ID);
 	m_SerialPortData = config::tSerialPortData(PTree, m_Platform.ID);
 	m_OutPicture = config::tOutPicture(PTree);
 
 	auto Str = PTree.get<std::string>("camera.resolution");
-	m_Camera.Resolution = utils::packet_CameraVC0706::ToResolution(Str);
+	m_Camera.Resolution = utils::packet::vc0706::ToResolution(Str);
 	m_Camera.CheckPresencePeriod_ms = PTree.get<std::uint32_t>("camera.check_presence_period_ms");
 	m_Camera.ImagePeriod_ms = PTree.get<std::uint32_t>("camera.image_period_ms");
 	m_Camera.ImageChunkSize = PTree.get<std::uint32_t>("camera.image_chunk_size");

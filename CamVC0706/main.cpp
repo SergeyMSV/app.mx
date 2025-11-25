@@ -5,7 +5,7 @@
 #include <devDataSetConfig.h>
 #include <devShell.h>
 
-#include <utilsBase.h>
+#include <utilsExits.h>
 #include <utilsFile.h>
 #include <utilsPath.h>
 
@@ -39,7 +39,7 @@ void Thread_CAM_Handler(std::promise<bool>& promise)
 
 	try
 	{
-		dev::tCamera Dev(&Log, IO_context);
+		dev::tCam Dev(&Log, IO_context);
 
 		std::thread Thread_IO([&]() { IO_context.run(); });
 
@@ -125,11 +125,10 @@ int main(int argc, char* argv[])
 	catch (std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
-
-		return static_cast<int>(utils::tExitCode::EX_CONFIG);
+		return utils::exit_code::EX_CONFIG;
 	}
 
-	utils::tExitCode CErr = utils::tExitCode::EX_OK;
+	int CErr = utils::exit_code::EX_OK;
 	////////////////////////////////
 	std::thread Thread_Shell;
 
@@ -151,7 +150,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		if (Thread_CAM_Future.get())
-			CErr = utils::tExitCode::EX_NOINPUT;
+			CErr = utils::exit_code::EX_NOINPUT;
 	}
 	catch (std::exception& e)
 	{
@@ -159,7 +158,7 @@ int main(int argc, char* argv[])
 
 		g_DataSetMainControl.Thread_CAM_State = tDataSetMainControl::tStateCAM::Exit;
 
-		CErr = utils::tExitCode::EX_IOERR;
+		CErr = utils::exit_code::EX_IOERR;
 	}
 
 	Thread_CAM.join();
@@ -167,5 +166,5 @@ int main(int argc, char* argv[])
 	if (ShellEnabled)
 		Thread_Shell.detach();
 
-	return static_cast<int>(CErr);
+	return CErr;
 }
