@@ -205,6 +205,7 @@
     <None Include=".vscode\tasks.json" />
     <None Include="mx.conf.json" />
     <None Include="mxtwr.conf.json" />
+    <None Include="protocol_json.md" />
     <None Include="TWR.code-workspace" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
