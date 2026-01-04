@@ -123,5 +123,6 @@
     </None>
     <None Include="TWR.code-workspace" />
     <None Include="mx.conf.json" />
+    <None Include="protocol_json.md" />
   </ItemGroup>
 </Project>
