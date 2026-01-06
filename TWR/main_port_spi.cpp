@@ -7,24 +7,42 @@
 
 #include <memory>
 
-void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueSPICmd& queueIn)
+class tPortSPIHolder
+{
+	share::port::tSPI m_SPI;
+	share::port::tGPIO m_RST;
+
+public:
+	tPortSPIHolder() = delete;
+	tPortSPIHolder(const share::config::port::tSPI_Config& configSPI, const share::config::port::tGPIO_Config& configRST)
+		:m_SPI(configSPI.ID, configSPI.Mode, configSPI.Bits, configSPI.Frequency_hz, configSPI.Delay_us), m_RST(configRST.ID)
+	{
+	}
+
+	bool IsReady() const { return m_SPI.IsReady(); }
+	std::string GetErrMsg() const { return m_SPI.GetErrMsg(); }
+
+	std::uint8_t GetMode() { return m_SPI.GetMode(); }
+	bool SetMode(std::uint8_t val) { return m_SPI.SetMode(val); }
+	std::uint8_t GetBits() { return m_SPI.GetBits(); }
+	bool SetBits(std::uint8_t val) { return m_SPI.SetBits(val); }
+	std::uint32_t GetSpeed() { return m_SPI.GetSpeed(); }
+	bool SetSpeed(std::uint32_t val) { return m_SPI.SetSpeed(val); }
+	std::uint16_t GetDelay() const { return m_SPI.GetDelay(); }
+	void SetDelay(std::uint16_t val) { m_SPI.SetDelay(val); }
+
+	std::vector<std::uint8_t> Transaction(const std::vector<std::uint8_t>& tx) { return m_SPI.Transaction(tx); }
+
+	void SetRST(bool state) { m_RST.SetState(state); }
+};
+
+static void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, const share::config::port::tSPI_Config& configSPI, share::config::port::tGPIO_Config configRST, tTWRServer& server, tTWRQueueSPICmd& queueIn)
 {
 	std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
 
-	share::config::port::tSPI_Config ConfSPI;
-	share::config::port::tGPIO_Config ConfRST;
-	{
-		std::shared_ptr<dev::tDataSetConfig> Conf = ConfigWeak.lock();
-		ConfSPI = Conf->GetSPI0_CS0();
-		if (ConfSPI.IsWrong())
-			return; // [TBD] throw an exception
-		ConfRST = Conf->GetSPI0_CS0_RST();
-		if (ConfRST.IsWrong())
-			return; // [TBD] throw an exception
-	}
+	using tPortHld = tPortSPIHolder;
 
-	share::port::tSPI SPI(ConfSPI.ID, ConfSPI.Mode, ConfSPI.Bits, ConfSPI.Frequency_hz, ConfSPI.Delay_us);
-	share::port::tGPIO RST(ConfRST.ID);
+	std::unique_ptr<tPortHld> PortPtr;
 
 	int PeriodCounter = 0;
 
@@ -41,40 +59,80 @@ void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServe
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 100 ms
 			}
+			continue;
 		}
 
 		PeriodCounter = 0;
 
 		boost::shared_ptr<std::vector<std::uint8_t>> PacketRsp;
 
-		tPacketTWRCmdEp Cmd = queueIn.get_front();
+		const tPacketTWRCmdEp Cmd = queueIn.get_front();
 		switch (Cmd.Value.GetMsgId())
 		{
+		case tTWRMsgId::SPI_Open:
+		{
+			if (PortPtr)
+				PortPtr.reset();
+			PortPtr = std::make_unique<tPortHld>(configSPI, configRST);
+			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value).ToVector()));
+			break;
+		}
+		case tTWRMsgId::SPI_Close:
+		{
+			PortPtr.reset();
+			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value).ToVector()));
+			break;
+		}
 		case tTWRMsgId::SPI_Request:
 		{
-			if (!SPI.IsReady())
+			if (!PortPtr)
 			{
-				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::Message, SPI.GetErrMsg()).ToVector()));
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::NotAvailable).ToVector()));
 				break;
 			}
-			std::vector<std::uint8_t> Data = SPI.Transaction(Cmd.Value.GetPayload());
+
+			if (!PortPtr->IsReady())
+			{
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::Message, PortPtr->GetErrMsg()).ToVector()));
+				break;
+			}
+
+			std::vector<std::uint8_t> Data = PortPtr->Transaction(Cmd.Value.GetPayload());
 			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value, Data).ToVector()));
 			break;
 		}
 		case tTWRMsgId::SPI_GetSettings:
 		{
-			std::uint8_t Mode = SPI.GetMode();
-			std::uint8_t Bits = SPI.GetBits();
-			std::uint32_t Speed = SPI.GetSpeed();
-			std::uint16_t Delay = SPI.GetDelay();
+			if (!PortPtr)
+			{
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::NotAvailable).ToVector()));
+				break;
+			}
+
+			if (!PortPtr->IsReady())
+			{
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::Message, PortPtr->GetErrMsg()).ToVector()));
+				break;
+			}
+
+			std::uint8_t Mode = PortPtr->GetMode();
+			std::uint8_t Bits = PortPtr->GetBits();
+			std::uint32_t Speed = PortPtr->GetSpeed();
+			std::uint16_t Delay = PortPtr->GetDelay();
 			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value, tTWRSPIPortSettings{ Mode, Bits, Speed, Delay }).ToVector()));
 			break;
 		}
 		case tTWRMsgId::SPI_SetChipControl:
 		{
-			if (!RST.IsReady())
+			if (!PortPtr)
 			{
-				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::Message, RST.GetErrMsg()).ToVector()));
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::NotAvailable).ToVector()));
+				break;
+			}
+
+			if (!PortPtr->IsReady())
+			{
+				PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make_ERR(Cmd.Value, tTWRMsgStatus::Message, PortPtr->GetErrMsg()).ToVector()));
 				break;
 			}
 			std::vector<std::uint8_t> Data = Cmd.Value.GetPayload();
@@ -85,7 +143,7 @@ void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServe
 			}
 			tTWRChipControl ChipCtrl;
 			ChipCtrl.Value = Data[0];
-			RST.SetState(ChipCtrl.Field.Reset);
+			PortPtr->SetRST(ChipCtrl.Field.Reset);
 			PacketRsp.reset(new std::vector<std::uint8_t>(tTWRPacketRsp::Make(Cmd.Value).ToVector()));
 			break;
 		}
@@ -96,4 +154,23 @@ void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServe
 
 		server.Send(Cmd.Endpoint, PacketRsp);
 	}
+}
+
+void ThreadPortSPI0_CS0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+{
+	std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
+
+	share::config::port::tSPI_Config ConfSPI;
+	share::config::port::tGPIO_Config ConfRST;
+	{
+		std::shared_ptr<dev::tDataSetConfig> Conf = ConfigWeak.lock();
+		ConfSPI = Conf->GetSPI0_CS0();
+		if (ConfSPI.IsWrong())
+			return; // [TBD] throw an exception
+		ConfRST = Conf->GetSPI0_CS0_RST();
+		if (ConfRST.IsWrong())
+			return; // [TBD] throw an exception
+	}
+
+	ThreadPortSPI(config, ConfSPI, ConfRST, server, TWRQueue.SPI0_CS0);
 }

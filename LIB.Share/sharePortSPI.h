@@ -46,8 +46,8 @@ public:
 	tSPI(const tSPI&) = delete;
 	~tSPI();
 
-	bool IsReady() { return m_ErrMsg.empty(); }
-	std::string GetErrMsg() { return m_ErrMsg; }
+	bool IsReady() const { return m_ErrMsg.empty(); }
+	std::string GetErrMsg() const { return m_ErrMsg; }
 	
 	std::uint8_t GetMode();
 	bool SetMode(std::uint8_t val);

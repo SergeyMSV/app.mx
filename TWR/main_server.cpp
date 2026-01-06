@@ -42,15 +42,12 @@ void tTWRServer::HandlePacketBinary(const tPacketTWRCmdEp& cmd)
 
 	switch (cmd.Value.GetMsgId())
 	{
-	case tTWRMsgId::GetVersion: Pack = tTWRPacketRsp::Make(cmd.Value, settings::Version).ToVector();
-		[[fallthrough]];
-	case tTWRMsgId::DEMO_Request:
-	case tTWRMsgId::SPI_Request:
-	case tTWRMsgId::SPI_GetSettings:
-	case tTWRMsgId::SPI_SetChipControl:
+	case tTWRMsgId::GetVersion: Pack = tTWRPacketRsp::Make(cmd.Value, settings::Version).ToVector(); break;
+	default:
 	{
 		if (PutInQueue(cmd))
 			return;
+		break;
 	}
 	}
 
