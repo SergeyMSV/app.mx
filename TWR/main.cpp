@@ -24,7 +24,7 @@ void UDP_ClientTest(std::uint16_t port);
 #ifdef UDP_SERVER_TEST
 void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
 #endif // UDP_SERVER_TEST
-void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueSPICmd& queueIn);
+void ThreadPortSPI0_CS0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
 void ThreadDALLAS(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
 int main(int argc, char* argv[])
 {
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 #ifdef UDP_SERVER_TEST
 		std::thread Thread_DEMO([&DsConfig, &Server]() { ThreadPortDEMO(DsConfig, Server); });
 #endif // UDP_SERVER_TEST
-		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { ThreadPortSPI(DsConfig, Server, TWRQueue.SPI0_CS0); });
+		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { ThreadPortSPI0_CS0(DsConfig, Server); });
 		std::thread Thread_DALLAS([&DsConfig, &Server]() { ThreadDALLAS(DsConfig, Server); });
 
 #ifdef UDP_SERVER_TEST

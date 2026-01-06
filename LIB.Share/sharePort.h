@@ -52,6 +52,8 @@ public:
 	tTWRClient& operator=(const tTWRClient&) = delete;
 	tTWRClient& operator=(tTWRClient&&) = delete;
 
+	void Transaction_SPI_Open(tTWREndpoint ep);
+	void Transaction_SPI_Close(tTWREndpoint ep);
 	std::vector<std::uint8_t> Transaction_SPI_Request(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
 	void Transaction_SPI_SetChipControl(tTWREndpoint ep, tTWRChipControl tx);
 

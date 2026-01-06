@@ -10,10 +10,12 @@ namespace port
 tSPI::tSPI(boost::asio::io_context& ioc, tTWREndpoint ep)
 	:tTWRClient(ioc), m_Endpoint(ep)
 {
+	Transaction_SPI_Open(m_Endpoint);
 }
 
 tSPI::~tSPI()
 {
+	Transaction_SPI_Close(m_Endpoint);
 }
 
 std::uint8_t tSPI::GetMode()
@@ -93,6 +95,9 @@ tSPI::tSPI(const std::string& id, std::uint8_t mode, std::uint8_t bits, std::uin
 tSPI::~tSPI()
 {
 	//[TBD] switch off the device
+
+	if (m_FileSPI > 0)
+		close(m_FileSPI);
 }
 
 std::uint8_t tSPI::GetMode()

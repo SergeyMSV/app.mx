@@ -35,10 +35,20 @@ enum class tMsgId : std::uint8_t
 	//I2C_Read,
 	//I2C_Write,
 	//I2C_Stop,
-	SPI_Request = 0x40,
+	SPI_Open = 0x40,
+	SPI_Close,
+	SPI_Request,
 	SPI_GetSettings,
 	SPI_SetSettings,
 	SPI_SetChipControl, // Enable, RESET, etc.
+	UART_Receive = 0x50,
+	UART_Send,
+	UART_GetSettings,
+	UART_SetSettings,
+	UART_SetRTS,
+	UART_GetCTS,
+	UART_SetDTR,
+	UART_SetDSR,
 };
 
 enum class tMsgStatus : std::uint8_t
@@ -48,6 +58,7 @@ enum class tMsgStatus : std::uint8_t
 	WrongPayloadSize = 0x02,
 	WrongPayloadFormat = 0x03,
 
+	NotAvailable = 0xFC,
 	NotSupported = 0xFD,
 	Message = 0xFE, // Response packet contains an error message instead of its datagram.
 	Unknown = 0xFF,
@@ -63,7 +74,7 @@ enum class tEndpoint : std::uint8_t
 	I2C1 = 0x40,
 	ISO7816 = 0x50,
 	RS485 = 0x60,
-	SPI0_CS0 = 0x70,
+	SPI0_CS0 = 0x70, // from 0x70 up to 0x9F;
 	SPI0_CS1,
 	SPI0_CS2,
 	SPI1_CS0,
@@ -72,8 +83,17 @@ enum class tEndpoint : std::uint8_t
 	SPI2_CS0,
 	SPI2_CS1,
 	SPI2_CS2,
-	SPI_END,
-	GPIO_00 = 0xA0,
+	SPI_END, // It can be equal to 0xA0, because it definitely is not a part of SPI.
+	UART0 = 0xA0, // from 0xA0 up to 0xAF; 16 ports
+	UART1,
+	UART2,
+	UART3,
+	UART4,
+	UART5,
+	UART_END, // It can be equal to 0xB0, because it definitely is not a part of UART.
+	// 0xB0 - free
+	// 0xC0 - free
+	GPIO_00 = 0xD0, // from 0xD0 up to 0xFF; D,E,F => 16 * 3 = 48 pins.
 	GPIO_01,
 	GPIO_02,
 	GPIO_03,
@@ -219,6 +239,18 @@ public:
 		std::vector<std::uint8_t> Data;
 		Data.push_back(state ? 0x01 : 0x00);
 		return Make(tMsgId::GPIO_SetState, ep, Data);
+	}
+
+	static tPacketCmd Make_SPI_Open(tEndpoint ep)
+	{
+		assert(CheckEndpointSPI(ep));
+		return Make(tMsgId::SPI_Open, ep, {});
+	}
+
+	static tPacketCmd Make_SPI_Close(tEndpoint ep)
+	{
+		assert(CheckEndpointSPI(ep));
+		return Make(tMsgId::SPI_Close, ep, {});
 	}
 
 	static tPacketCmd Make_SPI_Request(tEndpoint ep, const std::vector<std::uint8_t>& msgData)
