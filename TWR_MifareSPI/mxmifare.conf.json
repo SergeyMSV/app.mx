@@ -1,0 +1,19 @@
+{
+  "spi": {
+    "mode": "0",
+    "bits": "8",
+    "frequency_hz": "4000000",
+    "delay_us": "0"
+  },
+  "out_read": {
+    "path": "/tmpram",
+    "prefix": "mfrc522_RFID_",
+    "qtyMax": 1
+  },
+  "log_read": {
+    "path": "/tmpram",
+    "prefix": "mfrc522_read_",
+    "capacity": 102400,
+    "qtyMax": 2
+  }
+}
