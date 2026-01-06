@@ -1,0 +1,15 @@
+{
+  "platform": {
+    "id": "win"
+  },
+  "pipe": {
+    "mifare": "\\\\.\\pipe\\mxmifare_pipe",
+    "1 mifare": "/tmp/mxmifare_pipe",
+    "2 mifare": "/tmpram/mxmifare_pipe",
+    "3 mifare": "/tmpram/mxmifare_pipe"
+  },
+  "spi_mifare": {
+    "id": "spi0_cs0",
+    "reset": "spi0_cs0_reset"
+  }
+}
