@@ -25,6 +25,16 @@ tTWRClient::~tTWRClient()
 	m_Socket.close();
 }
 
+void tTWRClient::Transaction_SPI_Open(tTWREndpoint ep)
+{
+	Transaction(tTWRPacketCmd::Make_SPI_Open(ep));
+}
+
+void tTWRClient::Transaction_SPI_Close(tTWREndpoint ep)
+{
+	Transaction(tTWRPacketCmd::Make_SPI_Close(ep));
+}
+
 std::vector<std::uint8_t> tTWRClient::Transaction_SPI_Request(tTWREndpoint ep, const std::vector<std::uint8_t>& tx)
 {
 	return Transaction(tTWRPacketCmd::Make_SPI_Request(ep, tx)).GetPayload();
@@ -32,7 +42,7 @@ std::vector<std::uint8_t> tTWRClient::Transaction_SPI_Request(tTWREndpoint ep, c
 
 void tTWRClient::Transaction_SPI_SetChipControl(tTWREndpoint ep, tTWRChipControl tx)
 {
-	Transaction(tTWRPacketCmd::Make_SPI_SetChipControl(ep, tx)).GetPayload();
+	Transaction(tTWRPacketCmd::Make_SPI_SetChipControl(ep, tx));
 }
 
 tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
