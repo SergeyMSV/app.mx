@@ -21,7 +21,9 @@ tTWRQueue TWRQueue; // [TBD] it is to be TWRQueueIn
 void UDP_ClientTest(std::uint16_t port);
 #endif // UDP_SERVER_TEST
 
-void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueDEMOCmd& queueIn);
+#ifdef UDP_SERVER_TEST
+void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+#endif // UDP_SERVER_TEST
 void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueSPICmd& queueIn);
 void ThreadDALLAS(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
 int main(int argc, char* argv[])
@@ -41,8 +43,12 @@ int main(int argc, char* argv[])
 		tTWRServer Server(ioc, DsConfig->GetUDPPort().Value);
 		std::thread Thread_ioc([&]() { ioc.run(); });
 
+		// [!] Interfaces which are not needed for TWR are free when their configs are commented.
+
 		// Each port must be in its own separate thread.
-		std::thread Thread_DEMO([&DsConfig, &Server]() { ThreadPortDEMO(DsConfig, Server, TWRQueue.DEMO); });
+#ifdef UDP_SERVER_TEST
+		std::thread Thread_DEMO([&DsConfig, &Server]() { ThreadPortDEMO(DsConfig, Server); });
+#endif // UDP_SERVER_TEST
 		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { ThreadPortSPI(DsConfig, Server, TWRQueue.SPI0_CS0); });
 		std::thread Thread_DALLAS([&DsConfig, &Server]() { ThreadDALLAS(DsConfig, Server); });
 
@@ -60,7 +66,9 @@ int main(int argc, char* argv[])
 
 		ioc.stop();
 		Thread_ioc.join();
+#ifdef UDP_SERVER_TEST
 		Thread_DEMO.join();
+#endif // UDP_SERVER_TEST
 		Thread_SPI0_CS0.join();
 		Thread_DALLAS.join();
 	}
