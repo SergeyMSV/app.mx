@@ -25,7 +25,6 @@ struct tPack
 };
 
 using tPacketTWRCmdEp = tPack<tTWRPacketCmd>;
-
 using tTWRQueueDEMOCmd = utils::multithread::tQueue<tPacketTWRCmdEp, 2>;
 using tTWRQueueSPICmd = utils::multithread::tQueue<tPacketTWRCmdEp, 2>;
 
