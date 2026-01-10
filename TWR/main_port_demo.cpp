@@ -5,13 +5,17 @@
 #include <algorithm>
 #include <memory>
 
-void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, tTWRQueueSPICmd& queueIn)
+#ifdef UDP_SERVER_TEST
+
+void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
 {
 	std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
 
+	tTWRQueueDEMOCmd& QueueIn = TWRQueue.DEMO;
+
 	while (!ConfigWeak.expired())
 	{
-		if (queueIn.empty())
+		if (QueueIn.empty())
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			continue;
@@ -19,7 +23,7 @@ void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServ
 
 		boost::shared_ptr<std::vector<std::uint8_t>> PacketRsp;
 
-		tPacketTWRCmdEp Cmd = queueIn.get_front();
+		tPacketTWRCmdEp Cmd = QueueIn.get_front();
 		switch (Cmd.Value.GetMsgId())
 		{
 		case tTWRMsgId::DEMO_Request:
@@ -37,3 +41,4 @@ void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServ
 		server.Send(Cmd.Endpoint, PacketRsp);
 	}
 }
+#endif // UDP_SERVER_TEST
