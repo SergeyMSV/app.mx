@@ -26,6 +26,10 @@ void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServ
 #endif // UDP_SERVER_TEST
 void ThreadPortSPI0_CS0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
 void ThreadDALLAS(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+void ThreadUART1(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+void ThreadUART2(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+void ThreadUART3(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+
 int main(int argc, char* argv[])
 {
 	try
@@ -51,6 +55,9 @@ int main(int argc, char* argv[])
 #endif // UDP_SERVER_TEST
 		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { ThreadPortSPI0_CS0(DsConfig, Server); });
 		std::thread Thread_DALLAS([&DsConfig, &Server]() { ThreadDALLAS(DsConfig, Server); });
+		std::thread Thread_UART1([&DsConfig, &Server]() { ThreadUART1(DsConfig, Server); });
+		std::thread Thread_UART2([&DsConfig, &Server]() { ThreadUART2(DsConfig, Server); });
+		std::thread Thread_UART3([&DsConfig, &Server]() { ThreadUART3(DsConfig, Server); });
 
 #ifdef UDP_SERVER_TEST
 		UDP_ClientTest(DsConfig->GetUDPPort().Value);
@@ -71,6 +78,9 @@ int main(int argc, char* argv[])
 #endif // UDP_SERVER_TEST
 		Thread_SPI0_CS0.join();
 		Thread_DALLAS.join();
+		Thread_UART1.join();
+		Thread_UART2.join();
+		Thread_UART3.join();
 	}
 	catch (const std::exception& e)
 	{
