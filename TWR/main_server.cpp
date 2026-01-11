@@ -83,6 +83,24 @@ bool tTWRServer::HandlePacketJson(const share::network::udp::tEndpoint& endpoint
 			TWRQueue.DALLAS.push_back(std::move(Cmd));
 			return true;
 		}
+		else if (Ep == "uart_1")
+		{
+			tPacketTWRUARTCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
+			TWRQueue.UART[0].push_back(std::move(Cmd));
+			return true;
+		}
+		else if (Ep == "uart_2")
+		{
+			tPacketTWRUARTCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
+			TWRQueue.UART[1].push_back(std::move(Cmd));
+			return true;
+		}
+		else if (Ep == "uart_3")
+		{
+			tPacketTWRUARTCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
+			TWRQueue.UART[2].push_back(std::move(Cmd));
+			return true;
+		}
 
 		return true; // [TBD] maybe false... maybe not...
 	}

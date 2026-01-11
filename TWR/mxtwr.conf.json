@@ -9,5 +9,20 @@
     "id_win": "COM4",
     "id_opio": "/dev/ttyS3",
     "br": 115200
+  },
+  "uart_1": {
+    "id_win": "COM4",
+    "id_opio": "/dev/ttyS1",
+    "br": 9600
+  },
+  "uart_2": {
+    "id_win": "COM4",
+    "id_opio": "/dev/ttyS2",
+    "br": 9600
+  },
+  "uart_3": {
+    "id_win": "COM4",
+    "id_opio": "/dev/ttyS3",
+    "br": 9600
   }
 }
