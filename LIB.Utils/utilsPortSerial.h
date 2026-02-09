@@ -38,8 +38,8 @@ class tPortSerialAsync
 	boost::system::error_code m_ErrorCode;
 
 public:
-	tPortSerialAsync(boost::asio::io_context& io, const std::string& id, std::uint32_t baudRate, tCharSize charSize, tStopBits stopBits, tParity parity, tFlowControl flowControl)
-		: m_Port(io)
+	tPortSerialAsync(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate, tCharSize charSize, tStopBits stopBits, tParity parity, tFlowControl flowControl)
+		: m_Port(ioc)
 	{
 		m_Port.open(id);
 
@@ -55,8 +55,8 @@ public:
 		Receive();
 	}
 
-	tPortSerialAsync(boost::asio::io_context& io, const std::string& id, std::uint32_t baudRate)
-		:tPortSerialAsync(io, id, baudRate, tCharSize(8), tStopBits::one, tParity::none, tFlowControl::none)
+	tPortSerialAsync(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate)
+		:tPortSerialAsync(ioc, id, baudRate, tCharSize(8), tStopBits::one, tParity::none, tFlowControl::none)
 	{
 	}
 
@@ -166,7 +166,7 @@ class tPortOneWireSync
 		std::vector<std::uint8_t> m_DataRcv;
 
 	public:
-		tPort(boost::asio::io_context& io, const std::string& id, std::uint32_t baudRate, tCharSize charSize, tStopBits stopBits, tParity parity, tFlowControl flowControl);
+		tPort(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate, tCharSize charSize, tStopBits stopBits, tParity parity, tFlowControl flowControl);
 
 		bool IsReceived(std::size_t qty) const;
 		std::vector<std::uint8_t> GetReceived();
@@ -207,7 +207,7 @@ public:
 
 public:
 	tPortOneWireSync() = delete;
-	tPortOneWireSync(boost::asio::io_context& io, const std::string& id, tSpeed speed = tSpeed::Norm);
+	tPortOneWireSync(boost::asio::io_context& ioc, const std::string& id, tSpeed speed = tSpeed::Norm);
 
 	void Close() { m_Port.Close(); }
 	bool IsReady() const { return m_Port.IsReady(); }

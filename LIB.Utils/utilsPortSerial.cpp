@@ -17,8 +17,8 @@ namespace port
 namespace serial
 {
 
-tPortOneWireSync::tPort::tPort(boost::asio::io_context& io, const std::string& id, std::uint32_t baudRate, tCharSize charSize, tStopBits stopBits, tParity parity, tFlowControl flowControl)
-	: tPortSerialAsync(io, id, baudRate, charSize, stopBits, parity, flowControl)
+tPortOneWireSync::tPort::tPort(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate, tCharSize charSize, tStopBits stopBits, tParity parity, tFlowControl flowControl)
+	: tPortSerialAsync(ioc, id, baudRate, charSize, stopBits, parity, flowControl)
 {
 }
 
@@ -61,8 +61,8 @@ tPortOneWireSync::tGuardBR::~tGuardBR()
 	m_pPort->SetBaudRate(m_BR);
 }
 
-tPortOneWireSync::tPortOneWireSync(boost::asio::io_context& io, const std::string& id, tSpeed speed)
-	: m_Port(io, id, ToBaudRate(speed), tCharSize(8), tStopBits::one, tParity::none, tFlowControl::none)
+tPortOneWireSync::tPortOneWireSync(boost::asio::io_context& ioc, const std::string& id, tSpeed speed)
+	: m_Port(ioc, id, ToBaudRate(speed), tCharSize(8), tStopBits::one, tParity::none, tFlowControl::none)
 {}
 
 tPortOneWireSync::tStatus tPortOneWireSync::Reset()
