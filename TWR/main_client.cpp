@@ -81,10 +81,9 @@ void UDP_ClientTest(std::uint16_t port)
 				{
 					std::vector<std::uint8_t> ReceivedData(ReceiveBuffer.begin(), ReceiveBuffer.end());
 
-					tTWRPacketRsp Rsp;
-					std::size_t PackSize = tTWRPacketRsp::Find(ReceivedData, Rsp);
-					if (PackSize)
-						ShowPackRsp(Rsp);
+					std::optional<tTWRPacketRsp> RspOpt = tTWRPacketRsp::Find(ReceivedData);
+					if (RspOpt.has_value())
+						ShowPackRsp(*RspOpt);
 				}
 
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));

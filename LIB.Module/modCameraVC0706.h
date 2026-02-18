@@ -130,14 +130,14 @@ class tCamera
 				if (!m_pObj->IsControlOperation())
 					return true;
 
-				tPacketRet Rsp;
-				if (tPacketRet::Find(m_ReceivedData, Rsp) > 0 && Rsp.GetMsgId() == msgId)
+				std::optional<tPacketRet> RspOpt = tPacketRet::Find(m_ReceivedData);
+				if (RspOpt.has_value() && RspOpt->GetMsgId() == msgId)
 				{
-					responseStatus = Rsp.GetMsgStatus();
+					responseStatus = RspOpt->GetMsgStatus();
 					if (responseStatus != tMsgStatus::None)
 						return true;
 
-					tPacketRet::Parse(Rsp, response);
+					tPacketRet::Parse(*RspOpt, response);
 					return true;
 				}
 
