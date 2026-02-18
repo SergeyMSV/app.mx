@@ -21,6 +21,21 @@ namespace utils
 typedef std::vector<std::uint8_t> tVectorUInt8;
 #endif // LIB_UTILS_BASE_DEPRECATED
 
+template<class InputIt, typename T>
+InputIt FindReverse(InputIt first, InputIt last, const T& value)
+{
+	if (std::distance(first, last) <= 0)
+		return last;
+	for (auto it = last - 1; ; --it)
+	{
+		if (*it == value)
+			return it;
+		if (it == first)
+			break;
+	}
+	return last;
+}
+
 template<typename T>
 typename std::enable_if<std::is_trivially_copyable<T>::value, void>::type Append(std::vector<std::uint8_t>& dst, const T& value)
 {
