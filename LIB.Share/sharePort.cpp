@@ -63,11 +63,10 @@ tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
 	if (!Size)
 		return {};
 	std::vector<std::uint8_t> ReceivedData(ReceiveBuffer.begin(), ReceiveBuffer.begin() + Size);
-	tTWRPacketRsp Rsp;
-	std::size_t PackSize = tTWRPacketRsp::Find(ReceivedData, Rsp);
-	if (!PackSize)
+	std::optional<tTWRPacketRsp> RspOpt = tTWRPacketRsp::Find(ReceivedData);
+	if (!RspOpt.has_value())
 		return {};
-	return Rsp;
+	return *RspOpt;
 }
 
 void tTWRClient::SetState(tState state)

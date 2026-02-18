@@ -17,88 +17,75 @@ namespace star
 {
 
 template <class TPayload>
-struct tFormatStar
+struct tFormat
 {
-	typedef std::uint16_t tFieldDataSize;
-
 	enum : std::uint8_t { STX = '*' };
 
+private:
+	static constexpr std::size_t m_MaxPacketSize = 1029; // [STX - 1][PayloadSize - 2][Payload - up to 1024][CRC16 CCITT - 2] = 1029 bytes
+
 protected:
-	static std::vector<std::uint8_t> TestPacket(std::vector<std::uint8_t>::const_iterator cbegin, std::vector<std::uint8_t>::const_iterator cend)
+	static std::optional<TPayload> Parse(const std::vector<std::uint8_t>& data, std::size_t& bytesToRemove)
 	{
-		const std::size_t Size = std::distance(cbegin, cend);
-
-		if (Size < GetSize(0) || *cbegin != STX)
-			return {};
-
-		tFieldDataSize DataSize = 0;
-
-		const std::vector<std::uint8_t>::const_iterator Begin = cbegin + 1;
-		const std::vector<std::uint8_t>::const_iterator End = Begin + sizeof(tFieldDataSize);
-
-		std::copy(Begin, End, reinterpret_cast<std::uint8_t*>(&DataSize));
-
-		if (Size < GetSize(DataSize) || !VerifyCRC(Begin, sizeof(tFieldDataSize) + DataSize))
-			return {};
-
-		return std::vector<std::uint8_t>(cbegin, cbegin + GetSize(DataSize));
+		return Parse(data.begin(), data.end(), bytesToRemove);
 	}
 
-	static bool TryParse(const std::vector<std::uint8_t>& packetVector, TPayload& payload)
+	static std::optional<TPayload> Parse(const std::vector<std::uint8_t>& data)
 	{
-		if (packetVector.size() < GetSize(0) || packetVector[0] != STX)
-			return false;
-
-		tFieldDataSize DataSize = 0;
-
-		std::vector<std::uint8_t>::const_iterator Begin = packetVector.cbegin() + 1;
-		std::vector<std::uint8_t>::const_iterator End = Begin + sizeof(tFieldDataSize);
-
-		std::copy(Begin, End, reinterpret_cast<std::uint8_t*>(&DataSize));
-
-		if (packetVector.size() != GetSize(DataSize) || !VerifyCRC(Begin, sizeof(tFieldDataSize) + DataSize))
-			return false;
-
-		Begin = End;
-		End += DataSize;
-
-		payload = TPayload(Begin, End);
-
-		return true;
+		std::size_t BytesToRemove;
+		return Parse(data.begin(), data.end(), BytesToRemove);
 	}
 
-	static std::size_t GetSize(std::size_t payloadSize) { return sizeof(STX) + sizeof(tFieldDataSize) + payloadSize + 2; } // 2 - for CRC
+	static std::size_t GetSize(std::size_t payloadSize) { return sizeof(STX) + 2 + payloadSize + 2; } // 2 for PayloadSize and 2 for CRC
 
 	void Append(std::vector<std::uint8_t>& dst, const TPayload& payload) const
 	{
 		dst.reserve(GetSize(payload.size()));
-
 		dst.push_back(STX);
-
 		utils::Append(dst, static_cast<std::uint16_t>(payload.size()));
-
 		for (const auto i : payload)
 		{
 			dst.push_back(i);
 		}
-
-		std::size_t DataSize = sizeof(tFieldDataSize) + payload.size();
-
+		std::size_t DataSize = 2 + payload.size(); // 2 for PayloadSize
 		std::uint16_t CRC = utils::crc::CRC16_CCITT(dst.end() - DataSize, dst.end());
-
 		utils::Append(dst, CRC);
 	}
 
-private:
-	static bool VerifyCRC(std::vector<std::uint8_t>::const_iterator begin, std::size_t crcDataSize)
+protected:
+	template<typename InputIt>
+	static std::optional<TPayload> Parse(InputIt begin, InputIt end, std::size_t& bytesToRemove)
 	{
-		std::uint16_t CRC = utils::crc::CRC16_CCITT(begin, begin + crcDataSize);
-
-		std::vector<std::uint8_t>::const_iterator CRCBegin = begin + crcDataSize;
-
-		std::uint16_t CRCReceived = utils::Read<std::uint16_t>(CRCBegin, CRCBegin + sizeof(CRC));
-
-		return CRC == CRCReceived;
+		InputIt PosSTX = std::find(begin, end, STX);
+		const std::size_t PacketSizePossible = std::distance(PosSTX, end);
+		bytesToRemove = std::distance(begin, PosSTX);
+		if (PacketSizePossible < GetSize(0))
+			return{};
+		InputIt SizeBeg = PosSTX + 1;
+		InputIt SizeEnd = SizeBeg + 2; // 2 for PayloadSize
+		std::uint16_t PayloadSize = 0;
+		std::copy(SizeBeg, SizeEnd, reinterpret_cast<std::uint8_t*>(&PayloadSize));
+		const std::size_t PacketSize = GetSize(PayloadSize);
+		if (PacketSize <= PacketSizePossible && PacketSize <= m_MaxPacketSize)
+		{
+			std::size_t ContentSize = 2 + PayloadSize; // 2 for PayloadSize
+			std::uint16_t CRC = utils::crc::CRC16_CCITT(SizeBeg, SizeBeg + ContentSize);
+			std::uint16_t CRCPack = *(SizeBeg + ContentSize);
+			CRCPack |= *(SizeBeg + ContentSize + 1) << 8;
+			if (CRC == CRCPack)
+			{
+				bytesToRemove = std::distance(begin, PosSTX + GetSize(PayloadSize));
+				InputIt PayloadBeg = SizeEnd;
+				return TPayload(PayloadBeg, PayloadBeg + PayloadSize);
+			}
+		}
+		const InputIt BeginNew = PosSTX + 1;
+		std::size_t BytesToRemoveR = 0;
+		std::optional<TPayload> PackOpt = Parse(BeginNew, end, BytesToRemoveR);
+		if (!PackOpt.has_value())
+			return {};
+		bytesToRemove = std::distance(begin, BeginNew) + BytesToRemoveR;
+		return PackOpt;
 	}
 };
 
@@ -112,7 +99,7 @@ namespace example
 
 
 // [Payload, its size can be up to 1024-Bytes]
-using tPacketSimple = utils::packet::tPacket<tFormatStar, std::vector<std::uint8_t>>;
+using tPacketSimple = utils::packet::tPacket<tFormat, std::vector<std::uint8_t>>;
 
 // [MsgId 1-Byte][Payload, its size can be up to 1023-Bytes]
 struct tPayloadMsgData
@@ -134,6 +121,8 @@ struct tPayloadMsgData
 		MsgId = *cbegin++;
 		Payload = std::vector<std::uint8_t>(cbegin, cend);
 	}
+
+	bool empty() const { return size() == 0; }
 
 	std::size_t size() const
 	{
@@ -164,21 +153,37 @@ struct tPayloadMsg : public utils::packet::tPayload<tPayloadMsgData>
 	{}
 };
 
-class tPacketMsg : public utils::packet::tPacket<tFormatStar, tPayloadMsg>
+using tPacketMsgBase = utils::packet::tPacket<tFormat, tPayloadMsg>;
+
+class tPacketMsg : public tPacketMsgBase
 {
-	explicit tPacketMsg(const payload_value_type& payloadValue)
-		:tPacket(payloadValue)
+	explicit tPacketMsg(const payload_value_type& payloadValue) = delete;
+	explicit tPacketMsg(payload_value_type&& payloadValue)
+		:tPacket(std::move(payloadValue))
 	{}
 
 public:
 	tPacketMsg() = default;
+	explicit tPacketMsg(const tPayloadMsg& payload) = delete;
+	explicit tPacketMsg(tPayloadMsg&& payload)
+	{
+		*static_cast<tPayloadMsg*>(this) = std::move(payload);
+	}
+
+	static std::optional<tPacketMsg> Find(std::vector<std::uint8_t>& data)
+	{
+		std::optional<tPacketMsgBase> PacketOpt = tPacketMsgBase::Find(data);
+		if (!PacketOpt.has_value())
+			return {};
+		return tPacketMsg(std::move(*PacketOpt));
+	}
 
 	static tPacketMsg MakeSomeMessage_01(const std::vector<std::uint8_t>& msgData)
 	{
 		payload_value_type Pld;
 		Pld.MsgId = 0x01;
 		Pld.Payload = msgData;
-		return tPacketMsg(Pld);
+		return tPacketMsg(std::move(Pld));
 	}
 	// ... Make-functions for other packets
 };
