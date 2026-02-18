@@ -20,11 +20,13 @@ void tTWRServer::OnReceived(const share::network::udp::tEndpoint& endpoint, cons
 	// data[0] == '*' -> Star (binary)
 
 	tPacketTWRCmdEp Cmd;
-	std::size_t PackSize = tTWRPacketCmd::Find(ReceivedData, Cmd.Value);
-	if (PackSize || ReceivedData.size() > share::network::udp::PacketSizeMax)
+	std::optional<tTWRPacketCmd> CmdOpt = tTWRPacketCmd::Find(ReceivedData);
+	if (CmdOpt.has_value() || ReceivedData.size() > share::network::udp::PacketSizeMax)
 		ReceivedData.clear();
+	if (!CmdOpt.has_value()) // A whole packet hasn't been received yet.
+		return;
+	Cmd.Value = std::move(*CmdOpt);
 	Cmd.Endpoint = endpoint;
-
 	HandlePacketBinary(Cmd);
 }
 
