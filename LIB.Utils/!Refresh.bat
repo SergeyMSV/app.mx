@@ -4,6 +4,8 @@ del /Q *.h
 xcopy /Y %LIB_UTILS%\utilsBase.*
 xcopy /Y %LIB_UTILS%\utilsChrono.*
 xcopy /Y %LIB_UTILS%\utilsCRC.*
+xcopy /Y %LIB_UTILS%\utilsException.*
+xcopy /Y %LIB_UTILS%\utilsExits.*
 xcopy /Y %LIB_UTILS%\utilsFile.*
 xcopy /Y %LIB_UTILS%\utilsLinux.*
 xcopy /Y %LIB_UTILS%\utilsLog.*
@@ -19,6 +21,7 @@ xcopy /Y %LIB_UTILS%\utilsPacketTWR.*
 xcopy /Y %LIB_UTILS%\utilsPath.*
 xcopy /Y %LIB_UTILS%\utilsPortSerial.*
 xcopy /Y %LIB_UTILS%\utilsShell.*
+xcopy /Y %LIB_UTILS%\utilsVersion.*
 xcopy /Y %LIB_UTILS%\utilsWeb.*
 
 set ARCH_7z2201="7z2201"

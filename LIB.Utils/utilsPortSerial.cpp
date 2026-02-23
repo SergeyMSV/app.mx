@@ -5,15 +5,17 @@
 
 #include <cmath>
 
-#ifdef LIB_UTILS_LOG
+#ifdef LIB_UTILS_TEST_LOG
 #include "utilsTest.h"
 #include <iostream>
-#endif // LIB_UTILS_LOG
+#endif // LIB_UTILS_TEST_LOG
 
 namespace utils
 {
-	namespace port_serial
-	{
+namespace port
+{
+namespace serial
+{
 
 tPortOneWireSync::tPort::tPort(boost::asio::io_context& io, const std::string& id, std::uint32_t baudRate, tCharSize charSize, tStopBits stopBits, tParity parity, tFlowControl flowControl)
 	: tPortSerialAsync(io, id, baudRate, charSize, stopBits, parity, flowControl)
@@ -39,7 +41,7 @@ void tPortOneWireSync::tPort::ResetReceived()
 	m_DataRcv.clear();
 }
 
-void tPortOneWireSync::tPort::OnReceived(std::vector<std::uint8_t>& data)
+void tPortOneWireSync::tPort::OnReceived(const std::vector<std::uint8_t>& data)
 {
 	std::lock_guard<std::mutex> Lock(m_Mtx);
 	m_DataRcv.insert(m_DataRcv.end(), data.begin(), data.end());
@@ -62,16 +64,6 @@ tPortOneWireSync::tGuardBR::~tGuardBR()
 tPortOneWireSync::tPortOneWireSync(boost::asio::io_context& io, const std::string& id, tSpeed speed)
 	: m_Port(io, id, ToBaudRate(speed), tCharSize(8), tStopBits::one, tParity::none, tFlowControl::none)
 {}
-
-bool tPortOneWireSync::IsReady()
-{
-	return m_Port.IsReady();
-}
-
-boost::system::error_code tPortOneWireSync::GetError()
-{
-	return m_Port.GetError();
-}
 
 tPortOneWireSync::tStatus tPortOneWireSync::Reset()
 {
@@ -101,11 +93,11 @@ std::vector<std::uint8_t> tPortOneWireSync::Transaction(std::vector<std::uint8_t
 	std::vector<std::uint8_t> Rx = OW_Transaction(tx);
 	if (Rx.size() != tx.size())
 		return {};
-#ifdef LIB_UTILS_LOG
+#ifdef LIB_UTILS_TEST_LOG
 	std::cout << '\n'
 		<< "Transaction TX: " << utils::test::ToStringHEX(tx, true) << '\n'
 		<< " <>         RX: " << utils::test::ToStringHEX(Rx, true) << '\n';
-#endif // LIB_UTILS_LOG
+#endif // LIB_UTILS_TEST_LOG
 	Rx.erase(Rx.begin(), Rx.begin() + 1);
 	return Rx;
 }
@@ -115,11 +107,11 @@ void tPortOneWireSync::SendBit(bool tx)
 	const std::vector<std::uint8_t> DataSend(1, tx ? 0xFF : 0x00);
 	m_Port.Send(DataSend);
 	std::vector<std::uint8_t> Rx = GetReceived(DataSend.size());
-#ifdef LIB_UTILS_LOG
+#ifdef LIB_UTILS_TEST_LOG
 	std::cout << '\n'
 		<< "SendBit     TX: " << utils::test::ToStringHEX(DataSend, true) << '\n'
 		<< " <>         RX: " << utils::test::ToStringHEX(Rx, true) << '\n';
-#endif // LIB_UTILS_LOG
+#endif // LIB_UTILS_TEST_LOG
 }
 
 std::vector<bool> tPortOneWireSync::ReceiveBits(std::size_t rxSize)
@@ -127,11 +119,11 @@ std::vector<bool> tPortOneWireSync::ReceiveBits(std::size_t rxSize)
 	std::vector<std::uint8_t> DataSend(rxSize, 0xFF);
 	m_Port.Send(DataSend);
 	std::vector<std::uint8_t> Rx = GetReceived(DataSend.size());
-#ifdef LIB_UTILS_LOG
+#ifdef LIB_UTILS_TEST_LOG
 	std::cout << '\n'
 		<< "ReceiveBits TX: " << utils::test::ToStringHEX(DataSend, true) << '\n'
 		<< " <>         RX: " << utils::test::ToStringHEX(Rx, true) << '\n';
-#endif // LIB_UTILS_LOG
+#endif // LIB_UTILS_TEST_LOG
 	std::vector<bool> Res;
 	for (std::uint32_t i = 0; i < Rx.size(); ++i)
 	{
@@ -203,5 +195,6 @@ std::uint32_t tPortOneWireSync::ToBaudRate(tSpeed val)
 	return 57600;
 }
 
-	}
+}
+}
 }

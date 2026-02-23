@@ -1,3 +1,8 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// utilsPortSerial
+// 2021-11-02
+// C++20
+///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <libConfig.h>
@@ -10,8 +15,11 @@
 
 namespace utils
 {
-	namespace port_serial
-	{
+namespace port
+{
+namespace serial
+{
+
 using tCharSize = boost::asio::serial_port_base::character_size;
 using tStopBits = boost::asio::serial_port_base::stop_bits::type;
 using tParity = boost::asio::serial_port_base::parity::type;
@@ -57,12 +65,17 @@ public:
 		m_Port.close();
 	}
 
-	bool IsReady()
+	void Close()
+	{
+		m_Port.close();
+	}
+
+	bool IsReady() const
 	{
 		return !m_ErrorCode;
 	}
 
-	boost::system::error_code GetError()
+	boost::system::error_code GetError() const
 	{
 		return m_ErrorCode;
 	}
@@ -128,7 +141,7 @@ private:
     }
 
 protected:
-    virtual void OnReceived(std::vector<std::uint8_t>& data) = 0;
+    virtual void OnReceived(const std::vector<std::uint8_t>& data) = 0;
 
 	void Send()
 	{
@@ -160,7 +173,7 @@ class tPortOneWireSync
 		void ResetReceived();
 
 	protected:
-		void OnReceived(std::vector<std::uint8_t>& data) override;
+		void OnReceived(const std::vector<std::uint8_t>& data) override;
 	};
 
 	struct tGuardBR
@@ -196,8 +209,9 @@ public:
 	tPortOneWireSync() = delete;
 	tPortOneWireSync(boost::asio::io_context& io, const std::string& id, tSpeed speed = tSpeed::Norm);
 
-	bool IsReady();
-	boost::system::error_code GetError();
+	void Close() { m_Port.Close(); }
+	bool IsReady() const { return m_Port.IsReady(); }
+	boost::system::error_code GetError() const { return m_Port.GetError(); }
 
 	tStatus Reset();
 	std::vector<std::uint8_t> Transaction(std::vector<std::uint8_t> tx, std::size_t rxSize);
@@ -219,5 +233,6 @@ protected:
 	static std::uint32_t ToBaudRate(tSpeed val);
 };
 
-	}
+}
+}
 }

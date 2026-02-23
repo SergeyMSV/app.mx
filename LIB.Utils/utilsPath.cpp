@@ -1,4 +1,5 @@
 #include "utilsBase.h"
+#include "utilsException.h"
 #include "utilsPath.h"
 
 #include <cstdlib>
@@ -11,21 +12,21 @@
 namespace utils
 {
 
-std::string GetDateTime(tm a_DateTime)
+std::string GetDateTime(tm a_DateTime) // DEPRECATED use from utilsTime
 {
 	std::ostringstream oss;
 	oss << std::put_time(&a_DateTime, "%Y-%m-%d_%H-%M-%S");
 	return oss.str();
 }
 
-std::string GetDateTime()
+std::string GetDateTime() // DEPRECATED use from utilsTime
 {
 	time_t TimeNow = std::time(nullptr);
 	tm* Time = std::localtime(&TimeNow);
 	return GetDateTime(*Time);
 }
 
-tm GetDateTime(const std::string& a_value)
+tm GetDateTime(const std::string& a_value) // DEPRECATED use from utilsTime
 {
 	tm DateTime{};
 	std::istringstream iss(a_value);
