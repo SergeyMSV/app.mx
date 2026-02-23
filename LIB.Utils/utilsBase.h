@@ -30,17 +30,18 @@ typename std::enable_if<std::is_trivially_copyable<T>::value, void>::type Append
 }
 
 template<typename T>
-typename std::enable_if<std::is_trivially_copyable<T>::value, std::vector<std::uint8_t>>::type ToVector(const T& value)
+typename std::vector<std::uint8_t> ToVector(const T& value)
 {
-	std::vector<std::uint8_t> Data;
-
-	Data.reserve(sizeof(value));
+	static_assert(std::is_trivially_copyable_v<T>, "Type of the argument must be trivially copyable.");
 
 	const std::uint8_t* Begin = reinterpret_cast<const std::uint8_t*>(&value);
+	return std::vector<std::uint8_t>(Begin, Begin + sizeof(value));
+}
 
-	Data.insert(Data.end(), Begin, Begin + sizeof(value));
-
-	return Data;
+template<>
+inline std::vector<std::uint8_t> ToVector<std::string>(const std::string& value)
+{
+	return std::vector<std::uint8_t>(value.begin(), value.end());
 }
 
 template<typename T, typename Iterator>
