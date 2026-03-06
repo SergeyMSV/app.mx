@@ -7,7 +7,7 @@ namespace state
 
 struct tTypesMTK_SC872_A
 {
-	static constexpr std::string_view Model = "SC872-A";
+	static constexpr std::string_view Model = "MT33-v3.8.4-STD-2.1.008-N96";// "SC872-A";
 	static constexpr int NumGGA = 0;
 	static constexpr int NumGLL = hidden::tContentSet_Msg_Skip;
 	static constexpr int NumGSA = hidden::tContentSet_Msg_Skip;
