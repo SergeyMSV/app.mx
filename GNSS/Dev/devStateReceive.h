@@ -94,7 +94,10 @@ public:
 				this->m_DataSetGNSS.Longitude = MsgOpt->Longitude.GetValue();
 				this->m_DataSetGNSS.Speed = MsgOpt->Speed.GetValue();
 				this->m_DataSetGNSS.Course = MsgOpt->Course.GetValue();
-				this->m_DataSetGNSS.Mode = MsgOpt->Mode.GetValue();
+				if constexpr (requires(typename TPolicy::tContentRMC obj) { obj.Mode; })
+				{
+					this->m_DataSetGNSS.Mode = MsgOpt->Mode.GetValue();
+				}
 				return this->CheckOrder(TPolicy::NumRMC);
 			}
 		}
