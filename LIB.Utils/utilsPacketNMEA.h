@@ -26,18 +26,25 @@ namespace nmea
 template <class TPayload, std::uint8_t stx = '$'>
 struct tFormat
 {
-	enum : std::uint8_t { STX = stx, CTX = '*' };
+	enum : std::uint8_t { STX = stx };
+
+	// The maximum number of characters in a sentence shall be 82, consisting of a maximum of 79 characters between the starting delimiter "$" or "!" and the terminating <CR><LF>.
+	static constexpr std::size_t m_MaxPacketSize = 100;
 
 protected:
 	static std::optional<TPayload> Parse(const std::vector<std::uint8_t>& data, std::size_t& bytesToRemove)
 	{
-		auto PosETX = std::find(data.begin(), data.end(), '\xa');
+		const auto PosETX = std::find(data.begin(), data.end(), '\xa');
 		if (PosETX == data.end()) // Whole Packet hasn't been received yet (partly received).
+		{
+			if (data.size() > m_MaxPacketSize)
+				bytesToRemove = data.size() - m_MaxPacketSize;
 			return {};
+		}
 		bytesToRemove = std::distance(data.begin(), PosETX) + 1; // +1 for ETX
 		auto PosSTX = FindReverse(data.begin(), PosETX, STX);
 		const std::size_t PacketSize = std::distance(PosSTX, PosETX);
-		if (PacketSize < GetSize(0))
+		if (PacketSize < GetSize(0) || *(PosETX - 4) != '*')
 			return {};
 		auto PayloadBeg = PosSTX + 1; // $*xx\xd\xa
 		auto PayloadEnd = PosETX - 4; // $*xx\xd\xa
@@ -70,7 +77,7 @@ protected:
 		{
 			dst.push_back(i);
 		}
-		dst.push_back(CTX);
+		dst.push_back('*');
 
 		const std::uint8_t CRC = utils::crc::CRC08_NMEA(payload.begin(), payload.end());
 
@@ -93,19 +100,39 @@ struct tFormatNMEANoCRC
 {
 	enum : std::uint8_t { STX = stx };
 
+	// The maximum number of characters in a sentence shall be 82, consisting of a maximum of 79 characters between the starting delimiter "$" or "!" and the terminating <CR><LF>.
+	static constexpr std::size_t m_MaxPacketSize = 100;
+
 protected:
 	static std::optional<TPayload> Parse(const std::vector<std::uint8_t>& data, std::size_t& bytesToRemove)
 	{
-		auto PosETX = std::find(data.begin(), data.end(), '\xa');
+		const auto PosETX = std::find(data.begin(), data.end(), '\xa');
 		if (PosETX == data.end()) // Whole Packet hasn't been received yet (partly received).
+		{
+			if (data.size() > m_MaxPacketSize)
+				bytesToRemove = data.size() - m_MaxPacketSize;
 			return {};
+		}
 		bytesToRemove = std::distance(data.begin(), PosETX) + 1; // +1 for ETX
-		auto PosSTX = FindReverse(data.begin(), PosETX, STX);
+		const auto PosSTX = FindReverse(data.begin(), PosETX, STX);
 		const std::size_t PacketSize = std::distance(PosSTX, PosETX);
 		if (PacketSize < GetSize(0))
 			return {};
+		// If a packet doesn't contain CRC - that's OK, but if the packet contains CRC, that CRC must be right.
 		auto PayloadBeg = PosSTX + 1; // $\xd\xa
 		auto PayloadEnd = PosETX - 1; // $\xd\xa
+		if (PacketSize > 5 && *(PosETX - 4) == '*') // $*xx\xd\xa - If the packet contains CRC last field shouldn't contain that CRC.
+		{
+			PayloadEnd = PosETX - 4;
+			std::uint8_t CRC = utils::crc::CRC08_NMEA(PayloadBeg, PayloadEnd);
+			std::uint8_t CRCPack = static_cast<std::uint8_t>(std::strtoul(reinterpret_cast<const char*>(&(*(PayloadEnd + 1))), nullptr, 16));
+			if (CRC != CRCPack)
+			{
+				const auto PosSTX2 = std::find(PosSTX + 1, data.end(), STX); // That's for parsing damaged packets, something like that: "GNGG$GNGG$GNGGA,221$GPGSV,3,1,10,23,...".
+				bytesToRemove = std::distance(data.begin(), PosSTX2);
+				return {};
+			}
+		}
 		return TPayload(PayloadBeg, PayloadEnd);
 	}
 
@@ -276,6 +303,11 @@ struct tPayloadString
 	iterator begin() const { return Value.begin(); }
 	iterator end() const { return Value.end(); }
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////
+using tPacketNMEA_Common_CRC = utils::packet::tPacket<tFormatNMEA, utils::packet::nmea::tPayloadCommon>;
+using tPacketNMEA_Common_NoCRC = utils::packet::tPacket<tFormatNMEANoCRC, utils::packet::nmea::tPayloadCommon>;
+using tPacketNMEA_String_CRC = utils::packet::tPacket<tFormatNMEA, utils::packet::nmea::tPayloadString>;
+using tPacketNMEA_String_NoCRC = utils::packet::tPacket<tFormatNMEANoCRC, utils::packet::nmea::tPayloadString>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 }
 }

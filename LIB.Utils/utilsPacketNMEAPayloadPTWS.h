@@ -24,7 +24,7 @@ namespace telit
 //$PTWS,JAM,SIGNAL,VAL,INDEX,10,FREQ,1575.130615*58
 //$PTWS,JAM,SIGNAL,VAL,INDEX,11,FREQ,1575.385498*52
 
-struct tPayloadJAM_SIGNAL_VAL : public type::tTypeVerified
+struct tContentJAM_SIGNAL : public type::tTypeVerified
 {
 	using tIndex = type::tUInt<2>;
 	using tFrequency = type::tFloatPrecisionFixed<4, 6>;
@@ -32,12 +32,12 @@ struct tPayloadJAM_SIGNAL_VAL : public type::tTypeVerified
 	tIndex Index;
 	tFrequency Frequency;
 
-	tPayloadJAM_SIGNAL_VAL() = default;
-	tPayloadJAM_SIGNAL_VAL(std::uint8_t index, double frequency)
+	tContentJAM_SIGNAL() = default;
+	tContentJAM_SIGNAL(std::uint8_t index, double frequency)
 		:Index(index), Frequency(frequency)
 	{
 	}
-	explicit tPayloadJAM_SIGNAL_VAL(const tPayloadCommon::value_type& val)
+	explicit tContentJAM_SIGNAL(const std::vector<std::string>& val)
 	{
 		if (val.size() != 8 || val[0] != "PTWS" || val[1] != "JAM" || val[2] != "SIGNAL" || val[3] != "VAL" || val[4] != "INDEX" || val[6] != "FREQ")
 		{
@@ -50,9 +50,9 @@ struct tPayloadJAM_SIGNAL_VAL : public type::tTypeVerified
 
 	bool IsVerified() const { return type::tTypeVerified::IsVerified() && type::IsVerified(Index, Frequency); }
 
-	tPayloadCommon::value_type GetPayload() const
+	std::vector<std::string> GetPayload() const
 	{
-		tPayloadCommon::value_type Data;
+		std::vector<std::string> Data;
 		Data.push_back("PTWS");
 		Data.push_back("JAM");
 		Data.push_back("SIGNAL");
@@ -65,40 +65,38 @@ struct tPayloadJAM_SIGNAL_VAL : public type::tTypeVerified
 	}
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-struct tPayloadVERSION_GET
-{
-	tPayloadVERSION_GET() = default;
-	//explicit tPayloadVERSION_GET(const tPayloadCommon::value_type& val)
-	//{
-	//	if (val.size() != 3 || val[0] != "PTWS" || val[1] != "VERSION" || val[2] != "GET")
-	//		SetVerified(false);
-	//}
-
-	bool IsVerified() const { return true; }
-
-	tPayloadCommon::value_type GetPayload() const
-	{
-		tPayloadCommon::value_type Data;
-
-		Data.push_back("PTWS");
-		Data.push_back("VERSION");
-		Data.push_back("GET");
-
-		return Data;
-	}
-};
+//struct tContentVERSION_GET
+//{
+//	tContentVERSION_GET() = default;
+//	//explicit tContentVERSION_GET(const std::vector<std::string>& val)
+//	//{
+//	//	if (val.size() != 3 || val[0] != "PTWS" || val[1] != "VERSION" || val[2] != "GET")
+//	//		SetVerified(false);
+//	//}
+//
+//	bool IsVerified() const { return true; }
+//
+//	std::vector<std::string> GetPayload() const
+//	{
+//		std::vector<std::string> Data;
+//
+//		Data.push_back("PTWS");
+//		Data.push_back("VERSION");
+//		Data.push_back("GET");
+//
+//		return Data;
+//	}
+//};
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-struct tPayloadVERSION_VAL : public type::tTypeVerified
+struct tContentVERSION : public type::tTypeVerified
 {
-	using tVersion = std::string;
+	std::string Version;
 
-	tVersion Version;
-
-	tPayloadVERSION_VAL() = default;
-	explicit tPayloadVERSION_VAL(tVersion version)
+	tContentVERSION() = default;
+	explicit tContentVERSION(const std::string& version)
 		:Version(version)
 	{}
-	explicit tPayloadVERSION_VAL(const tPayloadCommon::value_type& val)
+	explicit tContentVERSION(const std::vector<std::string>& val)
 	{
 		if (val.size() != 4 || val[0] != "PTWS" || val[1] != "VERSION" || val[2] != "VAL")
 		{
@@ -110,9 +108,9 @@ struct tPayloadVERSION_VAL : public type::tTypeVerified
 
 	bool IsVerified() const { return type::tTypeVerified::IsVerified() && !Version.empty(); }
 
-	tPayloadCommon::value_type GetPayload() const
+	std::vector<std::string> GetPayload() const
 	{
-		tPayloadCommon::value_type Data;
+		std::vector<std::string> Data;
 		Data.push_back("PTWS");
 		Data.push_back("VERSION");
 		Data.push_back("VAL");
