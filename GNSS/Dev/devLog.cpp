@@ -1,4 +1,4 @@
-#include "devLog.h"
+/*#include "devLog.h"
 
 #include <iostream>
 
@@ -7,15 +7,10 @@ namespace dev
 
 tLog::tSettings tLog::LogSettings;
 
-tLog::tLog(tLog::tID id, const char* sign)
-	:utils::tLog(true), m_ID(id), m_Sign(sign)
+tLog::tLog(tLog::tID id, const std::string& label)
+	:m_ID(id), m_Label(label)
 {
 
-}
-
-const char* tLog::GetSign() const
-{
-	return m_Sign;
 }
 
 void tLog::WriteLog(const std::string& msg)
@@ -27,3 +22,4 @@ void tLog::WriteLog(const std::string& msg)
 }
 
 }
+*/

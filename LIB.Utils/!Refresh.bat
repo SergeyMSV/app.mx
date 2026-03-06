@@ -16,6 +16,9 @@ xcopy /Y %LIB_UTILS%\utilsPacket.*
 xcopy /Y %LIB_UTILS%\utilsPacketCameraVC0706.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEA.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayload.*
+xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayloadP.*
+xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayloadPMTK.*
+xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayloadPSRF.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayloadPTWS.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEAType.*
 xcopy /Y %LIB_UTILS%\utilsPacketStar.*
@@ -23,6 +26,7 @@ xcopy /Y %LIB_UTILS%\utilsPacketTWR.*
 xcopy /Y %LIB_UTILS%\utilsPath.*
 xcopy /Y %LIB_UTILS%\utilsPortSerial.*
 xcopy /Y %LIB_UTILS%\utilsShell.*
+xcopy /Y %LIB_UTILS%\utilsString.*
 xcopy /Y %LIB_UTILS%\utilsVersion.*
 xcopy /Y %LIB_UTILS%\utilsWeb.*
 
