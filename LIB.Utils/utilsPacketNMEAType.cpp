@@ -161,9 +161,9 @@ tDate::tDate(std::time_t value)
 {
 	tm DateTime{};
 #ifdef _WIN32
-	localtime_s(&DateTime, &value);
+	gmtime_s(&DateTime, &value);
 #else // _WIN32
-	localtime_r(&value, &DateTime);
+	gmtime_r(&value, &DateTime);
 #endif // _WIN32
 	if (DateTime.tm_year > 100)
 		DateTime.tm_year -= 100; // tm_year is from 1900

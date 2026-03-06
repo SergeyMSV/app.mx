@@ -182,56 +182,64 @@
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Lib.Module\modGnss.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_State.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_StateError.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_StateHalt.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_StateOperation.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_StateStart.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_StateStop.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_State_CmdGPI.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_State_CmdGPO.cpp" />
-    <ClCompile Include="..\Lib.Module\modGnssReceiver_State_CmdREQ.cpp" />
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
+    <ClCompile Include="..\LIB.Share\sharePort.cpp" />
+    <ClCompile Include="..\LIB.Share\sharePortUART.cpp" />
     <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsException.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp" />
     <ClCompile Include="..\Lib.Utils\utilsLog.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPacketNMEAType.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
-    <ClCompile Include="..\Lib.Utils\utilsShell.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsPortSerial.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsString.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="Dev\devGNSS.cpp" />
     <ClCompile Include="Dev\devGNSS_ModGnssReceiver.cpp" />
-    <ClCompile Include="Dev\devGNSS_ModGnssReceiver_Board.cpp" />
+    <ClCompile Include="Dev\devStateInit.cpp" />
     <ClCompile Include="Dev\devLog.cpp" />
-    <ClCompile Include="Dev\devDataSet.cpp" />
-    <ClCompile Include="Dev\devShell.cpp" />
+    <ClCompile Include="Dev\devDataSetGNSS.cpp" />
+    <ClCompile Include="Dev\devStateInitMTK.cpp" />
+    <ClCompile Include="Dev\devStateInitSiRF.cpp" />
+    <ClCompile Include="Dev\devStateReceive.cpp" />
+    <ClCompile Include="Dev\devStateReceiveMTK.cpp" />
+    <ClCompile Include="Dev\devStateReceiveSiRF.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Lib.Module\modGnss.h" />
-    <ClInclude Include="..\Lib.Module\modGnssReceiver.h" />
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
+    <ClInclude Include="..\LIB.Share\sharePort.h" />
+    <ClInclude Include="..\LIB.Share\sharePortUART.h" />
     <ClInclude Include="..\LIB.Share\shareUtilsFile.h" />
-    <ClInclude Include="..\Lib.Utils\utilsBase.h" />
+    <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\Lib.Utils\utilsCRC.h" />
+    <ClInclude Include="..\LIB.Utils\utilsException.h" />
+    <ClInclude Include="..\LIB.Utils\utilsExits.h" />
     <ClInclude Include="..\LIB.Utils\utilsFile.h" />
     <ClInclude Include="..\Lib.Utils\utilsLog.h" />
     <ClInclude Include="..\Lib.Utils\utilsPacket.h" />
     <ClInclude Include="..\Lib.Utils\utilsPacketNMEA.h" />
     <ClInclude Include="..\Lib.Utils\utilsPacketNMEAPayload.h" />
+    <ClInclude Include="..\LIB.Utils\utilsPacketNMEAPayloadP.h" />
+    <ClInclude Include="..\LIB.Utils\utilsPacketNMEAPayloadPMTK.h" />
+    <ClInclude Include="..\LIB.Utils\utilsPacketNMEAPayloadPSRF.h" />
     <ClInclude Include="..\LIB.Utils\utilsPacketNMEAPayloadPTWS.h" />
     <ClInclude Include="..\LIB.Utils\utilsPacketNMEAType.h" />
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
-    <ClInclude Include="..\LIB.Utils\utilsSerialPort.h" />
-    <ClInclude Include="..\Lib.Utils\utilsShell.h" />
+    <ClInclude Include="..\LIB.Utils\utilsPortSerial.h" />
+    <ClInclude Include="..\LIB.Utils\utilsString.h" />
+    <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="devConfig.h" />
     <ClInclude Include="Dev\devDataSetConfig.h" />
     <ClInclude Include="Dev\devGNSS.h" />
+    <ClInclude Include="Dev\devState.h" />
+    <ClInclude Include="Dev\devStateInit.h" />
     <ClInclude Include="Dev\devLog.h" />
-    <ClInclude Include="Dev\devDataSet.h" />
-    <ClInclude Include="Dev\devShell.h" />
+    <ClInclude Include="Dev\devDataSetGNSS.h" />
+    <ClInclude Include="Dev\devDataSetHW.h" />
+    <ClInclude Include="Dev\devPortUART.h" />
+    <ClInclude Include="Dev\devStateReceive.h" />
     <ClInclude Include="libConfig.h" />
   </ItemGroup>
   <ItemGroup>
@@ -241,13 +249,12 @@
     <Xml Include="mxgnss.conf.json" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\LIB.Module\!Refresh.bat" />
     <None Include="..\LIB.Utils\!Refresh.bat" />
     <None Include=".vscode\c_cpp_properties.json" />
     <None Include=".vscode\launch.json" />
     <None Include=".vscode\tasks.json" />
     <None Include="GNSS.code-workspace" />
-    <None Include="mxprivate.conf.json" />
+    <None Include="mx.conf.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

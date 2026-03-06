@@ -1,4 +1,4 @@
-#include "devGNSS.h"
+/*#include "devGNSS.h"
 #include "devDataSet.h"
 #include "devDataSetConfig.h"
 
@@ -14,7 +14,7 @@ namespace dev
 {
 
 tGNSS::tModGnssReceiver::tModGnssReceiver(tGNSS* obj)
-	:mod::tGnssReceiver(obj->m_pLog), m_pObj(obj), m_Board(this, *obj->m_pIO)
+	:mod::tGnssReceiver(obj->m_Log), m_pObj(obj), m_Board(this, obj->m_ioc)
 {
 
 }
@@ -46,8 +46,8 @@ void tGNSS::tModGnssReceiver::OnChanged(const mod::tGnssDataSet& value)
 	std::fstream File = std::fstream(FileNameTemp, std::ios::out);
 	if (!File.good())
 	{
-		m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightYellow, "Open File Error: " + FileNameTemp);
-		m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightYellow, value.ToJSON());
+		m_pObj->m_Log.WriteLine(true, "Open File Error: " + FileNameTemp, utils::log::tColor::LightYellow);
+		m_pObj->m_Log.WriteLine(true, value.ToJSON(), utils::log::tColor::LightYellow);
 		return;
 	}
 
@@ -58,21 +58,21 @@ void tGNSS::tModGnssReceiver::OnChanged(const mod::tGnssDataSet& value)
 
 	share::RemoveFilesOutdated(OutGNSS);
 
-	//m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightYellow, value.ToJSON());
+	//m_pObj->m_Log.WriteLine(true, utils::log::tColor::LightYellow, value.ToJSON());
 }
 
 void tGNSS::tModGnssReceiver::Board_PowerSupply(bool state)
 {
 	std::stringstream SStream;
 	SStream << "Board_PowerSupply: " << state;
-	m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightMagenta, SStream.str());
+	m_pObj->m_Log.WriteLine(true, SStream.str(), utils::log::tColor::LightMagenta);
 }
 
 void tGNSS::tModGnssReceiver::Board_Reset(bool state)
 {
 	std::stringstream SStream;
 	SStream << "Board_Reset:       " << state;
-	m_pObj->m_pLog->WriteLine(true, utils::tLogColour::LightMagenta, SStream.str());
+	m_pObj->m_Log.WriteLine(true, SStream.str(), utils::log::tColor::LightMagenta);
 }
 
 bool tGNSS::tModGnssReceiver::Board_Send(const utils::tVectorUInt8& data)
@@ -80,9 +80,10 @@ bool tGNSS::tModGnssReceiver::Board_Send(const utils::tVectorUInt8& data)
 	return m_Board.Send(data);
 }
 
-void tGNSS::tModGnssReceiver::OnReceived(utils::tVectorUInt8& data)
+void tGNSS::tModGnssReceiver::OnReceived(const std::vector<std::uint8_t>& data)
 {
 	Board_OnReceived(data);
 }
 
 }
+*/
