@@ -1,22 +1,17 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// devGNSS.h
-//
-// Standard ISO/IEC 114882, C++11
-//
-// |   version  |    release    | Description
-// |------------|---------------|---------------------------------
-// |      1     |   2020 03 03  |
-// |            |               | 
+// devGNSS
+// 2020-03-03
+// C++11
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
-
+/*
 #include <devConfig.h>
 #include <devDataSet.h>
 #include <devLog.h>
 
 #include <modGnssReceiver.h>
 
-#include <utilsSerialPort.h>
+#include <utilsPortSerial.h>
 
 #include <future>
 
@@ -31,7 +26,8 @@ class tGNSS
 	class tModGnssReceiver : public mod::tGnssReceiver
 	{
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-		class tBoard : public utils::serial_port::tSerialPort<>
+		using tPortUARTBase = utils::port::serial::tPortSerialAsync<>;
+		class tBoard : public tPortUARTBase
 		{
 			tModGnssReceiver* m_pObj = nullptr;
 
@@ -40,7 +36,7 @@ class tGNSS
 			virtual ~tBoard();
 
 		protected:
-			void OnReceived(utils::tVectorUInt8& data) override;
+			void OnReceived(const std::vector<std::uint8_t>& data) override;
 		};
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 		tGNSS* m_pObj = nullptr;
@@ -61,14 +57,14 @@ class tGNSS
 		void Board_Reset(bool state) override;
 
 		bool Board_Send(const utils::tVectorUInt8& data) override;
-		void OnReceived(utils::tVectorUInt8& data);
+		void OnReceived(const std::vector<std::uint8_t>& data);
 	};
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 	friend class tModGnssReceiver;
 
-	utils::tLog *m_pLog = nullptr;
+	utils::log::tLog& m_Log;
 
-	boost::asio::io_context* m_pIO = nullptr;
+	boost::asio::io_context& m_ioc;
 
 	tModGnssReceiver *m_pMod = nullptr;
 
@@ -76,7 +72,7 @@ class tGNSS
 
 public:
 	tGNSS() = delete;
-	tGNSS(utils::tLog* log, boost::asio::io_context& io);
+	tGNSS(utils::log::tLog& log, boost::asio::io_context& ioc);
 	tGNSS(const tGNSS&) = delete;
 	tGNSS(tGNSS&&) = delete;
 	~tGNSS();
@@ -101,4 +97,4 @@ public:
 	//}
 };
 
-}
+}*/
