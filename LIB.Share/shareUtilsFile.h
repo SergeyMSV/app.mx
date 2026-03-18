@@ -3,6 +3,7 @@
 #include "shareConfig.h"
 
 #include <deque>
+#include <mutex>
 #include <string>
 
 namespace share
@@ -11,6 +12,7 @@ namespace share
 class tLogFileLine
 {
 	std::string m_FilePath;
+	std::mutex m_FileMtx;
 
 public:
 	tLogFileLine() = delete;
