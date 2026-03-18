@@ -54,6 +54,7 @@ void tLogFileLine::Write(const std::string& msg)
 
 void tLogFileLine::WriteData(const std::string& msg)
 {
+	std::lock_guard<std::mutex> Lock(m_FileMtx);
 	std::fstream File = std::fstream(m_FilePath, std::ios::app);
 	if (File.good())
 		File << msg;
