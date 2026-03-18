@@ -9,5 +9,11 @@
     "path": "/tmpram",
     "prefix": "mxgnss_",
     "qtyMax": 2
+  },
+  "log": {
+    "path": "/tmpram",
+    "prefix": "mxgnss_",
+    "capacity": 102400,
+    "qtyMax": 2
   }
 }

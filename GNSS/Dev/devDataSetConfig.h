@@ -16,6 +16,7 @@ class tDataSetConfig
 	share::config::tPlatform m_Platform;
 	share::config::tOutFile m_OutFile;
 	share::config::port::tUART_Config m_UART;
+	share::config::tOutFileCap m_Log;
 
 public:
 	tDataSetConfig() = default;
@@ -23,6 +24,7 @@ public:
 
 	share::config::tOutFile GetOutGNSS() const { return m_OutFile; }
 	share::config::port::tUART_Config GetUART() const { return  m_UART; }
+	share::config::tOutFileCap GetLog() const { return m_Log; }
 };
 
 }

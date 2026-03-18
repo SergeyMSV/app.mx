@@ -21,7 +21,7 @@ namespace utils
 typedef std::vector<std::uint8_t> tVectorUInt8;
 #endif // LIB_UTILS_BASE_DEPRECATED
 
-template<class InputIt, typename T>
+template<typename InputIt, typename T>
 InputIt FindReverse(InputIt first, InputIt last, const T& value)
 {
 	if (std::distance(first, last) <= 0)
@@ -34,6 +34,17 @@ InputIt FindReverse(InputIt first, InputIt last, const T& value)
 			break;
 	}
 	return last;
+}
+
+template<typename T, std::size_t N>
+bool Contains(const T(&valuesArray)[N], const T& value)
+{
+	for (auto& i : valuesArray)
+	{
+		if (i == value)
+			return true;
+	}
+	return false;
 }
 
 template<typename T>
