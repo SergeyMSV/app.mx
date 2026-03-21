@@ -1,4 +1,4 @@
-﻿namespace TWR_UART{
+﻿namespace SergeM{
     partial class FormSettings
     {
         /// <summary>

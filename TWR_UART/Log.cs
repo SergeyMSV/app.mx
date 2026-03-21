@@ -1,4 +1,4 @@
-﻿namespace TWR_UART
+﻿namespace SergeM
 {
     internal class Log
     {

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace TWR_UART
+namespace SergeM
 {
     public partial class FormSettings : Form
     {
