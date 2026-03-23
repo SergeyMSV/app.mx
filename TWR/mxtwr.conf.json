@@ -18,11 +18,11 @@
   "uart_2": {
     "id_win": "COM4",
     "id_opio": "/dev/ttyS2",
-    "br": 9600
+    "br": 19200
   },
   "uart_3": {
     "id_win": "COM4",
     "id_opio": "/dev/ttyS3",
-    "br": 9600
+    "br": 38400
   }
 }
