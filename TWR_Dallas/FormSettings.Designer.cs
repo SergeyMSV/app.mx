@@ -1,4 +1,4 @@
-﻿namespace TWR_Dallas{
+﻿namespace SergeM{
     partial class FormSettings
     {
         /// <summary>
@@ -37,15 +37,14 @@
             buttonOK = new Button();
             checkBoxLog = new CheckBox();
             checkBoxIPAddressRemoteLocalhost = new CheckBox();
-            textBoxCOMPortNumber = new TextBox();
-            label4 = new Label();
             label5 = new Label();
             textBoxAutoGetValuePeriod = new TextBox();
+            label4 = new Label();
             SuspendLayout();
             // 
             // textBoxUDPPortLocal
             // 
-            textBoxUDPPortLocal.Location = new Point(148, 12);
+            textBoxUDPPortLocal.Location = new Point(150, 12);
             textBoxUDPPortLocal.MaxLength = 5;
             textBoxUDPPortLocal.Name = "textBoxUDPPortLocal";
             textBoxUDPPortLocal.Size = new Size(100, 23);
@@ -56,7 +55,7 @@
             // 
             // textBoxUDPPortRemote
             // 
-            textBoxUDPPortRemote.Location = new Point(148, 41);
+            textBoxUDPPortRemote.Location = new Point(150, 41);
             textBoxUDPPortRemote.MaxLength = 5;
             textBoxUDPPortRemote.Name = "textBoxUDPPortRemote";
             textBoxUDPPortRemote.Size = new Size(100, 23);
@@ -67,7 +66,7 @@
             // 
             // textBoxIPAddressRemote
             // 
-            textBoxIPAddressRemote.Location = new Point(148, 70);
+            textBoxIPAddressRemote.Location = new Point(150, 70);
             textBoxIPAddressRemote.MaxLength = 15;
             textBoxIPAddressRemote.Name = "textBoxIPAddressRemote";
             textBoxIPAddressRemote.Size = new Size(100, 23);
@@ -81,34 +80,34 @@
             label1.AutoSize = true;
             label1.Location = new Point(12, 15);
             label1.Name = "label1";
-            label1.Size = new Size(80, 15);
+            label1.Size = new Size(89, 15);
             label1.TabIndex = 1;
-            label1.Text = "UDPPortLocal";
+            label1.Text = "UDP Port Local:";
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Location = new Point(12, 44);
             label2.Name = "label2";
-            label2.Size = new Size(93, 15);
+            label2.Size = new Size(102, 15);
             label2.TabIndex = 3;
-            label2.Text = "UDPPortRemote";
+            label2.Text = "UDP Port Remote:";
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Location = new Point(12, 73);
             label3.Name = "label3";
-            label3.Size = new Size(99, 15);
+            label3.Size = new Size(109, 15);
             label3.TabIndex = 5;
-            label3.Text = "IPAddressRemote";
+            label3.Text = "IP Address Remote:";
             // 
             // buttonCancel
             // 
-            buttonCancel.Location = new Point(247, 176);
+            buttonCancel.Location = new Point(247, 177);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(75, 23);
-            buttonCancel.TabIndex = 22;
+            buttonCancel.TabIndex = 92;
             buttonCancel.Text = "&Cancel";
             buttonCancel.UseVisualStyleBackColor = true;
             buttonCancel.Click += buttonCancel_Click;
@@ -116,10 +115,10 @@
             // 
             // buttonOK
             // 
-            buttonOK.Location = new Point(166, 176);
+            buttonOK.Location = new Point(166, 177);
             buttonOK.Name = "buttonOK";
             buttonOK.Size = new Size(75, 23);
-            buttonOK.TabIndex = 21;
+            buttonOK.TabIndex = 91;
             buttonOK.Text = "&OK";
             buttonOK.UseVisualStyleBackColor = true;
             buttonOK.Click += buttonOK_Click;
@@ -128,10 +127,10 @@
             // checkBoxLog
             // 
             checkBoxLog.AutoSize = true;
-            checkBoxLog.Location = new Point(12, 176);
+            checkBoxLog.Location = new Point(12, 180);
             checkBoxLog.Name = "checkBoxLog";
             checkBoxLog.Size = new Size(46, 19);
-            checkBoxLog.TabIndex = 20;
+            checkBoxLog.TabIndex = 90;
             checkBoxLog.Text = "&Log";
             checkBoxLog.UseVisualStyleBackColor = true;
             checkBoxLog.KeyDown += FormSettings_KeyDown;
@@ -148,26 +147,6 @@
             checkBoxIPAddressRemoteLocalhost.CheckedChanged += checkBoxAPAddressRemoteLocalhost_CheckedChanged;
             checkBoxIPAddressRemoteLocalhost.KeyDown += FormSettings_KeyDown;
             // 
-            // textBoxCOMPortNumber
-            // 
-            textBoxCOMPortNumber.Location = new Point(148, 99);
-            textBoxCOMPortNumber.MaxLength = 3;
-            textBoxCOMPortNumber.Name = "textBoxCOMPortNumber";
-            textBoxCOMPortNumber.Size = new Size(100, 23);
-            textBoxCOMPortNumber.TabIndex = 9;
-            textBoxCOMPortNumber.TextAlign = HorizontalAlignment.Center;
-            textBoxCOMPortNumber.KeyDown += FormSettings_KeyDown;
-            textBoxCOMPortNumber.KeyPress += textBox_Digit_KeyPress;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(12, 102);
-            label4.Name = "label4";
-            label4.Size = new Size(101, 15);
-            label4.TabIndex = 8;
-            label4.Text = "COMPortNumber";
-            // 
             // label5
             // 
             label5.AutoSize = true;
@@ -175,7 +154,7 @@
             label5.Name = "label5";
             label5.Size = new Size(124, 15);
             label5.TabIndex = 10;
-            label5.Text = "AutoGetValuePeriod, s";
+            label5.Text = "Auto get value period:";
             // 
             // textBoxAutoGetValuePeriod
             // 
@@ -187,15 +166,23 @@
             textBoxAutoGetValuePeriod.TextAlign = HorizontalAlignment.Center;
             textBoxAutoGetValuePeriod.KeyPress += textBox_Digit_KeyPress;
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(254, 131);
+            label4.Name = "label4";
+            label4.Size = new Size(12, 15);
+            label4.TabIndex = 12;
+            label4.Text = "s";
+            // 
             // FormSettings
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(334, 211);
+            Controls.Add(label4);
             Controls.Add(label5);
             Controls.Add(textBoxAutoGetValuePeriod);
-            Controls.Add(label4);
-            Controls.Add(textBoxCOMPortNumber);
             Controls.Add(checkBoxIPAddressRemoteLocalhost);
             Controls.Add(checkBoxLog);
             Controls.Add(buttonOK);
@@ -228,9 +215,8 @@
         private Button buttonOK;
         private CheckBox checkBoxLog;
         private CheckBox checkBoxIPAddressRemoteLocalhost;
-        private TextBox textBoxCOMPortNumber;
-        private Label label4;
         private Label label5;
         private TextBox textBoxAutoGetValuePeriod;
+        private Label label4;
     }
 }

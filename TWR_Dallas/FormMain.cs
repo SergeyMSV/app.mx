@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json.Nodes;
 
-namespace TWR_Dallas
+namespace SergeM
 {
     public partial class FormMain : Form
     {
@@ -293,7 +293,7 @@ namespace TWR_Dallas
             m_AutoGetValuePeriodCounter = 0;
             m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
 
-            if (FormSettings.IsChanged)
+            if (FormSettings.IsPortSettingsChanged)
                 Restart();
         }
 
