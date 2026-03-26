@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace ExtensionMethods
+﻿namespace ExtensionMethods
 {
     public static class StringExtension
     {

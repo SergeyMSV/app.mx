@@ -1,4 +1,4 @@
-﻿namespace TWR_Dallas
+﻿namespace SergeM
 {
     partial class FormMain
     {
