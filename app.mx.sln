@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TWR_Dallas", "TWR_Dallas\TW
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TWR_MifareSPI", "TWR_MifareSPI\TWR_MifareSPI.vcxproj", "{C684E456-AE0F-4826-A3BE-8C6F22073308}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TWR_UART", "TWR_UART\TWR_UART.csproj", "{D85FC082-2C19-4A18-9391-15E3FB029827}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +196,18 @@ Global
 		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|x64.Build.0 = Release|x64
 		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|x86.ActiveCfg = Release|Win32
 		{C684E456-AE0F-4826-A3BE-8C6F22073308}.Release|x86.Build.0 = Release|Win32
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Debug|x64.Build.0 = Debug|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Debug|x86.Build.0 = Debug|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Release|x64.ActiveCfg = Release|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Release|x64.Build.0 = Release|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Release|x86.ActiveCfg = Release|Any CPU
+		{D85FC082-2C19-4A18-9391-15E3FB029827}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
