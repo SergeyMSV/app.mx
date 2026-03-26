@@ -8,10 +8,10 @@ namespace LANTagLocator
 {
     public partial class FormMain : Form
     {
-        UdpClient m_UDPLocator;
-        IPAddress m_IPAddrBroadcast;
-        ArrayList m_ReceivedResults = new ArrayList();
-        object m_ReceivedResultsLock = new object();
+        UdpClient? m_UDPLocator;
+        IPAddress? m_IPAddrBroadcast;
+        ArrayList m_ReceivedResults = new();
+        object m_ReceivedResultsLock = new();
 
         public FormMain()
         {
