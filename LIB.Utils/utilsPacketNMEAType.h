@@ -752,7 +752,7 @@ template<std::size_t Precision>
 using tTimeNoNull = hidden::tTypeNoNull<tTime<Precision>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // The valid range of latitude in degrees is -90 and +90 for the southern and northern hemisphere, respectively.
-// Longitude is in the range -180 and +180 specifying coordinates west and east of the Prime Meridian, respectively.For reference,
+// Longitude is in the range -180 and +180 specifying coordinates west and east of the Prime Meridian, respectively. For reference,
 // the Equator has a latitude of 0, the North pole has a latitude of 90 north(written 90 N or +90), and the South pole has a latitude of -90.
 template <std::size_t SizeDeg, std::size_t Precision>
 class tGeoDegree

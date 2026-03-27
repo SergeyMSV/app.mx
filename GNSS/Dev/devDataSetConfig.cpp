@@ -1,7 +1,5 @@
 #include "devDataSetConfig.h"
 
-#include <utilsLinux.h>
-
 #include <boost/property_tree/json_parser.hpp>
 
 namespace dev
@@ -18,6 +16,7 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 
 	m_OutFile = share::config::tOutFile("out", PTree);
 	m_UART = share::config::port::tUART_Config("uart", m_Platform.ID, PTree);
+	m_Log = share::config::tOutFileCap("log", PTree);
 }
 
 }

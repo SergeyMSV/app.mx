@@ -23,9 +23,6 @@
     <ClCompile Include="..\Lib.Utils\utilsLog.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\devGNSS.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsPacketNMEAType.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
@@ -33,9 +30,6 @@
       <Filter>Dev</Filter>
     </ClCompile>
     <ClCompile Include="Dev\devDataSetConfig.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devGNSS_ModGnssReceiver.cpp">
       <Filter>Dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp">
@@ -68,12 +62,6 @@
     <ClCompile Include="Dev\devStateInit.cpp">
       <Filter>Dev</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\devStateReceiveSiRF.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devStateReceiveMTK.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
     <ClCompile Include="Dev\devStateReceive.cpp">
       <Filter>Dev</Filter>
     </ClCompile>
@@ -84,6 +72,9 @@
       <Filter>Dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsString.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsTime.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="..\Lib.Utils\utilsPacketNMEAPayload.h">
       <Filter>LIB.Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Dev\devGNSS.h">
-      <Filter>Dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsPacketNMEAType.h">
       <Filter>LIB.Utils</Filter>
@@ -174,14 +162,17 @@
     <ClInclude Include="..\LIB.Utils\utilsBase.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\devStateReceive.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsString.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
     <ClInclude Include="Dev\devState.h">
       <Filter>Dev</Filter>
+    </ClInclude>
+    <ClInclude Include="devStatePolicy.h">
+      <Filter>Dev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsTime.h">
+      <Filter>LIB.Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

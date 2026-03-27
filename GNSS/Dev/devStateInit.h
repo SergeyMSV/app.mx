@@ -1,10 +1,4 @@
 #pragma once
-
-#include <devConfig.h>
-
-#include "devDataSetConfig.h"
-#include "devDataSetHW.h"
-#include "devPortUART.h"
 #include "devState.h"
 
 #include <utilsPacketNMEA.h>
@@ -13,8 +7,6 @@
 namespace dev
 {
 namespace state
-{
-namespace hidden
 {
 
 template <typename TPacket, typename TContent>
@@ -74,9 +66,16 @@ static bool ReceiveAnyNMEA(tPortUART& port)
 	return false;
 }
 
+template<typename TPolicy>
+bool SetSerialPortBR(tPortUART& port, const tDataSetConfig& dsConfig)
+{
+	if (port.GetBaudRate() == dsConfig.GetUART().BR)
+		return true;
+	port.Send(TPolicy::MakePacketNMEA_SetSerialPort(dsConfig.GetUART().BR));
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	port.SetBaudRate(dsConfig.GetUART().BR);
+	return ReceiveAnyNMEA<tPacketNMEA>(port);
 }
-
-std::pair<tDataSetHW, tStatus> Init(tPortUART& port, const tDataSetConfig& dsConfig);
 
 }
 }

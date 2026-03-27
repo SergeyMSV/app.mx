@@ -1,6 +1,8 @@
 #pragma once
 #include <devConfig.h>
 
+#include "devDataSetConfig.h"
+
 #include <utilsPacketNMEAType.h>
 
 #include <ctime>
@@ -49,6 +51,8 @@ struct tDataSetGNSS
 
 	std::string ToString() const;
 	std::string ToJSON() const;
+
+	void ToFile(const share::config::tOutFile& configOut) const;
 
 private:
 	std::string ToString(tDateTime time) const;
