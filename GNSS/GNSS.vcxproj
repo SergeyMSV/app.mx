@@ -193,18 +193,15 @@
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPortSerial.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsString.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsTime.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
-    <ClCompile Include="Dev\devGNSS.cpp" />
-    <ClCompile Include="Dev\devGNSS_ModGnssReceiver.cpp" />
     <ClCompile Include="Dev\devStateInit.cpp" />
     <ClCompile Include="Dev\devLog.cpp" />
     <ClCompile Include="Dev\devDataSetGNSS.cpp" />
     <ClCompile Include="Dev\devStateInitMTK.cpp" />
     <ClCompile Include="Dev\devStateInitSiRF.cpp" />
     <ClCompile Include="Dev\devStateReceive.cpp" />
-    <ClCompile Include="Dev\devStateReceiveMTK.cpp" />
-    <ClCompile Include="Dev\devStateReceiveSiRF.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -229,17 +226,17 @@
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
     <ClInclude Include="..\LIB.Utils\utilsPortSerial.h" />
     <ClInclude Include="..\LIB.Utils\utilsString.h" />
+    <ClInclude Include="..\LIB.Utils\utilsTime.h" />
     <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="devConfig.h" />
+    <ClInclude Include="devStatePolicy.h" />
     <ClInclude Include="Dev\devDataSetConfig.h" />
-    <ClInclude Include="Dev\devGNSS.h" />
     <ClInclude Include="Dev\devState.h" />
     <ClInclude Include="Dev\devStateInit.h" />
     <ClInclude Include="Dev\devLog.h" />
     <ClInclude Include="Dev\devDataSetGNSS.h" />
     <ClInclude Include="Dev\devDataSetHW.h" />
     <ClInclude Include="Dev\devPortUART.h" />
-    <ClInclude Include="Dev\devStateReceive.h" />
     <ClInclude Include="libConfig.h" />
   </ItemGroup>
   <ItemGroup>

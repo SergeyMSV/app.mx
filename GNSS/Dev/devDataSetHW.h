@@ -5,6 +5,15 @@
 namespace dev
 {
 
+enum class tReceiverModel
+{
+	None,
+	MTK_EB_800A,
+	MTK_SC872_A,
+	SiRF_GSU_7x,
+	SiRF_LR9548S,
+};
+
 struct tDataSetHW
 {
 	std::string Manufacturer;
@@ -14,6 +23,7 @@ struct tDataSetHW
 	std::string Chip;
 	//std::string ChipModel;
 	//std::string Status;
+	tReceiverModel ModelID;
 
 	std::string ToString() const
 	{

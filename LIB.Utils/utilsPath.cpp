@@ -12,6 +12,7 @@
 namespace utils
 {
 
+#ifdef LIB_UTILS_PATH_DEPRECATED
 std::string GetDateTime(tm a_DateTime) // DEPRECATED use from utilsTime
 {
 	std::ostringstream oss;
@@ -33,6 +34,7 @@ tm GetDateTime(const std::string& a_value) // DEPRECATED use from utilsTime
 	iss >> std::get_time(&DateTime, "%Y-%m-%d_%H-%M-%S");
 	return DateTime;
 }
+#endif // LIB_UTILS_PATH_DEPRECATED
 
 namespace path
 {

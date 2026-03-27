@@ -27,6 +27,7 @@ xcopy /Y %LIB_UTILS%\utilsPath.*
 xcopy /Y %LIB_UTILS%\utilsPortSerial.*
 xcopy /Y %LIB_UTILS%\utilsShell.*
 xcopy /Y %LIB_UTILS%\utilsString.*
+xcopy /Y %LIB_UTILS%\utilsTime.*
 xcopy /Y %LIB_UTILS%\utilsVersion.*
 xcopy /Y %LIB_UTILS%\utilsWeb.*
 

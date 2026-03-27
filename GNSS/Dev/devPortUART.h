@@ -16,7 +16,7 @@ class tPortUART : public tPortUARTBase
 
 public:
 	tPortUART(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate)
-		:m_ID(id), tPortUARTBase(ioc, id, baudRate)
+		:tPortUARTBase(ioc, id, baudRate), m_ID(id)
 	{
 	}
 
@@ -29,6 +29,11 @@ public:
 			return {};
 		std::vector<std::uint8_t> Data = std::move(m_DataReceived);
 		return Data;
+	}
+
+	bool Send(const std::vector<std::uint8_t>& data)
+	{
+		return tPortUARTBase::Send(data);
 	}
 
 	bool Send(const std::string& data)

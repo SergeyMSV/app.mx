@@ -2,6 +2,7 @@
 
 #include <utilsFile.h>
 #include <utilsPath.h>
+#include <utilsTime.h>
 
 #include <filesystem>
 #include <fstream>
@@ -23,9 +24,10 @@ tLogFileLine::tLogFileLine(const share::config::tOutFileCap& conf)
 			File = std::fstream(m_FilePath, std::ios::app);
 	}
 
+	const std::string DTStr = utils::time::tDateTime::Now().ToStringPath();
+
 	if (!File.is_open())
 	{
-		std::string DTStr = utils::GetDateTime();
 		std::string Path = conf.Path + "/";
 		std::string FileName = conf.Prefix + DTStr + ".log";
 
@@ -33,7 +35,6 @@ tLogFileLine::tLogFileLine(const share::config::tOutFileCap& conf)
 		File = std::fstream(m_FilePath, std::ios::out);
 	}
 
-	std::string DTStr = utils::GetDateTime();
 	if (File.good())
 		File << DTStr;
 
@@ -68,11 +69,15 @@ std::deque<std::string> GetFilePaths(const share::config::tOutFile& conf)
 
 void RemoveFilesOutdated(const share::config::tOutFile& conf)
 {
+	if (conf.IsWrong())
+		return;
 	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
 }
 
 void RemoveFilesOutdated(const share::config::tOutFile& conf, const std::string& prefixTemp)
 {
+	if (conf.IsWrong() || prefixTemp.empty())
+		return;
 	utils::file::RemoveFilesOutdated(conf.Path, prefixTemp + conf.Prefix, 0);
 }
 

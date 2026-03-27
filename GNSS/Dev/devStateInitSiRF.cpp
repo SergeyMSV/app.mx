@@ -1,5 +1,7 @@
 #include "devStateInit.h"
 
+#include "devStatePolicy.h"
+
 #include <utilsPacketNMEAPayload.h>
 #include <utilsPacketNMEAPayloadPSRF.h>
 #include <utilsString.h>
@@ -27,6 +29,7 @@ std::optional<tDataSetHW> TrySiRF_Parse_Legacy(const std::vector<sirf_legacy::tC
 			if (Strs.size() == 2)
 				DataSetHW.Firmware = Strs[1];
 			DataSetHW.Model = "LR9548S";
+			DataSetHW.ModelID = tReceiverModel::SiRF_LR9548S;
 		}
 	}
 	if (DataSetHW.Model.empty())
@@ -50,6 +53,7 @@ std::optional<tDataSetHW> TrySiRF_Parse(const std::vector<sirf_legacy::tContentP
 		if (utils::string::Contains(Strs[0], "GSU"))
 		{
 			DataSetHW.Model = Strs[0];
+			DataSetHW.ModelID = tReceiverModel::SiRF_GSU_7x;
 			DataSetHW.Manufacturer = Strs[1];
 			if (i.Value.size() == 4)
 				DataSetHW.Manufacturer += "," + i.Value[3];
@@ -70,26 +74,30 @@ std::optional<std::pair<tDataSetHW, tStatus>> TrySiRF(tPortUART& port, const tDa
 	//port.Send("$PSRF101,0,0,0,0,0,0,12,2*16\xd\xa"); // Warm Restart
 	//port.Send("$PSRF101,0,0,0,0,0,0,12,4*10\xd\xa"); // Cold Restart
 	//port.Send("$PSRF101,0,0,0,0,0,0,12,8*1C\xd\xa"); // Full Cold Restart (old receivers can ignore that)
-	std::vector<sirf_legacy::tContentPSRF_TXT> Contents = hidden::ReceiveResponse<tPacketNMEANoCRC, sirf_legacy::tContentPSRF_TXT>(port, 9);
+	std::vector<sirf_legacy::tContentPSRF_TXT> Contents = ReceiveResponse<tPacketNMEANoCRC, sirf_legacy::tContentPSRF_TXT>(port, 9);
 	if (Contents.empty())
 		return {};
 	tDataSetHW DataSetHW{};
 	DataSetHW.Chip = "SiRF";
-	if (port.GetBaudRate() != dsConfig.GetUART().BR)
-	{
-		port.Send("$PSRF100,1,9600,8,1,0*0D\xd\xa");
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		port.SetBaudRate(dsConfig.GetUART().BR);
-		if (!hidden::ReceiveAnyNMEA<tPacketNMEA>(port))
-			return { { DataSetHW, tStatus::InitSetBaudrate } };
-	}
 	std::optional<tDataSetHW> DataSetHWOpt = TrySiRF_Parse_Legacy(Contents, DataSetHW);
-	if (DataSetHWOpt.has_value())
-		return { { *DataSetHWOpt, tStatus::None } };
-	DataSetHWOpt = TrySiRF_Parse(Contents, DataSetHW);
-	if (DataSetHWOpt.has_value())
-		return { { *DataSetHWOpt, tStatus::None } };
-	return { { DataSetHW, tStatus::InitNotSupported } };
+	if (!DataSetHWOpt.has_value())
+		DataSetHWOpt = TrySiRF_Parse(Contents, DataSetHW);
+	if (!DataSetHWOpt.has_value())
+		return { { DataSetHW, tStatus::InitNotSupported } };
+
+	if (!SetSerialPortBR<tPolicySiRF>(port, dsConfig))
+		return { { DataSetHW, tStatus::InitSetBaudrate } };
+
+	if (DataSetHWOpt->ModelID == tReceiverModel::SiRF_LR9548S)
+	{
+		port.Send("$PSRF103,02,00,01,01*27\xd\xa"); // GSA is send each second with checksum enabled.
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		port.Send("$PSRF103,03,00,01,01*26\xd\xa"); // GSV is send each second with checksum enabled.
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		//port.Send("$PSRF103,08,00,01,01*2D\xd\xa"); // ZDA is send each second with checksum enabled.
+		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+	return { { *DataSetHWOpt, tStatus::None } };
 }
 
 }
