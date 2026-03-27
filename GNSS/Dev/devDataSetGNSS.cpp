@@ -30,33 +30,33 @@ std::string tDataSetGNSS::ToJSON() const
 	//SStr << ",\n \"utc_raw\": \"" << ToStringOutdated(DateTime.value_or({})) << "\",\n";
 	SStr << ",\n \"valid\": \"" << (Valid ? 'A' : 'V') << "\"";
 	if (!Mode.empty())
-		SStr << ",\n \"mode_indicator\": \"" << Mode << "\"";
+		SStr << ",\n \"mode\": \"" << Mode << "\""; // mode_indicator
 	if (Latitude.has_value() && Longitude.has_value())
 	{
 		SStr.precision(6);
-		SStr << ",\n \"latitude\": " << *Latitude;
-		SStr << ",\n \"longitude\": " << *Longitude;
+		SStr << ",\n \"lat\": " << *Latitude; // latitude
+		SStr << ",\n \"lon\": " << *Longitude; // longitude
 	}
 	if (Altitude.has_value())
 	{
 		SStr.precision(3);
-		SStr << ",\n \"altitude\": " << *Altitude;
+		SStr << ",\n \"msl\": " << *Altitude; // altitude (msl)
 	}
 	SStr.precision(2);
 	if (Speed.has_value())
-		SStr << ",\n \"speed\": " << *Speed;
+		SStr << ",\n \"spd\": " << *Speed; // speed
 	if (Course.has_value())
-		SStr << ",\n \"course\": " << *Course;
+		SStr << ",\n \"crs\": " << *Course; // course
 
 	if (!Satellites.empty())
 	{
-		SStr << ",\n \"satellites\": [\n";
+		SStr << ",\n \"sats\": [\n"; // satellites
 		for (std::size_t i = 0; i < Satellites.size(); ++i)
 		{
 			SStr << "  {";
 			SStr << "   \"id\": " << static_cast<int>(Satellites[i].ID) << ",";
-			SStr << "   \"elevation\": " << static_cast<int>(Satellites[i].Elevation) << ",";
-			SStr << "   \"azimuth\": " << static_cast<int>(Satellites[i].Azimuth) << ",";
+			SStr << "   \"elv\": " << static_cast<int>(Satellites[i].Elevation) << ","; // elevation
+			SStr << "   \"azm\": " << static_cast<int>(Satellites[i].Azimuth) << ","; // azimuth
 			SStr << "   \"snr\": " << static_cast<int>(Satellites[i].SNR);
 			SStr << " }";
 			if (i < Satellites.size() - 1)
