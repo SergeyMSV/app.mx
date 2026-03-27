@@ -5,11 +5,20 @@
         //public event EventHandler<NaviEventArgs>? NaviChanged;
         public event EventHandler<PortBaudrateEventArgs>? PortBaudrateChanged;
 
-        public List<string> MakeOutputMsgSet()
+        public List<string> MakeOutMsgSetRestart(int baudrate)
         {
             List<string> Strs = new();
             Strs.Add("LR9548S\r\n");
-            Strs.Add("it's not suppoted.\r\n");
+            Strs.Add("RESTART\r\n");
+            Strs.Add("it has not been implemented yet.\r\n");
+            return Strs;
+        }
+
+        public List<string> MakeOutMsgSetNavi()
+        {
+            List<string> Strs = new();
+            Strs.Add("LR9548S\r\n");
+            Strs.Add("it has not been implemented yet.\r\n");
             return Strs;
         }
 

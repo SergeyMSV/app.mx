@@ -13,7 +13,22 @@
         //public event EventHandler<NaviEventArgs>? NaviChanged;
         public event EventHandler<PortBaudrateEventArgs>? PortBaudrateChanged;
 
-        public List<string> MakeOutputMsgSet()
+        public List<string> MakeOutMsgSetRestart(int baudrate)
+        {
+            List<string> Strs = new();
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,NMEA: ID 101 Ack Input"));
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,GSU-7x : Position Co.,Ltd.2009"));
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,Firmware Checksum: 1ac8 "));
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,TOW:  0"));
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,WK:   1234"));
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,POS:  1234567 0 0"));
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,CLK:  12345"));
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,CHNL: 12"));
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,Baud rate: " + baudrate.ToString()));
+            return Strs;
+        }
+
+        public List<string> MakeOutMsgSetNavi()
         {
             DateTime TimeNow = DateTime.UtcNow;
             List<string> Strs = new();
@@ -65,20 +80,8 @@
             if (Payload[0] == "PSRF101" && Payload.Length == 9) // 101—NavigationInitialization
             {
                 if (Payload[8] == "8")
-                {
                     PortBaudrateChanged?.Invoke(this, new(9600)); // 9600 is default baudrate for this receiver.
-                }
-                List<string> Strs = new();
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,NMEA: ID 101 Ack Input"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,GSU-7x : Position Co.,Ltd.2009"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,Firmware Checksum: 1ac8 "));
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,TOW:  0"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,WK:   1234"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,POS:  1234567 0 0"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,CLK:  12345"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,CHNL: 12"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,Baud rate: " + baudrate.ToString()));
-                return Strs;
+                return MakeOutMsgSetRestart(baudrate);
             }
 
             if (Payload[0] == "PSRF103" && Payload.Length == 5) // 103—Query/Rate Control

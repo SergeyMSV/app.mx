@@ -94,5 +94,17 @@ namespace SergeM.Properties {
                 this["FormMainPosition"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte SendProtocolID {
+            get {
+                return ((byte)(this["SendProtocolID"]));
+            }
+            set {
+                this["SendProtocolID"] = value;
+            }
+        }
     }
 }

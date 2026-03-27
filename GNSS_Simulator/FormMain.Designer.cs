@@ -36,22 +36,30 @@
             buttonSettings = new Button();
             label1 = new Label();
             labelUARTBaudrate = new Label();
+            groupBox1 = new GroupBox();
+            radioButtonSendAsIs = new RadioButton();
+            radioButtonSendLine = new RadioButton();
+            radioButtonSendNMEANoCRC = new RadioButton();
+            radioButtonSendNMEA = new RadioButton();
+            buttonSendRestart = new Button();
+            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // buttonStopReceive
             // 
             buttonStopReceive.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonStopReceive.Location = new Point(432, 347);
+            buttonStopReceive.Location = new Point(577, 426);
             buttonStopReceive.Name = "buttonStopReceive";
-            buttonStopReceive.Size = new Size(75, 23);
+            buttonStopReceive.Size = new Size(95, 23);
             buttonStopReceive.TabIndex = 25;
-            buttonStopReceive.Text = "Stop &recv";
+            buttonStopReceive.Text = "Stop &Receive";
             buttonStopReceive.UseVisualStyleBackColor = true;
+            buttonStopReceive.Click += buttonStopReceive_Click;
             // 
             // buttonSend
             // 
             buttonSend.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonSend.Location = new Point(432, 317);
+            buttonSend.Location = new Point(518, 317);
             buttonSend.Name = "buttonSend";
             buttonSend.Size = new Size(75, 23);
             buttonSend.TabIndex = 24;
@@ -64,7 +72,7 @@
             textBoxSend.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             textBoxSend.Location = new Point(12, 318);
             textBoxSend.Name = "textBoxSend";
-            textBoxSend.Size = new Size(414, 23);
+            textBoxSend.Size = new Size(500, 23);
             textBoxSend.TabIndex = 23;
             // 
             // textBoxReceive
@@ -121,11 +129,82 @@
             labelUARTBaudrate.TabIndex = 29;
             labelUARTBaudrate.Text = "---";
             // 
+            // groupBox1
+            // 
+            groupBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            groupBox1.Controls.Add(radioButtonSendAsIs);
+            groupBox1.Controls.Add(radioButtonSendLine);
+            groupBox1.Controls.Add(radioButtonSendNMEANoCRC);
+            groupBox1.Controls.Add(radioButtonSendNMEA);
+            groupBox1.Location = new Point(518, 188);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(154, 123);
+            groupBox1.TabIndex = 30;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Send format";
+            // 
+            // radioButtonSendAsIs
+            // 
+            radioButtonSendAsIs.AutoSize = true;
+            radioButtonSendAsIs.Location = new Point(6, 22);
+            radioButtonSendAsIs.Name = "radioButtonSendAsIs";
+            radioButtonSendAsIs.Size = new Size(49, 19);
+            radioButtonSendAsIs.TabIndex = 3;
+            radioButtonSendAsIs.TabStop = true;
+            radioButtonSendAsIs.Text = "As is";
+            radioButtonSendAsIs.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSendLine
+            // 
+            radioButtonSendLine.AutoSize = true;
+            radioButtonSendLine.Location = new Point(6, 47);
+            radioButtonSendLine.Name = "radioButtonSendLine";
+            radioButtonSendLine.Size = new Size(47, 19);
+            radioButtonSendLine.TabIndex = 2;
+            radioButtonSendLine.TabStop = true;
+            radioButtonSendLine.Text = "Line";
+            radioButtonSendLine.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSendNMEANoCRC
+            // 
+            radioButtonSendNMEANoCRC.AutoSize = true;
+            radioButtonSendNMEANoCRC.Location = new Point(6, 97);
+            radioButtonSendNMEANoCRC.Name = "radioButtonSendNMEANoCRC";
+            radioButtonSendNMEANoCRC.Size = new Size(102, 19);
+            radioButtonSendNMEANoCRC.TabIndex = 1;
+            radioButtonSendNMEANoCRC.TabStop = true;
+            radioButtonSendNMEANoCRC.Text = "NMEA no CRC";
+            radioButtonSendNMEANoCRC.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonSendNMEA
+            // 
+            radioButtonSendNMEA.AutoSize = true;
+            radioButtonSendNMEA.Location = new Point(6, 72);
+            radioButtonSendNMEA.Name = "radioButtonSendNMEA";
+            radioButtonSendNMEA.Size = new Size(59, 19);
+            radioButtonSendNMEA.TabIndex = 0;
+            radioButtonSendNMEA.TabStop = true;
+            radioButtonSendNMEA.Text = "NMEA";
+            radioButtonSendNMEA.UseVisualStyleBackColor = true;
+            // 
+            // buttonSendRestart
+            // 
+            buttonSendRestart.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonSendRestart.Location = new Point(577, 397);
+            buttonSendRestart.Name = "buttonSendRestart";
+            buttonSendRestart.Size = new Size(95, 23);
+            buttonSendRestart.TabIndex = 31;
+            buttonSendRestart.Text = "Send Rest&art";
+            buttonSendRestart.UseVisualStyleBackColor = true;
+            buttonSendRestart.Click += buttonSendRestart_Click;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(684, 461);
+            Controls.Add(buttonSendRestart);
+            Controls.Add(groupBox1);
             Controls.Add(labelUARTBaudrate);
             Controls.Add(label1);
             Controls.Add(buttonStopReceive);
@@ -139,6 +218,8 @@
             StartPosition = FormStartPosition.Manual;
             Text = "GNSS Simulator";
             FormClosing += FormMain_FormClosing;
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -153,5 +234,11 @@
         private Button buttonSettings;
         private Label label1;
         private Label labelUARTBaudrate;
+        private GroupBox groupBox1;
+        private RadioButton radioButtonSendNMEA;
+        private RadioButton radioButtonSendNMEANoCRC;
+        private RadioButton radioButtonSendLine;
+        private RadioButton radioButtonSendAsIs;
+        private Button buttonSendRestart;
     }
 }

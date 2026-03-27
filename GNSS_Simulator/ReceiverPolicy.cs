@@ -4,7 +4,8 @@
     {
         event EventHandler<PortBaudrateEventArgs> PortBaudrateChanged;
 
-        List<string> MakeOutputMsgSet();
+        List<string> MakeOutMsgSetRestart(int baudrate);
+        List<string> MakeOutMsgSetNavi();
         List<string> HandleMsg(string msg, int baudrate);
     }
 }
