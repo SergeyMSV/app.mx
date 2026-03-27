@@ -1,6 +1,6 @@
 {
   "uart": {
-    "id_win": "COM4",
+    "id_win": "COM1",
     "id_vsom": "/dev/ttyUSB0",
     "id_opio": "/dev/ttyUSB0",
     "br": 19200
