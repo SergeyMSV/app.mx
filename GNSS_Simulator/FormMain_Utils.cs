@@ -56,5 +56,45 @@ namespace SergeM
             }
             return false;
         }
-    }
+
+        #region radioButton
+
+        enum SendProtocol : byte
+        {
+            None,
+            Line,
+            NMEA,
+            NMEA_No_CRC,
+        }
+
+        void InitializeSendRadioButtons()
+        {
+            switch ((SendProtocol)Properties.Settings.Default.SendProtocolID)
+            {
+                case SendProtocol.None: radioButtonSendAsIs.Checked = true; break;
+                case SendProtocol.Line: radioButtonSendLine.Checked = true; break;
+                case SendProtocol.NMEA: radioButtonSendNMEA.Checked = true; break;
+                case SendProtocol.NMEA_No_CRC: radioButtonSendNMEANoCRC.Checked = true; break;
+            }
+        }
+
+        void SaveSendRadioButtons()
+        {
+            SendProtocol CurrentSendProtocol = SendProtocol.None;
+            if (radioButtonSendLine.Checked)
+                CurrentSendProtocol = SendProtocol.Line;
+            if (radioButtonSendNMEA.Checked)
+                CurrentSendProtocol = SendProtocol.NMEA;
+            if (radioButtonSendNMEANoCRC.Checked)
+                CurrentSendProtocol = SendProtocol.NMEA_No_CRC;
+
+            if (Properties.Settings.Default.SendProtocolID != (byte)CurrentSendProtocol)
+            {
+                Properties.Settings.Default.SendProtocolID = (byte)CurrentSendProtocol;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        #endregion
+}
 }

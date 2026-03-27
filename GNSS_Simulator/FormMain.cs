@@ -8,6 +8,9 @@ namespace SergeM
         {
             InitializeComponent();
             InitializeFormSizes();
+            InitializeSendRadioButtons();
+
+            buttonStopReceive.Tag = buttonStopReceive.ForeColor;
 
             m_Receiver = new();
             m_Receiver.PortClosed += OnPortClosed;
@@ -68,6 +71,7 @@ namespace SergeM
             m_Receiver.PortBaudrateChanged -= OnPortBaudrateChanged;
             m_Receiver.Received -= OnReceived;
             SaveFormSizes();
+            SaveSendRadioButtons();
         }
 
         private void buttonSettings_Click(object sender, EventArgs e)
@@ -80,7 +84,16 @@ namespace SergeM
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
-            // [TBD]
+            if (textBoxSend.Text.Length == 0)
+                return;
+            if (radioButtonSendNMEA.Checked)
+                m_Receiver.SendNMEA(textBoxSend.Text);
+            if (radioButtonSendNMEANoCRC.Checked)
+                m_Receiver.SendNMEANoCRC(textBoxSend.Text);
+            if (radioButtonSendLine.Checked)
+                m_Receiver.SendLine(textBoxSend.Text);
+            if (radioButtonSendAsIs.Checked)
+                m_Receiver.Send(textBoxSend.Text);
         }
 
         private void buttonReconnect_Click(object sender, EventArgs e)
@@ -95,5 +108,23 @@ namespace SergeM
             }
             SetReconnectText();
         }
+
+        private void buttonStopReceive_Click(object sender, EventArgs e)
+        {
+            if (m_Receiver.IsReceivingBlocked)
+            {
+                m_Receiver.IsReceivingBlocked = false;
+                buttonStopReceive.Text = "Stop &Receive";
+                buttonStopReceive.ForeColor = (Color)buttonStopReceive.Tag!;
+            }
+            else
+            {
+                m_Receiver.IsReceivingBlocked = true;
+                buttonStopReceive.Text = "Start &Receive";
+                buttonStopReceive.ForeColor = Color.Red;
+            }
+        }
+
+        private void buttonSendRestart_Click(object sender, EventArgs e) => m_Receiver.SendRestartMsgs();
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace SergeM
+﻿namespace SergeM
 {
     internal class Receiver
     {
@@ -17,6 +15,8 @@ namespace SergeM
         public bool IsStarted { get; private set; }
 
         public int BaudRate { get => m_Port?.BaudRate ?? 0; }
+
+        public bool IsReceivingBlocked { get; set; }
 
         public Receiver()
         {
@@ -78,6 +78,19 @@ namespace SergeM
             Start();
         }
 
+        public void SendNMEA(string data) => m_Port?.Send(utils.ProtocolNMEA.MakeMsg(data));
+        public void SendNMEANoCRC(string data) => m_Port?.Send(utils.ProtocolNMEA.MakeMsgNoCRC(data));
+        public void SendLine(string data) => m_Port?.Send(data + "\r\n");
+        public void Send(string data) => m_Port?.Send(data);
+
+        public void SendRestartMsgs()
+        {
+            if (m_ReceiverPolicy == null)
+                return;
+            List<string> Rsp = m_ReceiverPolicy.MakeOutMsgSetRestart(BaudRate);
+            PortSendMsgs(Rsp);
+        }
+
         void OnPortClosed(object? sender, EventArgs e)
         {
             if (IsStarted)
@@ -95,7 +108,7 @@ namespace SergeM
 
         void PortSendMsgs(List<string> msgs)
         {
-            if (m_Port == null || msgs.Count == 0)
+            if (m_Port == null || msgs.Count == 0 || IsReceivingBlocked)
                 return;
             lock (m_PortSendingLock)
             {
@@ -125,7 +138,7 @@ namespace SergeM
                 return;
             try
             {
-                List<string> Msgs = m_ReceiverPolicy.MakeOutputMsgSet();
+                List<string> Msgs = m_ReceiverPolicy.MakeOutMsgSetNavi();
                 Received?.Invoke(this, new(Msgs));
                 PortSendMsgs(Msgs);
             }
