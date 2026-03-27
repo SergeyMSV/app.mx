@@ -25,9 +25,9 @@
                 Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSA,A,3,07,10,13,21,16,09,17,14,08,23,09,15,01.3,00.7,01.0"));
             if (m_MsgGSV_Enabled)
             {
-                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,1,12,07,00,000,,10,00,000,,13,00,000,,16,00,000,"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,2,12,07,48,075,74,10,36,135,,13,42,128,,16,32,240,34"));
-                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,3,12,07,48,075,74,10,36,135,,13,42,128,,16,32,240,34"));
+                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,1,12,01,01,001,01,02,02,002,,03,03,003,,04,04,004,"));
+                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,2,12,05,05,005,05,06,06,006,,07,07,007,,08,08,008,08"));
+                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,3,12,09,09,009,09,10,10,010,,12,12,012,,13,13,013,13"));
             }
             if (m_MsgRMC_Enabled)
                 Strs.Add(utils.ProtocolNMEA.MakeMsg("GPRMC," + TimeNow.ToString("HHmmss") + ".000,V,1122.3344,N,12233.4455,E,9999.99,999.99," + TimeNow.ToString("yyMMdd") + ",,"));
