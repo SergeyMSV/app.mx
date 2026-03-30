@@ -45,6 +45,26 @@ void tTWRClient::Transaction_SPI_SetChipControl(tTWREndpoint ep, tTWRChipControl
 	Transaction(tTWRPacketCmd::Make_SPI_SetChipControl(ep, tx));
 }
 
+void tTWRClient::Transaction_UART_Open(tTWREndpoint ep)
+{
+	Transaction(tTWRPacketCmd::Make_UART_Open(ep));
+}
+
+void tTWRClient::Transaction_UART_Close(tTWREndpoint ep)
+{
+	Transaction(tTWRPacketCmd::Make_UART_Close(ep));
+}
+
+std::vector<std::uint8_t> tTWRClient::Transaction_UART_Receive(tTWREndpoint ep)
+{
+	return Transaction(tTWRPacketCmd::Make_UART_Receive(ep)).GetPayload();
+}
+
+void tTWRClient::Transaction_UART_Sens(tTWREndpoint ep, const std::vector<std::uint8_t>& data)
+{
+	Transaction(tTWRPacketCmd::Make_UART_Send(ep, data));
+}
+
 tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
 {
 	SetState(tState::Write);

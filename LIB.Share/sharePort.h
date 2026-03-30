@@ -57,6 +57,11 @@ public:
 	std::vector<std::uint8_t> Transaction_SPI_Request(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
 	void Transaction_SPI_SetChipControl(tTWREndpoint ep, tTWRChipControl tx);
 
+	void Transaction_UART_Open(tTWREndpoint ep);
+	void Transaction_UART_Close(tTWREndpoint ep);
+	std::vector<std::uint8_t> Transaction_UART_Receive(tTWREndpoint ep);
+	void Transaction_UART_Sens(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
+
 private:
 	tTWRPacketRsp Transaction(const tTWRPacketCmd& cmd);
 

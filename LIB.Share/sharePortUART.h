@@ -18,15 +18,64 @@ namespace port
 class tUART : public tTWRClient
 {
 public:
-	tUART(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate);
-#else // MXTWR_CLIENT
-	tUART(const std::string& id, std::uint8_t mode, std::uint8_t bits, std::uint32_t speed_hz, std::uint16_t delay_us);
+	tUART(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate)
+		:tTWRClient(ioc)
+	{
+		Transaction_UART_Open(MXTWR_EP_UART);
+		// set baudrate
+	}
 
 	tUART(const tUART&) = delete;
-	~tUART();
+	~tUART()
+	{
+		Transaction_UART_Close(MXTWR_EP_UART);
+	}
 
-	bool IsReady() const { return m_ErrMsg.empty(); }
-	std::string GetErrMsg() const { return m_ErrMsg; }
+	bool Send(const std::vector<std::uint8_t>& data)
+	{
+		if (data.empty())
+			return false;
+
+		// [TBD] Something shall limit incoming data for sending here.
+	//
+	//	std::lock_guard<std::mutex> Lock(m_Mtx);
+	//
+	//	bool StartSending = m_DataSent.empty();
+	//
+	//	m_DataSent.push(data);
+	//
+	//	if (StartSending)
+	//		Send();
+
+		return true;
+	}
+
+	std::uint32_t GetBaudRate() const
+	{
+		//if (!m_Port.is_open())
+		//	return 0;
+		//boost::asio::serial_port_base::baud_rate Br{};
+		//boost::system::error_code Ec{};
+		//m_Port.get_option(Br, Ec);
+		//if (Ec)
+		//	return 0;
+		//return Br.value();
+		return 0;
+	}
+
+	void SetBaudRate(std::uint32_t val)
+	{
+		//std::cout << "SetBR : " << std::to_string(val) << '\n';
+		//if (!m_Port.is_open())
+		//	return;
+		//m_Port.set_option(boost::asio::serial_port_base::baud_rate(val));
+	}
+
+protected:
+	virtual void OnReceived(const std::vector<std::uint8_t>& data) = 0;
+
+	//bool IsReady() const { return m_ErrMsg.empty(); }
+	//std::string GetErrMsg() const { return m_ErrMsg; }
 	
 	//std::uint8_t GetMode();
 	//bool SetMode(std::uint8_t val);
