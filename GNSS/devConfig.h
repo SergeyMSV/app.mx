@@ -2,7 +2,7 @@
 
 constexpr char g_FileNameTempPrefix[] = "_";
 
-//#define MXTWR_CLIENT
+#define MXTWR_CLIENT
 
 #if defined(MXTWR_CLIENT)
 #include <cstdint>
@@ -14,7 +14,7 @@ constexpr char g_FileNameTempPrefix[] = "_";
 namespace settings
 {
 	//constexpr std::string_view Host{ "127.0.0.1" };
-	constexpr char Host[] = "192.168.10.161";
+	constexpr char Host[] = "192.168.10.162";
 }
 
 #ifdef _WIN32
