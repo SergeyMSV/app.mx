@@ -1,11 +1,15 @@
 #pragma once
 
+#if defined(MXTWR_CLIENT)
+#include <sharePortUART.h>
+using tPortUARTBase = share::port::tUART;
+#else
 #include <utilsPortSerial.h>
+using tPortUARTBase = utils::port::serial::tPortSerialAsync<>;
+#endif
 
 namespace dev
 {
-
-using tPortUARTBase = utils::port::serial::tPortSerialAsync<>;
 
 class tPortUART : public tPortUARTBase
 {

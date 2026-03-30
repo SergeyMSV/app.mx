@@ -2,8 +2,11 @@
 
 constexpr char g_FileNameTempPrefix[] = "_";
 
-//#define MXTWR_CLIENT
-//#define MXTWR_PORT 58200
+#define MXTWR_CLIENT
+
+#if defined(MXTWR_CLIENT)
+#define MXTWR_PORT 58200
+#endif
 
 namespace settings
 {
