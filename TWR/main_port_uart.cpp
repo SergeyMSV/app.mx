@@ -180,17 +180,22 @@ static void ThreadUART(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRS
 	}
 }
 
-void ThreadUART1(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
 {
 	ThreadUART(config, server, 0);
 }
 
-void ThreadUART2(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART1(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
 {
 	ThreadUART(config, server, 1);
 }
 
-void ThreadUART3(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART2(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
 {
 	ThreadUART(config, server, 2);
+}
+
+void ThreadUART3(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+{
+	ThreadUART(config, server, 3);
 }

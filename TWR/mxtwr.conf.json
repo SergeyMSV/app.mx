@@ -10,6 +10,11 @@
     "id_opio": "/dev/ttyS3",
     "br": 115200
   },
+  "uart_0": {
+    "id_win": "COM4",
+    "id_opio": "/dev/ttyS1",
+    "br": 4800
+  },
   "uart_1": {
     "id_win": "COM4",
     "id_opio": "/dev/ttyS1",

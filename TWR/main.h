@@ -39,7 +39,7 @@ struct tTWRQueue
 	tTWRQueueDEMOCmd DEMO;
 	tTWRQueueSPICmd SPI0_CS0;
 	tTWRQueueDALLASCmd DALLAS;
-	tTWRQueueUARTCmd UART[3];
+	tTWRQueueUARTCmd UART[4];
 };
 
 extern tTWRQueue TWRQueue;
