@@ -171,7 +171,7 @@
             // 
             comboBoxUART.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxUART.FormattingEnabled = true;
-            comboBoxUART.Items.AddRange(new object[] { "uart_1", "uart_2", "uart_3" });
+            comboBoxUART.Items.AddRange(new object[] { "uart_0", "uart_1", "uart_2", "uart_3" });
             comboBoxUART.Location = new Point(148, 99);
             comboBoxUART.Name = "comboBoxUART";
             comboBoxUART.Size = new Size(100, 23);

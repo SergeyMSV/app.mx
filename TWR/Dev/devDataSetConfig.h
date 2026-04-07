@@ -16,7 +16,7 @@ class tDataSetConfig
 	share::config::port::tSPI_Config m_SPI0_CS0;
 	share::config::port::tGPIO_Config m_SPI0_CS0_RST;
 	share::config::port::tUART_Config m_Dallas;
-	share::config::port::tUART_Config m_UART[3];
+	share::config::port::tUART_Config m_UART[4];
 
 public:
 	tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNameMX);
@@ -27,7 +27,7 @@ public:
 	share::config::port::tUART_Config GetDallas() const { return m_Dallas; }
 	share::config::port::tUART_Config GetUART(std::uint32_t portIndex) const
 	{
-		if (portIndex > 2)
+		if (portIndex > 3)
 			return {};
 		return m_UART[portIndex];
 	}
