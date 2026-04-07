@@ -15,37 +15,37 @@ namespace share
 namespace port
 {
 
-class tUART_JSON
+class tUART_JSON : public tTWRClient
 {
 public:
 	tUART_JSON(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate)
+		:tTWRClient(ioc)
 	{
-		//Transaction_UART_Open(MXTWR_EP_UART);
+		// [TDB] Create a thread in order to receive data (request received data);
+
+		TransactionJSON_UART_Open(MXTWR_EP_UART);
 		// set baudrate
 	}
 
 	tUART_JSON(const tUART_JSON&) = delete;
 	~tUART_JSON()
 	{
-		//Transaction_UART_Close(MXTWR_EP_UART);
+		TransactionJSON_UART_Close(MXTWR_EP_UART);
 	}
 
 	bool Send(const std::vector<std::uint8_t>& data)
 	{
 		if (data.empty())
 			return false;
+		TransactionJSON_UART_Send(MXTWR_EP_UART, data);
+		return true;
+	}
 
-		// [TBD] Something shall limit incoming data for sending here.
-	//
-	//	std::lock_guard<std::mutex> Lock(m_Mtx);
-	//
-	//	bool StartSending = m_DataSent.empty();
-	//
-	//	m_DataSent.push(data);
-	//
-	//	if (StartSending)
-	//		Send();
-
+	bool Send(const std::string& data)
+	{
+		if (data.empty())
+			return false;
+		TransactionJSON_UART_Send(MXTWR_EP_UART, data);
 		return true;
 	}
 
@@ -84,8 +84,6 @@ protected:
 	//bool SetSpeed(std::uint32_t val);
 	//std::uint16_t GetDelay() const { return m_Delay; }
 	//void SetDelay(std::uint16_t val) { m_Delay = val; }
-
-	//std::vector<std::uint8_t> Transaction(const std::vector<std::uint8_t>& tx);
 };
 
 class tUART : public tTWRClient
