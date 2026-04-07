@@ -2,7 +2,7 @@
 
 #if defined(MXTWR_CLIENT)
 #include <sharePortUART.h>
-using tPortUARTBase = share::port::tUART;
+using tPortUARTBase = share::port::tUART_JSON;
 #else
 #include <utilsPortSerial.h>
 using tPortUARTBase = utils::port::serial::tPortSerialAsync<>;
