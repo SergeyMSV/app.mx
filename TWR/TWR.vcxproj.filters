@@ -49,6 +49,7 @@
       <Filter>LIB.Utils</Filter>
     </ClCompile>
     <ClCompile Include="main_dallas.cpp" />
+    <ClCompile Include="main_port_uart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Utils\utilsBase.h">

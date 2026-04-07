@@ -44,6 +44,13 @@ public:
 		m_iocThread = std::thread([this]() { m_ioc.run(); });
 	}
 
+	template <typename TConfig>
+	explicit tPortHolder(TConfig& config)
+		: m_Port(m_ioc, config)
+	{
+		m_iocThread = std::thread([this]() { m_ioc.run(); });
+	}
+
 	~tPortHolder()
 	{
 		m_Port.Close();

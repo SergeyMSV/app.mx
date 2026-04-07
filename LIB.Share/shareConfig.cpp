@@ -78,8 +78,8 @@ namespace port
 
 tUART_Config::tUART_Config(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
 {
-	ID = pTree.get<std::string>(baseName + ".id" + GetPostfix(platformID));
-	BR = pTree.get<uint32_t>(baseName + ".br");
+	ID = pTree.get<std::string>(baseName + ".id" + GetPostfix(platformID), "");
+	BR = pTree.get<uint32_t>(baseName + ".br", 0);
 }
 
 bool tUART_Config::IsWrong() const
