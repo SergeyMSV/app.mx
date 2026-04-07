@@ -1,7 +1,11 @@
 #include "sharePort.h"
-#include "shareNetwork.h"
 
 #ifdef MXTWR_CLIENT
+
+#include <sstream>
+
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace share
 {
@@ -14,6 +18,9 @@ tTWRClient::tTWRClient(boost::asio::io_context& ioc)
 {
 	m_ReceiverEndpoint = *m_Resolver.resolve(asio_ip::udp::v4(), settings::Host, std::to_string(MXTWR_PORT)).begin();
 	m_Socket.open(asio_ip::udp::v4());
+
+	// [TBD] check TWR Version
+	//std::string Rsp = TransactionJSON(MakeCmdJSON(tTWREndpoint::Control, "version")); //"{\"ep\":\"control\",\"cmd\":\"version\"}");
 }
 
 tTWRClient::~tTWRClient()
@@ -60,33 +67,90 @@ std::vector<std::uint8_t> tTWRClient::Transaction_UART_Receive(tTWREndpoint ep)
 	return Transaction(tTWRPacketCmd::Make_UART_Receive(ep)).GetPayload();
 }
 
-void tTWRClient::Transaction_UART_Sens(tTWREndpoint ep, const std::vector<std::uint8_t>& data)
+void tTWRClient::Transaction_UART_Send(tTWREndpoint ep, const std::vector<std::uint8_t>& data)
 {
 	Transaction(tTWRPacketCmd::Make_UART_Send(ep, data));
 }
 
+bool tTWRClient::TransactionJSON_UART_Open(tTWREndpoint ep)
+{
+	std::stringstream SStr;
+	SStr << TransactionJSON(MakeCmdJSON(ep, "open"));
+	boost::property_tree::ptree PTree;
+	boost::property_tree::json_parser::read_json(SStr, PTree);
+	std::string Ans = PTree.get<std::string>("rsp");
+	return Ans == "ok";
+}
+
+void tTWRClient::TransactionJSON_UART_Close(tTWREndpoint ep)
+{
+	TransactionJSON(MakeCmdJSON(ep, "close"));
+}
+
+std::vector<std::uint8_t> tTWRClient::TransactionJSON_UART_Receive(tTWREndpoint ep)
+{
+	std::stringstream SStr;
+	SStr<< TransactionJSON(MakeCmdJSON(ep, "receive"));
+	boost::property_tree::ptree PTree;
+	boost::property_tree::json_parser::read_json(SStr, PTree);
+	std::string Data = PTree.get<std::string>("data");
+	return std::vector<std::uint8_t>(Data.begin(), Data.end());
+}
+
+void tTWRClient::TransactionJSON_UART_Send(tTWREndpoint ep, const std::string& tx)
+{
+	TransactionJSON(MakeCmdJSON(ep, "send", tx));
+	//std::stringstream SStr;
+	//SStr << TransactionJSON(MakeCmdJSON(ep, "open"));
+	//boost::property_tree::ptree PTree;
+	//boost::property_tree::json_parser::read_json(SStr, PTree);
+	//std::string Ans = PTree.get<std::string>("rsp");
+	//return Ans == "ok";
+}
+
+void tTWRClient::TransactionJSON_UART_Send(tTWREndpoint ep, const std::vector<std::uint8_t>& tx)
+{
+	TransactionJSON(MakeCmdJSON(ep, "send", std::string(tx.begin(), tx.end())));
+}
+
 tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
 {
-	SetState(tState::Write);
-
-	std::vector<std::uint8_t> Pack = cmd.ToVector();
-	m_Socket.send_to(boost::asio::buffer(Pack.data(), Pack.size()), m_ReceiverEndpoint);
-
-	SetState(tState::Read);
-
-	std::array<char, share::network::udp::PacketSizeMax> ReceiveBuffer;
-	asio_ip::udp::endpoint SenderEndpoint;
-	std::size_t Size = m_Socket.receive_from(boost::asio::buffer(ReceiveBuffer), SenderEndpoint);
-
-	SetState(tState::None);
-
-	if (!Size)
-		return {};
-	std::vector<std::uint8_t> ReceivedData(ReceiveBuffer.begin(), ReceiveBuffer.begin() + Size);
+	std::vector<std::uint8_t> ReceivedData = Transaction(cmd.ToVector());
 	std::optional<tTWRPacketRsp> RspOpt = tTWRPacketRsp::Find(ReceivedData);
 	if (!RspOpt.has_value())
 		return {};
 	return *RspOpt;
+}
+
+std::string tTWRClient::TransactionJSON(const std::string& cmdJSON)
+{
+	return Transaction(cmdJSON);
+}
+
+std::string tTWRClient::MakeCmdJSON(tTWREndpoint ep, const std::string& cmd, const std::string& data)
+{
+	std::string Endpoint;
+	switch (ep)
+	{
+	case tTWREndpoint::Control: Endpoint = "control"; break;
+	case tTWREndpoint::UART0: Endpoint = "uart_0"; break;
+	case tTWREndpoint::UART1: Endpoint = "uart_1"; break;
+	case tTWREndpoint::UART2: Endpoint = "uart_2"; break;
+	case tTWREndpoint::UART3: Endpoint = "uart_3"; break;
+	case tTWREndpoint::UART4: Endpoint = "uart_4"; break;
+	case tTWREndpoint::UART5: Endpoint = "uart_5"; break;
+	default: return {};
+	}
+	std::string Str = "{\"ep\":\"" + Endpoint + "\",\"cmd\":\"" + cmd + "\"";
+	if (!data.empty())
+		Str += ",\"data\":\"" + data + "\\r\\n\"";
+	Str += "}";
+	return Str;
+}
+
+std::string tTWRClient::MakeCmdJSON(tTWREndpoint ep, const std::string& cmd)
+{
+	return MakeCmdJSON(ep, cmd, {});
 }
 
 void tTWRClient::SetState(tState state)

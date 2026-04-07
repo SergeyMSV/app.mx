@@ -11,6 +11,8 @@
 
 #include <utilsPacketTWR.h>
 
+#include "shareNetwork.h"
+
 #include <boost/asio.hpp>
 namespace asio_ip = boost::asio::ip;
 
@@ -60,10 +62,34 @@ public:
 	void Transaction_UART_Open(tTWREndpoint ep);
 	void Transaction_UART_Close(tTWREndpoint ep);
 	std::vector<std::uint8_t> Transaction_UART_Receive(tTWREndpoint ep);
-	void Transaction_UART_Sens(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
+	void Transaction_UART_Send(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
+
+	bool TransactionJSON_UART_Open(tTWREndpoint ep);
+	void TransactionJSON_UART_Close(tTWREndpoint ep);
+	std::vector<std::uint8_t> TransactionJSON_UART_Receive(tTWREndpoint ep);
+	void TransactionJSON_UART_Send(tTWREndpoint ep, const std::string& tx);
+	void TransactionJSON_UART_Send(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
 
 private:
+	template <typename T>
+	T Transaction(const T& cmd)
+	{
+		SetState(tState::Write);
+		m_Socket.send_to(boost::asio::buffer(cmd.data(), cmd.size()), m_ReceiverEndpoint);
+		SetState(tState::Read);
+		std::array<char, share::network::udp::PacketSizeMax> ReceiveBuffer;
+		asio_ip::udp::endpoint SenderEndpoint;
+		const std::size_t Size = m_Socket.receive_from(boost::asio::buffer(ReceiveBuffer), SenderEndpoint);
+		SetState(tState::None);
+		if (!Size)
+			return {};
+		return T(ReceiveBuffer.begin(), ReceiveBuffer.begin() + Size);
+	}
 	tTWRPacketRsp Transaction(const tTWRPacketCmd& cmd);
+	std::string TransactionJSON(const std::string& cmdJSON);
+
+	static std::string MakeCmdJSON(tTWREndpoint ep, const std::string& cmd, const std::string& data);
+	static std::string MakeCmdJSON(tTWREndpoint ep, const std::string& cmd);
 
 	void SetState(tState state);
 	void CtrlState();
