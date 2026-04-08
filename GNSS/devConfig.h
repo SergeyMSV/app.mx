@@ -6,9 +6,10 @@ constexpr char g_FileNameTempPrefix[] = "_";
 
 #if defined(MXTWR_CLIENT)
 #include <cstdint>
-#include <utilsPacketTWR.h>
+#include <sharePort.h>
+//#include <utilsPacketTWR.h>
 #define MXTWR_PORT 58200
-#define MXTWR_EP_UART utils::packet::twr::tEndpoint::UART1
+#define MXTWR_EP_UART share::port::tTWREndpoint::UART1
 #endif
 
 namespace settings
