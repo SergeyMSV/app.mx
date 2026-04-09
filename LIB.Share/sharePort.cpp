@@ -211,8 +211,10 @@ void tTWRClient::CtrlState()
 			if (m_cv.wait_for(Lock, std::chrono::seconds(1)) == std::cv_status::timeout) // [#] < 1 s. That is available period of time to send/receive.
 			{
 				// It breaks the receiving process through blocking socket (receive_from) if no data can be received for any reason.
-				m_Socket.shutdown(boost::asio::socket_base::shutdown_both);
-				m_Socket.close();
+				boost::system::error_code ec; // It's here in order to avoid an exception.
+				if (m_Socket.is_open())
+					m_Socket.shutdown(boost::asio::socket_base::shutdown_both, ec);
+				m_Socket.close(ec);
 			}
 			break;
 		}
