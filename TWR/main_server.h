@@ -6,13 +6,15 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-class tTWRServer : public share::network::udp::tUDPServerAsync
+using tTWRServerBase = share::network::udp::tUDPServerAsync<1024>;
+
+class tTWRServer : public tTWRServerBase
 {
 	std::unordered_map<std::uint16_t, std::vector<std::uint8_t>> m_ReceivedData;
 
 public:
 	tTWRServer(boost::asio::io_context& ioc, std::uint16_t port)
-		:tUDPServerAsync(ioc, port)
+		:tTWRServerBase(ioc, port)
 	{}
 
 	void OnReceived(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& data) override;
