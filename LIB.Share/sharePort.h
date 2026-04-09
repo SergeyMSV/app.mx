@@ -74,16 +74,25 @@ private:
 	template <typename T, std::size_t PacketSizeMax>
 	T Transaction(const T& cmd)
 	{
-		SetState(tState::Write);
-		m_Socket.send_to(boost::asio::buffer(cmd.data(), cmd.size()), m_ReceiverEndpoint);
-		SetState(tState::Read);
-		std::array<char, PacketSizeMax> ReceiveBuffer;
-		asio_ip::udp::endpoint SenderEndpoint;
-		const std::size_t Size = m_Socket.receive_from(boost::asio::buffer(ReceiveBuffer), SenderEndpoint);
-		SetState(tState::None);
-		if (!Size)
-			return {};
-		return T(ReceiveBuffer.begin(), ReceiveBuffer.begin() + Size);
+		try
+		{
+			SetState(tState::Write);
+			if (!m_Socket.is_open())
+				return {};
+			m_Socket.send_to(boost::asio::buffer(cmd.data(), cmd.size()), m_ReceiverEndpoint);
+			SetState(tState::Read);
+			std::array<char, PacketSizeMax> ReceiveBuffer;
+			asio_ip::udp::endpoint SenderEndpoint;
+			if (!m_Socket.is_open())
+				return {};
+			const std::size_t Size = m_Socket.receive_from(boost::asio::buffer(ReceiveBuffer), SenderEndpoint);
+			SetState(tState::None);
+			if (!Size)
+				return {};
+			return T(ReceiveBuffer.begin(), ReceiveBuffer.begin() + Size);
+		}
+		catch (...) {}
+		return {};
 	}
 	tTWRPacketRsp Transaction(const tTWRPacketCmd& cmd);
 	std::string TransactionJSON(const std::string& cmdJSON);

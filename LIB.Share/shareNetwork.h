@@ -34,6 +34,8 @@ public:
 private:
 	void StartReceive()
 	{
+		if (!m_Socket.is_open())
+			return;
 		m_Socket.async_receive_from(
 			boost::asio::buffer(m_ReceiveBuffer), m_EndpointRemote,
 			boost::bind(&tUDPServerAsync::OnReceivedAsync, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
@@ -46,16 +48,14 @@ private:
 	{
 		if (!error && recvSize)
 			OnReceived(m_EndpointRemote, { m_ReceiveBuffer.begin(), m_ReceiveBuffer.begin() + recvSize });
-
 		StartReceive();
 	}
 
 public:
 	void Send(const tEndpoint& endpoint, boost::shared_ptr<std::vector<std::uint8_t>> packet)
 	{
-		if (!packet || packet->empty())
+		if (!packet || packet->empty() || !m_Socket.is_open())
 			return;
-
 		m_Socket.async_send_to(
 			boost::asio::buffer(*packet), endpoint,
 			boost::bind(&tUDPServerAsync::OnSent, this, packet, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));

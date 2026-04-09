@@ -215,6 +215,8 @@ void tTWRClient::CtrlState()
 				if (m_Socket.is_open())
 					m_Socket.shutdown(boost::asio::socket_base::shutdown_both, ec);
 				m_Socket.close(ec);
+
+				SetState(tState::Close);
 			}
 			break;
 		}
