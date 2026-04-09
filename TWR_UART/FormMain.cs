@@ -191,7 +191,7 @@ namespace SergeM
 
                                 try
                                 {
-                                    const int SizeMax = 4096;
+                                    const int SizeMax = 4096; // [#]
                                     if (textBoxReceive.Text.Length > SizeMax * 2)
                                     {
                                         int SizeRemove = textBoxReceive.Text.Length - SizeMax;
