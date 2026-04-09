@@ -90,7 +90,9 @@ void tTWRClient::TransactionJSON_UART_Close(tTWREndpoint ep)
 std::vector<std::uint8_t> tTWRClient::TransactionJSON_UART_Receive(tTWREndpoint ep)
 {
 	std::stringstream SStr;
-	SStr<< TransactionJSON(MakeCmdJSON(ep, "receive"));
+	std::string Str = TransactionJSON(MakeCmdJSON(ep, "receive"));
+	SStr << Str;
+	//SStr << TransactionJSON(MakeCmdJSON(ep, "receive"));
 	boost::property_tree::ptree PTree;
 	boost::property_tree::json_parser::read_json(SStr, PTree);
 	std::string Data = PTree.get<std::string>("data");

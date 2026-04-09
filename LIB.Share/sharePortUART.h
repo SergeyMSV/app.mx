@@ -3,7 +3,10 @@
 
 #ifdef MXTWR_CLIENT
 
+#include <atomic>
+#include <chrono>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "sharePort.h"
@@ -17,6 +20,9 @@ namespace port
 
 class tUART_JSON : public tTWRClient
 {
+	std::thread m_ThreadReceive;
+	std::atomic<bool> m_ThreadReceiveExit = false;
+
 public:
 	tUART_JSON(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate)
 		:tTWRClient(ioc)
@@ -25,11 +31,15 @@ public:
 
 		TransactionJSON_UART_Open(MXTWR_EP_UART);
 		// set baudrate
+
+		m_ThreadReceive = std::thread([this]() { Receiving(); });
 	}
 
 	tUART_JSON(const tUART_JSON&) = delete;
 	~tUART_JSON()
 	{
+		m_ThreadReceiveExit = true;
+		m_ThreadReceive.join();
 		TransactionJSON_UART_Close(MXTWR_EP_UART);
 	}
 
@@ -72,6 +82,17 @@ public:
 
 protected:
 	virtual void OnReceived(const std::vector<std::uint8_t>& data) = 0;
+
+	void Receiving()
+	{
+		while (!m_ThreadReceiveExit)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(100)); // [#]
+			std::vector<std::uint8_t> Received = TransactionJSON_UART_Receive(MXTWR_EP_UART);
+			if (!Received.empty())
+				OnReceived(Received);
+		}
+	}
 
 	//bool IsReady() const { return m_ErrMsg.empty(); }
 	//std::string GetErrMsg() const { return m_ErrMsg; }

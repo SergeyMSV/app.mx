@@ -17,8 +17,7 @@ namespace asio_ip = boost::asio::ip;
 
 using tEndpoint = asio_ip::udp::endpoint;
 
-constexpr std::size_t PacketSizeMax = 1024;
-
+template <std::size_t PacketSizeMax>
 class tUDPServerAsync
 {
 	asio_ip::udp::socket m_Socket;
