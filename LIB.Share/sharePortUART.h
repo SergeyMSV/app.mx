@@ -23,14 +23,15 @@ class tUART_JSON : public tTWRClient
 	std::thread m_ThreadReceive;
 	std::atomic<bool> m_ThreadReceiveExit = false;
 
+	std::uint32_t m_BaudRate; // [TBD] it is to be on the other side. THAT'S NOT CORRECT.
+
 public:
 	tUART_JSON(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate)
-		:tTWRClient(ioc)
+		:tTWRClient(ioc), m_BaudRate(baudRate)
 	{
-		// [TDB] Create a thread in order to receive data (request received data);
-
 		TransactionJSON_UART_Open(MXTWR_EP_UART);
-		// set baudrate
+
+		// [TBD] set baudrate
 
 		m_ThreadReceive = std::thread([this]() { Receiving(); });
 	}
@@ -69,7 +70,7 @@ public:
 		//if (Ec)
 		//	return 0;
 		//return Br.value();
-		return 0;
+		return m_BaudRate;
 	}
 
 	void SetBaudRate(std::uint32_t val)

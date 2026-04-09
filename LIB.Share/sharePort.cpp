@@ -160,6 +160,21 @@ std::string tTWRClient::TransactionJSON(const std::string& cmdJSON)
 	return Transaction<std::string, 4096>(cmdJSON);
 }
 
+static std::string Escape_NewLines(const std::string& input) // [TBD] it should reside in a library.
+{
+	std::string Res;
+	for (auto i : input)
+	{
+		switch (i)
+		{
+		case '\r': Res += "\\r"; break;
+		case '\n': Res += "\\n"; break;
+		default: Res += i; break;
+		}
+	}
+	return Res;
+}
+
 std::string tTWRClient::MakeCmdJSON(tTWREndpoint ep, const std::string& cmd, const std::string& data)
 {
 	std::string Endpoint;
@@ -176,7 +191,7 @@ std::string tTWRClient::MakeCmdJSON(tTWREndpoint ep, const std::string& cmd, con
 	}
 	std::string Str = "{\"ep\":\"" + Endpoint + "\",\"cmd\":\"" + cmd + "\"";
 	if (!data.empty())
-		Str += ",\"data\":\"" + data + "\\r\\n\"";
+		Str += ",\"data\":\"" + Escape_NewLines(data) + "\"";
 	Str += "}";
 	return Str;
 }
