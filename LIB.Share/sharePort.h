@@ -71,13 +71,13 @@ public:
 	void TransactionJSON_UART_Send(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
 
 private:
-	template <typename T>
+	template <typename T, std::size_t PacketSizeMax>
 	T Transaction(const T& cmd)
 	{
 		SetState(tState::Write);
 		m_Socket.send_to(boost::asio::buffer(cmd.data(), cmd.size()), m_ReceiverEndpoint);
 		SetState(tState::Read);
-		std::array<char, share::network::udp::PacketSizeMax> ReceiveBuffer;
+		std::array<char, PacketSizeMax> ReceiveBuffer;
 		asio_ip::udp::endpoint SenderEndpoint;
 		const std::size_t Size = m_Socket.receive_from(boost::asio::buffer(ReceiveBuffer), SenderEndpoint);
 		SetState(tState::None);

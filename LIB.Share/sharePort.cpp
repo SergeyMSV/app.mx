@@ -117,7 +117,7 @@ void tTWRClient::TransactionJSON_UART_Send(tTWREndpoint ep, const std::vector<st
 
 tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
 {
-	std::vector<std::uint8_t> ReceivedData = Transaction(cmd.ToVector());
+	std::vector<std::uint8_t> ReceivedData = Transaction<std::vector<std::uint8_t>, 1024>(cmd.ToVector());
 	std::optional<tTWRPacketRsp> RspOpt = tTWRPacketRsp::Find(ReceivedData);
 	if (!RspOpt.has_value())
 		return {};
@@ -126,7 +126,7 @@ tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
 
 std::string tTWRClient::TransactionJSON(const std::string& cmdJSON)
 {
-	return Transaction(cmdJSON);
+	return Transaction<std::string, 4096>(cmdJSON);
 }
 
 std::string tTWRClient::MakeCmdJSON(tTWREndpoint ep, const std::string& cmd, const std::string& data)
