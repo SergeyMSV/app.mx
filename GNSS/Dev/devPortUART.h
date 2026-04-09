@@ -31,8 +31,7 @@ public:
 		std::lock_guard<std::mutex> Lock(m_DataReceivedMtx);
 		if (m_DataReceived.empty())
 			return {};
-		std::vector<std::uint8_t> Data = std::move(m_DataReceived);
-		return Data;
+		return std::move(m_DataReceived);
 	}
 
 	bool Send(const std::vector<std::uint8_t>& data)
