@@ -15,6 +15,7 @@ constexpr char g_FileNameTempPrefix[] = "_";
 namespace settings
 {
 	//constexpr std::string_view Host{ "127.0.0.1" };
+	//constexpr char Host[] = "127.0.0.1";
 	constexpr char Host[] = "192.168.10.162";
 }
 
