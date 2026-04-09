@@ -91,12 +91,43 @@ std::vector<std::uint8_t> tTWRClient::TransactionJSON_UART_Receive(tTWREndpoint 
 {
 	std::stringstream SStr;
 	std::string Str = TransactionJSON(MakeCmdJSON(ep, "receive"));
-	SStr << Str;
+
+
+	//Str = "{\"ep\": \"\uart_1\",\"cmd\" : \"receive\",\"data\" : \"""VЦa’GPRMC,184649.022,V,5556.8002,N,03737.2609,E,9999.99,999.99,090426,,*26\\r\\n$GPVTG,999.99,T,,M,\",\"rsp\" : \"ok\"}";
+
+	//Str = "{\"ep\": \"\uart_1\",\"cmd\" : \"receive\",\"data\" : \"""Vж\\u00199GPRMC,184649.022,V,5556.8002,N,03737.2609,E,9999.99,999.99,090426,,*26\\r\\n$GPVTG,999.99,T,,M,\",\"rsp\" : \"ok\"}";
+	//Str = "{\n\"ep\": \"\uart_1\",\"cmd\" : \"receive\",\"data\" : \"""Vж\u00199GPRMC,184649.022,V,5556.8002,N,03737.2609,E,9999.99,999.99,090426,,*26\\r\\n$GPVTG,999.99,T,,M,\",\"rsp\" : \"ok\"}\r\n";
+	//SStr << Str;
+
+	std::string StrNew;
+	for (auto i : Str)
+	{
+		if (i < 0x20 && i != '\r' && i != '\n')
+		{
+			StrNew += '.';
+		}
+		else
+		{
+			StrNew += i;
+		}
+	}
+
+	SStr << StrNew;
 	//SStr << TransactionJSON(MakeCmdJSON(ep, "receive"));
 	boost::property_tree::ptree PTree;
-	boost::property_tree::json_parser::read_json(SStr, PTree);
-	std::string Data = PTree.get<std::string>("data");
-	return std::vector<std::uint8_t>(Data.begin(), Data.end());
+	try
+	{
+		boost::property_tree::json_parser::read_json(SStr, PTree);
+		std::string Data = PTree.get<std::string>("data");
+		return std::vector<std::uint8_t>(Data.begin(), Data.end());
+	}
+	catch (std::exception e)
+	{
+		std::string What = e.what();
+		int sd = 9;
+	}
+	
+	return {};
 }
 
 void tTWRClient::TransactionJSON_UART_Send(tTWREndpoint ep, const std::string& tx)
@@ -177,7 +208,7 @@ void tTWRClient::CtrlState()
 		case tState::Write:
 		{
 			std::unique_lock<std::mutex> Lock(m_cv_mtx);
-			if (m_cv.wait_for(Lock, std::chrono::seconds(1)) == std::cv_status::timeout) //[#] < 1 s. That is available period of time to send/receive.
+			if (m_cv.wait_for(Lock, std::chrono::seconds(1)) == std::cv_status::timeout) // [#] < 1 s. That is available period of time to send/receive.
 			{
 				// It breaks the receiving process through blocking socket (receive_from) if no data can be received for any reason.
 				m_Socket.shutdown(boost::asio::socket_base::shutdown_both);
