@@ -4,6 +4,7 @@ del /Q *.h
 xcopy /Y %LIB_UTILS%\utilsBase.*
 xcopy /Y %LIB_UTILS%\utilsChrono.*
 xcopy /Y %LIB_UTILS%\utilsCRC.*
+xcopy /Y %LIB_UTILS%\utilsDALLAS.*
 xcopy /Y %LIB_UTILS%\utilsException.*
 xcopy /Y %LIB_UTILS%\utilsExits.*
 xcopy /Y %LIB_UTILS%\utilsFile.*

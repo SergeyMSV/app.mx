@@ -162,12 +162,15 @@
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
     <ClCompile Include="..\LIB.Share\sharePortGPIO.cpp" />
     <ClCompile Include="..\LIB.Share\sharePortSPI.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsDALLAS.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsException.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsPortSerial.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_client.cpp" />
+    <ClCompile Include="main_dallas.cpp" />
     <ClCompile Include="main_port_demo.cpp" />
     <ClCompile Include="main_port_spi.cpp" />
     <ClCompile Include="main_server.cpp" />
@@ -179,6 +182,7 @@
     <ClInclude Include="..\LIB.Share\sharePortSPI.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsCRC.h" />
+    <ClInclude Include="..\LIB.Utils\utilsDALLAS.h" />
     <ClInclude Include="..\LIB.Utils\utilsException.h" />
     <ClInclude Include="..\LIB.Utils\utilsExits.h" />
     <ClInclude Include="..\LIB.Utils\utilsMultithread.h" />
@@ -186,6 +190,7 @@
     <ClInclude Include="..\LIB.Utils\utilsPacketStar.h" />
     <ClInclude Include="..\LIB.Utils\utilsPacketTWR.h" />
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
+    <ClInclude Include="..\LIB.Utils\utilsPortSerial.h" />
     <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="devConfig.h" />
     <ClInclude Include="Dev\devDataSetConfig.h" />

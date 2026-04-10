@@ -20,6 +20,7 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	boost::property_tree::ptree PTreeConfig;
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
 	m_SPI0_CS0 = share::config::port::tSPI_Config(SPI0_CS0_ID, "spi", PTreeConfig);
+	m_Dallas = share::config::port::tUART_Config("uart_dallas", m_Platform.ID, PTreeConfig);
 }
 
 }

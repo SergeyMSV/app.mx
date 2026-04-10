@@ -42,6 +42,13 @@
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsPortSerial.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsDALLAS.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="main_dallas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Utils\utilsBase.h">
@@ -88,6 +95,12 @@
       <Filter>LIB.Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsVersion.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsPortSerial.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsDALLAS.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsExits.h">

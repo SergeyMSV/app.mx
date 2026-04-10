@@ -2,7 +2,7 @@
 
 namespace settings
 {
-	constexpr char Version[] = "TWR.0.1.1";
+	constexpr char Version[] = "TWR.0.2.1";
 }
 
 #define MXTWR_SERVER
