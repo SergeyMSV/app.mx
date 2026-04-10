@@ -31,15 +31,15 @@ using tTWRQueueSPICmd = utils::multithread::tQueue<tPacketTWRCmdEp, 2>;
 using tPacketTWRDALLASCmdEp = tPack<std::string>;
 using tTWRQueueDALLASCmd = utils::multithread::tQueue<tPacketTWRDALLASCmdEp, 1>;
 
-using tPacketTWRUARTCmdEp = tPack<std::string>;
-using tTWRQueueUARTCmd = utils::multithread::tQueue<tPacketTWRUARTCmdEp, 1>;
+using tPacketTWRUARTJSONCmdEp = tPack<std::string>;
+using tTWRQueueUARTJSONCmd = utils::multithread::tQueue<tPacketTWRUARTJSONCmdEp, 1>;
 
 struct tTWRQueue
 {
 	tTWRQueueDEMOCmd DEMO;
 	tTWRQueueSPICmd SPI0_CS0;
 	tTWRQueueDALLASCmd DALLAS;
-	tTWRQueueUARTCmd UART[4];
+	tTWRQueueUARTJSONCmd UART_JSON[4];
 };
 
 extern tTWRQueue TWRQueue;
