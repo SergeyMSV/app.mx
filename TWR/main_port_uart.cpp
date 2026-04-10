@@ -37,12 +37,12 @@ public:
 		m_EndpointLast = endpoint;
 	}
 
-	std::vector<std::uint8_t> GetReceived()
+	std::vector<std::uint8_t> GetReceived(std::size_t dataSizeMax)
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
 		if (m_Received.empty())
 			return {};
-		std::size_t Size = std::min(GetReceivedSize(), dev::settings::network_udp::PacketDataSizeMax);
+		std::size_t Size = std::min(GetReceivedSize(), dataSizeMax);
 		std::vector<std::uint8_t> Data;
 		Data.reserve(Size);
 		for (auto& i : m_Received)
@@ -97,13 +97,6 @@ protected:
 			Remove -= PartSize;
 		}
 	}
-};
-
-std::string ToString(const std::vector<std::uint8_t>& data)
-{
-	std::stringstream SStr;
-	std::for_each(data.begin(), data.end(), [&SStr](std::uint8_t val) { SStr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val); });
-	return SStr.str();
 };
 
 static void ThreadUART(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, int portIndex)
@@ -163,7 +156,7 @@ static void ThreadUART(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRS
 
 				if (Cmd == "receive")
 				{
-					std::vector<std::uint8_t> Data = (*PortPtr)().GetReceived();
+					std::vector<std::uint8_t> Data = (*PortPtr)().GetReceived(dev::settings::network_udp::PacketDataSizeMax);
 					std::string DataStr = std::string(Data.begin(), Data.end());
 					PTree.put("data", DataStr);
 					server.SendResponse(Pack.Endpoint, PTree, "ok");
