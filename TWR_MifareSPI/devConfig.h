@@ -8,7 +8,7 @@
 namespace settings
 {
 	//constexpr std::string_view Host{ "127.0.0.1" };
-	constexpr std::string_view Host{ "192.168.10.161" };
+	constexpr std::string_view Host{ "192.168.10.162" };
 }
 
 #ifdef _WIN32
