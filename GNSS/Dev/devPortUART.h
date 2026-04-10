@@ -5,7 +5,7 @@
 using tPortUARTBase = share::port::tUART_JSON;
 #else
 #include <utilsPortSerial.h>
-using tPortUARTBase = utils::port::serial::tPortSerialAsync<>;
+using tPortUARTBase = utils::port::serial::tPortSerialAsync<settings::port_uart::ReceiveBufferSize>;
 #endif
 
 namespace dev

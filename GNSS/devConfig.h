@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr char g_FileNameTempPrefix[] = "_";
+#include <cstdlib>
 
 #define MXTWR_CLIENT
 
@@ -12,11 +12,26 @@ constexpr char g_FileNameTempPrefix[] = "_";
 #define MXTWR_EP_UART share::port::tTWREndpoint::UART1
 #endif
 
+namespace dev
+{
 namespace settings
 {
+	constexpr char FileNameTempPrefix[] = "_";
+
 	//constexpr std::string_view Host{ "127.0.0.1" };
 	//constexpr char Host[] = "127.0.0.1";
 	constexpr char Host[] = "192.168.10.162";
+
+namespace network_udp
+{
+	constexpr std::size_t PacketSizeMax = 4096; // [TBD] it shall be equal to 1024
+}
+
+namespace port_uart
+{
+	constexpr std::size_t ReceiveBufferSize = 1024;
+}
+}
 }
 
 #ifdef _WIN32
