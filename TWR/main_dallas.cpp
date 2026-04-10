@@ -90,7 +90,7 @@ void ThreadDALLAS(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer
 				return; // [TBD] throw an exception
 		}
 
-		tTWRQueueUARTCmd& QueueIn = TWRQueue.DALLAS;
+		tTWRQueueDALLASCmd& QueueIn = TWRQueue.DALLAS;
 
 		std::unique_ptr<tPortHld> PortPtr;
 
