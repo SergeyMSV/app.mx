@@ -87,26 +87,26 @@ bool tTWRServer::HandlePacketJson(const share::network::udp::tEndpoint& endpoint
 		}
 		else if (Ep == "uart_0")
 		{
-			tPacketTWRUARTCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
-			TWRQueue.UART[0].push_back(std::move(Cmd));
+			tPacketTWRUARTJSONCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
+			TWRQueue.UART_JSON[0].push_back(std::move(Cmd));
 			return true;
 		}
 		else if (Ep == "uart_1")
 		{
-			tPacketTWRUARTCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
-			TWRQueue.UART[1].push_back(std::move(Cmd));
+			tPacketTWRUARTJSONCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
+			TWRQueue.UART_JSON[1].push_back(std::move(Cmd));
 			return true;
 		}
 		else if (Ep == "uart_2")
 		{
-			tPacketTWRUARTCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
-			TWRQueue.UART[2].push_back(std::move(Cmd));
+			tPacketTWRUARTJSONCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
+			TWRQueue.UART_JSON[2].push_back(std::move(Cmd));
 			return true;
 		}
 		else if (Ep == "uart_3")
 		{
-			tPacketTWRUARTCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
-			TWRQueue.UART[3].push_back(std::move(Cmd));
+			tPacketTWRUARTJSONCmdEp Cmd{ .Endpoint = endpoint, .Value = std::move(CmdStr) };
+			TWRQueue.UART_JSON[3].push_back(std::move(Cmd));
 			return true;
 		}
 

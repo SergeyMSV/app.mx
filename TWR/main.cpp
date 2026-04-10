@@ -26,10 +26,10 @@ void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServ
 #endif // UDP_SERVER_TEST
 void ThreadPortSPI0_CS0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
 void ThreadDALLAS(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
-void ThreadUART0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
-void ThreadUART1(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
-void ThreadUART2(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
-void ThreadUART3(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+void ThreadUART0_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+void ThreadUART1_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+void ThreadUART2_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
+void ThreadUART3_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server);
 
 int main(int argc, char* argv[])
 {
@@ -56,10 +56,10 @@ int main(int argc, char* argv[])
 #endif // UDP_SERVER_TEST
 		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { ThreadPortSPI0_CS0(DsConfig, Server); });
 		std::thread Thread_DALLAS([&DsConfig, &Server]() { ThreadDALLAS(DsConfig, Server); });
-		std::thread Thread_UART0([&DsConfig, &Server]() { ThreadUART0(DsConfig, Server); });
-		std::thread Thread_UART1([&DsConfig, &Server]() { ThreadUART1(DsConfig, Server); });
-		std::thread Thread_UART2([&DsConfig, &Server]() { ThreadUART2(DsConfig, Server); });
-		std::thread Thread_UART3([&DsConfig, &Server]() { ThreadUART3(DsConfig, Server); });
+		std::thread Thread_UART0([&DsConfig, &Server]() { ThreadUART0_JSON(DsConfig, Server); });
+		std::thread Thread_UART1([&DsConfig, &Server]() { ThreadUART1_JSON(DsConfig, Server); });
+		std::thread Thread_UART2([&DsConfig, &Server]() { ThreadUART2_JSON(DsConfig, Server); });
+		std::thread Thread_UART3([&DsConfig, &Server]() { ThreadUART3_JSON(DsConfig, Server); });
 
 #ifdef UDP_SERVER_TEST
 		UDP_ClientTest(DsConfig->GetUDPPort().Value);
