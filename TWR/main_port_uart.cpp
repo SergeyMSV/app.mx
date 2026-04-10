@@ -3,7 +3,7 @@
 
 #include "devDataSetConfig.h"
 
-#include <cstdlib>
+#include <algorithm>
 #include <deque>
 #include <iomanip>
 #include <iostream>
@@ -17,7 +17,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-using tUARTBase = utils::port::serial::tPortSerialAsync<1024>;
+using tUARTBase = utils::port::serial::tPortSerialAsync<dev::settings::port_uart::ReceiveBufferSize>;
 
 class tUART : public tUARTBase
 {
@@ -42,12 +42,27 @@ public:
 		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
 		if (m_Received.empty())
 			return {};
-		const std::size_t Size = GetReceivedSize();
+		std::size_t Size = std::min(GetReceivedSize(), dev::settings::network_udp::PacketDataSizeMax);
 		std::vector<std::uint8_t> Data;
 		Data.reserve(Size);
 		for (auto& i : m_Received)
-			Data.insert(Data.end(), i.begin(), i.end());
-		m_Received.clear();
+		{
+			if (Size >= i.size())
+			{
+				Data.insert(Data.end(), i.begin(), i.end());
+				Size -= i.size();
+				m_Received.pop_front();
+			}
+			else if (Size > 0)
+			{
+				Data.insert(Data.end(), i.begin(), i.begin() + Size);
+				i.erase(i.begin() + Size, i.end());
+				Size = 0;
+			}
+
+			if (!Size)
+				break;
+		}
 		return Data;
 	}
 
@@ -68,13 +83,12 @@ protected:
 		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
 		m_Received.push_back(data);
 		const std::size_t Size = GetReceivedSize();
-		const std::size_t ReceivedSizeMax = 4096; // [#]
-		if (Size < ReceivedSizeMax)
+		if (Size < dev::settings::port_uart::ReceivedSizeMax)
 			return;
-		std::size_t Remove = Size - ReceivedSizeMax;
+		std::size_t Remove = Size - dev::settings::port_uart::ReceivedSizeMax;
 		while (Remove)
 		{
-			if (m_Received.size() == 1) // Last part shall be kept even if it bigger than the limit (4096).
+			if (m_Received.size() == 1) // Last part shall be kept even if it bigger than the limit (dev::settings::port_uart::ReceivedSizeMax).
 				break;
 			const std::size_t PartSize = m_Received.front().size();
 			m_Received.pop_front();

@@ -6,7 +6,7 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-using tTWRServerBase = share::network::udp::tUDPServerAsync<1024>;
+using tTWRServerBase = share::network::udp::tUDPServerAsync<dev::settings::network_udp::PacketSizeMax>;
 
 class tTWRServer : public tTWRServerBase
 {
