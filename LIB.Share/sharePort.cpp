@@ -16,7 +16,7 @@ tTWRClient::tTWRClient(boost::asio::io_context& ioc)
 	:m_Resolver(asio_ip::udp::resolver(ioc)), m_Socket(asio_ip::udp::socket(ioc)),
 	m_State(tState::None), m_CtrlStateThread(&tTWRClient::CtrlStateThread, this)
 {
-	m_ReceiverEndpoint = *m_Resolver.resolve(asio_ip::udp::v4(), settings::Host, std::to_string(MXTWR_PORT)).begin();
+	m_ReceiverEndpoint = *m_Resolver.resolve(asio_ip::udp::v4(), dev::settings::Host, std::to_string(MXTWR_PORT)).begin();
 	m_Socket.open(asio_ip::udp::v4());
 
 	// [TBD] check TWR Version
@@ -148,7 +148,7 @@ void tTWRClient::TransactionJSON_UART_Send(tTWREndpoint ep, const std::vector<st
 
 tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
 {
-	std::vector<std::uint8_t> ReceivedData = Transaction<std::vector<std::uint8_t>, 1024>(cmd.ToVector());
+	std::vector<std::uint8_t> ReceivedData = Transaction<std::vector<std::uint8_t>, dev::settings::network_udp::PacketSizeMax>(cmd.ToVector());
 	std::optional<tTWRPacketRsp> RspOpt = tTWRPacketRsp::Find(ReceivedData);
 	if (!RspOpt.has_value())
 		return {};
@@ -157,7 +157,7 @@ tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)
 
 std::string tTWRClient::TransactionJSON(const std::string& cmdJSON)
 {
-	return Transaction<std::string, 4096>(cmdJSON);
+	return Transaction<std::string, dev::settings::network_udp::PacketSizeMax>(cmdJSON);
 }
 
 static std::string Escape_NewLines(const std::string& input) // [TBD] it should reside in a library.
