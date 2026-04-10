@@ -19,8 +19,8 @@ namespace settings
 	constexpr char FileNameTempPrefix[] = "_"; // [DEPRECATED] 2026-10-25
 
 	//constexpr std::string_view Host{ "127.0.0.1" };
-	//constexpr char Host[] = "127.0.0.1";
-	constexpr char Host[] = "192.168.10.162";
+	constexpr char Host[] = "127.0.0.1";
+	//constexpr char Host[] = "192.168.10.162";
 
 namespace network_udp
 {
