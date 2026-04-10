@@ -100,7 +100,7 @@ protected:
 	}
 };
 
-static void ThreadUART(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, int portIndex)
+static void ThreadUART_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, int portIndex)
 {
 	using tPortHld = tPortHolder<tUART>;
 
@@ -116,7 +116,7 @@ static void ThreadUART(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRS
 				return; // [TBD] throw an exception
 		}
 
-		tTWRQueueUARTCmd& QueueIn = TWRQueue.UART[portIndex]; // Port index is checked in config->GetUART(portIndex)
+		tTWRQueueUARTJSONCmd& QueueIn = TWRQueue.UART_JSON[portIndex]; // Port index is checked in config->GetUART(portIndex)
 
 		std::unique_ptr<tPortHld> PortPtr;
 
@@ -187,22 +187,22 @@ static void ThreadUART(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRS
 	}
 }
 
-void ThreadUART0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART0_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
 {
-	ThreadUART(config, server, 0);
+	ThreadUART_JSON(config, server, 0);
 }
 
-void ThreadUART1(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART1_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
 {
-	ThreadUART(config, server, 1);
+	ThreadUART_JSON(config, server, 1);
 }
 
-void ThreadUART2(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART2_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
 {
-	ThreadUART(config, server, 2);
+	ThreadUART_JSON(config, server, 2);
 }
 
-void ThreadUART3(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART3_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
 {
-	ThreadUART(config, server, 3);
+	ThreadUART_JSON(config, server, 3);
 }
