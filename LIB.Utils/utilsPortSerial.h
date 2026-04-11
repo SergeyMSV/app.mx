@@ -13,8 +13,6 @@
 
 #include <boost/asio.hpp>
 
-#include <iostream>
-
 namespace utils
 {
 namespace port
@@ -96,7 +94,6 @@ public:
 
 	void SetBaudRate(std::uint32_t val)
 	{
-		std::cout << "SetBR : " << std::to_string(val) << '\n';
 		if (!m_Port.is_open())
 			return;
 		m_Port.set_option(boost::asio::serial_port_base::baud_rate(val));
@@ -144,7 +141,7 @@ private:
     }
 
 protected:
-    virtual void OnReceived(const std::vector<std::uint8_t>& data) = 0;
+    virtual void OnReceived(std::vector<std::uint8_t>& data) = 0;
 
 	void Send()
 	{
@@ -176,7 +173,7 @@ class tPortOneWireSync
 		void ResetReceived();
 
 	protected:
-		void OnReceived(const std::vector<std::uint8_t>& data) override;
+		void OnReceived(std::vector<std::uint8_t>& data) override;
 	};
 
 	struct tGuardBR
