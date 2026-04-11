@@ -23,7 +23,7 @@ class tUART : public tUARTBase
 {
 	share::network::udp::tEndpoint m_EndpointLast;
 	std::deque<std::vector<std::uint8_t>> m_Received;
-	std::recursive_mutex m_ReceivedMtx;
+	std::mutex m_ReceivedMtx;
 
 public:
 	tUART() = delete;
@@ -40,7 +40,7 @@ public:
 	template <typename T>
 	T GetReceived(std::size_t dataSize)
 	{
-		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
+		std::lock_guard<std::mutex> lock(m_ReceivedMtx);
 		if (m_Received.empty())
 			return {};
 		T Data;
@@ -67,22 +67,28 @@ public:
 	}
 
 protected:
-	std::size_t GetReceivedSize()
-	{
-		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
-		if (m_Received.empty())
-			return 0;
-		std::size_t Size = 0;
-		for (auto& i : m_Received)
-			Size += i.size();
-		return Size;
-	}
+	//std::size_t GetReceivedSize()
+	//{
+	//	std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
+	//	if (m_Received.empty())
+	//		return 0;
+	//	std::size_t Size = 0;
+	//	for (auto& i : m_Received)
+	//		Size += i.size();
+	//	return Size;
+	//}
 
 	void OnReceived(const std::vector<std::uint8_t>& data) override
 	{
-		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
+		if (data.empty())
+			return;
+		std::lock_guard<std::mutex> lock(m_ReceivedMtx);
 		m_Received.push_back(data);
-		const std::size_t Size = GetReceivedSize();
+
+		std::size_t Size = 0;
+		for (auto& i : m_Received)
+			Size += i.size();
+		//const std::size_t Size = GetReceivedSize();
 		if (Size < dev::settings::port_uart::ReceivedSizeMax)
 			return;
 		std::size_t Remove = Size - dev::settings::port_uart::ReceivedSizeMax;
