@@ -41,7 +41,7 @@ void tPortOneWireSync::tPort::ResetReceived()
 	m_DataRcv.clear();
 }
 
-void tPortOneWireSync::tPort::OnReceived(const std::vector<std::uint8_t>& data)
+void tPortOneWireSync::tPort::OnReceived(std::vector<std::uint8_t>& data)
 {
 	std::lock_guard<std::mutex> Lock(m_Mtx);
 	m_DataRcv.insert(m_DataRcv.end(), data.begin(), data.end());
