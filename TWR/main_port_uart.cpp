@@ -78,12 +78,12 @@ protected:
 	//	return Size;
 	//}
 
-	void OnReceived(const std::vector<std::uint8_t>& data) override
+	void OnReceived(std::vector<std::uint8_t>& data) override
 	{
 		if (data.empty())
 			return;
 		std::lock_guard<std::mutex> lock(m_ReceivedMtx);
-		m_Received.push_back(data);
+		m_Received.push_back(std::move(data));
 
 		std::size_t Size = 0;
 		for (auto& i : m_Received)
