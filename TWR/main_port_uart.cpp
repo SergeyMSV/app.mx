@@ -23,6 +23,7 @@ class tUART : public tUARTBase
 {
 	share::network::udp::tEndpoint m_EndpointLast;
 	std::deque<std::vector<std::uint8_t>> m_Received;
+	std::size_t m_ReceivedSize = 0;
 	std::mutex m_ReceivedMtx;
 
 public:
@@ -63,35 +64,30 @@ public:
 			if (!dataSize)
 				break;
 		}
+
+		if (m_ReceivedSize >= Data.size())
+		{
+			m_ReceivedSize -= Data.size();
+		}
+		else // Something wrong.
+		{
+			// [TBD] maybe assert or exception
+			SetReceivedSize_NoLock();
+		}
 		return Data;
 	}
 
 protected:
-	//std::size_t GetReceivedSize()
-	//{
-	//	std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
-	//	if (m_Received.empty())
-	//		return 0;
-	//	std::size_t Size = 0;
-	//	for (auto& i : m_Received)
-	//		Size += i.size();
-	//	return Size;
-	//}
-
 	void OnReceived(std::vector<std::uint8_t>& data) override
 	{
 		if (data.empty())
 			return;
 		std::lock_guard<std::mutex> lock(m_ReceivedMtx);
 		m_Received.push_back(std::move(data));
-
-		std::size_t Size = 0;
-		for (auto& i : m_Received)
-			Size += i.size();
-		//const std::size_t Size = GetReceivedSize();
-		if (Size < dev::settings::port_uart::ReceivedSizeMax)
+		m_ReceivedSize += m_Received.back().size();
+		if (m_ReceivedSize < dev::settings::port_uart::ReceivedSizeMax)
 			return;
-		std::size_t Remove = Size - dev::settings::port_uart::ReceivedSizeMax;
+		std::size_t Remove = m_ReceivedSize - dev::settings::port_uart::ReceivedSizeMax;
 		while (Remove)
 		{
 			if (m_Received.size() == 1) // Last part shall be kept even if it bigger than the limit (dev::settings::port_uart::ReceivedSizeMax).
@@ -102,6 +98,15 @@ protected:
 				break;
 			Remove -= PartSize;
 		}
+		SetReceivedSize_NoLock();
+	}
+
+private:
+	void SetReceivedSize_NoLock()
+	{
+		m_ReceivedSize = 0;
+		for (auto& i : m_Received)
+			m_ReceivedSize += i.size();
 	}
 };
 
