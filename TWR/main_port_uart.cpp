@@ -38,30 +38,29 @@ public:
 	}
 
 	template <typename T>
-	T GetReceived(std::size_t dataSizeMax)
+	T GetReceived(std::size_t dataSize)
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
 		if (m_Received.empty())
 			return {};
-		std::size_t Size = std::min(GetReceivedSize(), dataSizeMax);
 		T Data;
-		Data.reserve(Size);
+		Data.reserve(dataSize);
 		for (auto& i : m_Received)
 		{
-			if (Size >= i.size())
+			if (dataSize >= i.size())
 			{
 				Data.insert(Data.end(), i.begin(), i.end());
-				Size -= i.size();
+				dataSize -= i.size();
 				m_Received.pop_front();
 			}
-			else if (Size > 0)
+			else if (dataSize > 0)
 			{
-				Data.insert(Data.end(), i.begin(), i.begin() + Size);
-				i.erase(i.begin() + Size, i.end());
-				Size = 0;
+				Data.insert(Data.end(), i.begin(), i.begin() + dataSize);
+				i.erase(i.begin() + dataSize, i.end());
+				dataSize = 0;
 			}
 
-			if (!Size)
+			if (!dataSize)
 				break;
 		}
 		return Data;
