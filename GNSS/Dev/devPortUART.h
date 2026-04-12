@@ -5,7 +5,7 @@
 using tPortUARTBase = share::port::tUART_JSON;
 #else
 #include <utilsPortSerial.h>
-using tPortUARTBase = utils::port::serial::tPortSerialAsync<>;
+using tPortUARTBase = utils::port::serial::tPortSerialAsync<dev::settings::port_uart::ReceiveBufferSize>;
 #endif
 
 namespace dev
@@ -31,8 +31,7 @@ public:
 		std::lock_guard<std::mutex> Lock(m_DataReceivedMtx);
 		if (m_DataReceived.empty())
 			return {};
-		std::vector<std::uint8_t> Data = std::move(m_DataReceived);
-		return Data;
+		return std::move(m_DataReceived);
 	}
 
 	bool Send(const std::vector<std::uint8_t>& data)
@@ -46,7 +45,7 @@ public:
 	}
 
 protected:
-	void OnReceived(const std::vector<std::uint8_t>& data) override
+	void OnReceived(std::vector<std::uint8_t>& data) override
 	{
 		std::lock_guard<std::mutex> Lock(m_DataReceivedMtx);
 		m_DataReceived.insert(m_DataReceived.end(), data.begin(), data.end());

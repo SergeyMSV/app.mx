@@ -21,8 +21,7 @@
 
         public ReceivedEventArgs(string msg)
         {
-            Msgs = new();
-            Msgs.Add(msg);
+            Msgs = [msg];
         }
     }
 }
