@@ -71,7 +71,7 @@ public:
 			{
 				if (TPolicy::ReceiverModel == tReceiverModel::SiRF_LR9548S) // This receiver doesn't support ZDA.
 				{
-					auto [DtSec, DtMSec] = utils::packet::nmea::type::hidden::SplitDouble(MsgOpt->Time.GetValue(), 3); // 3 -> milliseconds
+					auto [DtSec, DtMSec] = utils::packet::nmea::type::hide::SplitDouble(MsgOpt->Time.GetValue(), 3); // 3 -> milliseconds
 					this->m_DataSetGNSS.DateTime = { MsgOpt->Date.GetValue() + DtSec ,  DtMSec };
 				}
 

@@ -41,7 +41,9 @@ enum class tMsgId : std::uint8_t
 	SPI_GetSettings,
 	SPI_SetSettings,
 	SPI_SetChipControl, // Enable, RESET, etc.
-	UART_Receive = 0x50,
+	UART_Open = 0x50,
+	UART_Close,
+	UART_Receive,
 	UART_Send,
 	UART_GetSettings,
 	UART_SetSettings,
@@ -206,6 +208,7 @@ public:
 	std::vector<std::uint8_t> GetPayload() const { return GetPayloadValue().Payload; }
 
 	static bool CheckEndpointSPI(tEndpoint ep) { return ep >= tEndpoint::SPI0_CS0 && ep < tEndpoint::SPI_END; }
+	static bool CheckEndpointUART(tEndpoint ep) { return ep >= tEndpoint::UART0 && ep < tEndpoint::UART_END; }
 };
 
 class tPacketCmd : public tPacketBase
@@ -299,6 +302,30 @@ public:
 		std::vector<std::uint8_t> Data;
 		Data.push_back(ctrl.Value);
 		return Make(tMsgId::SPI_SetChipControl, ep, Data);
+	}
+
+	static tPacketCmd Make_UART_Open(tEndpoint ep)
+	{
+		assert(CheckEndpointUART(ep));
+		return Make(tMsgId::UART_Open, ep, {});
+	}
+
+	static tPacketCmd Make_UART_Close(tEndpoint ep)
+	{
+		assert(CheckEndpointUART(ep));
+		return Make(tMsgId::UART_Close, ep, {});
+	}
+
+	static tPacketCmd Make_UART_Receive(tEndpoint ep)
+	{
+		assert(CheckEndpointUART(ep));
+		return Make(tMsgId::UART_Receive, ep, {});
+	}
+
+	static tPacketCmd Make_UART_Send(tEndpoint ep, const std::vector<std::uint8_t>& msgData)
+	{
+		assert(CheckEndpointUART(ep));
+		return Make(tMsgId::UART_Send, ep, msgData);
 	}
 
 	// ... Make-functions for other packets

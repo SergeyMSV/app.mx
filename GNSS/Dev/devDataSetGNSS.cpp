@@ -110,7 +110,7 @@ void tDataSetGNSS::ToFile(const share::config::tOutFile& configOut) const
 
 	const std::filesystem::path Path = configOut.Path;
 	const std::string FileName = configOut.Prefix + DTStr + ".json";
-	const std::string TempFileName = g_FileNameTempPrefix + FileName + ".tmp";
+	const std::string TempFileName = settings::FileNameTempPrefix + FileName + ".tmp";
 
 	std::filesystem::path TempFilePath = Path / TempFileName;
 	std::fstream File = std::fstream(TempFilePath, std::ios::out);
