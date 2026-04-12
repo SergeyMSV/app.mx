@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 		LogFile.Write("Start");
 
 		share::RemoveFilesOutdated(DsConfig.GetOutGNSS());
-		share::RemoveFilesOutdated(DsConfig.GetOutGNSS(), g_FileNameTempPrefix);
+		share::RemoveFilesOutdated(DsConfig.GetOutGNSS(), dev::settings::FileNameTempPrefix);
 
 		const share::config::port::tUART_Config UARTConfig = DsConfig.GetUART();
 		dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
