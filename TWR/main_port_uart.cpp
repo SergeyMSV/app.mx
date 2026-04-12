@@ -3,7 +3,7 @@
 
 #include "devDataSetConfig.h"
 
-#include <cstdlib>
+#include <algorithm>
 #include <deque>
 #include <iomanip>
 #include <iostream>
@@ -17,13 +17,13 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-using tUARTBase = utils::port::serial::tPortSerialAsync<1024>;
+using tUARTBase = utils::port::serial::tPortSerialAsync<dev::settings::port_uart::ReceiveBufferSize>;
 
 class tUART : public tUARTBase
 {
 	share::network::udp::tEndpoint m_EndpointLast;
 	std::deque<std::vector<std::uint8_t>> m_Received;
-	std::recursive_mutex m_ReceivedMtx;
+	std::mutex m_ReceivedMtx;
 
 public:
 	tUART() = delete;
@@ -37,44 +37,64 @@ public:
 		m_EndpointLast = endpoint;
 	}
 
-	std::vector<std::uint8_t> GetReceived()
+	template <typename T>
+	T GetReceived(std::size_t dataSize)
 	{
-		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
+		std::lock_guard<std::mutex> lock(m_ReceivedMtx);
 		if (m_Received.empty())
 			return {};
-		const std::size_t Size = GetReceivedSize();
-		std::vector<std::uint8_t> Data;
-		Data.reserve(Size);
+		T Data;
+		Data.reserve(dataSize);
 		for (auto& i : m_Received)
-			Data.insert(Data.end(), i.begin(), i.end());
-		m_Received.clear();
+		{
+			if (dataSize >= i.size())
+			{
+				Data.insert(Data.end(), i.begin(), i.end());
+				dataSize -= i.size();
+				m_Received.pop_front();
+			}
+			else if (dataSize > 0)
+			{
+				Data.insert(Data.end(), i.begin(), i.begin() + dataSize);
+				i.erase(i.begin() + dataSize, i.end());
+				dataSize = 0;
+			}
+
+			if (!dataSize)
+				break;
+		}
 		return Data;
 	}
 
 protected:
-	std::size_t GetReceivedSize()
-	{
-		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
-		if (m_Received.empty())
-			return 0;
-		std::size_t Size = 0;
-		for (auto& i : m_Received)
-			Size += i.size();
-		return Size;
-	}
+	//std::size_t GetReceivedSize()
+	//{
+	//	std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
+	//	if (m_Received.empty())
+	//		return 0;
+	//	std::size_t Size = 0;
+	//	for (auto& i : m_Received)
+	//		Size += i.size();
+	//	return Size;
+	//}
 
 	void OnReceived(const std::vector<std::uint8_t>& data) override
 	{
-		std::lock_guard<std::recursive_mutex> lock(m_ReceivedMtx);
-		m_Received.push_back(data);
-		const std::size_t Size = GetReceivedSize();
-		const std::size_t ReceivedSizeMax = 4096; // [#]
-		if (Size < ReceivedSizeMax)
+		if (data.empty())
 			return;
-		std::size_t Remove = Size - ReceivedSizeMax;
+		std::lock_guard<std::mutex> lock(m_ReceivedMtx);
+		m_Received.push_back(data);
+
+		std::size_t Size = 0;
+		for (auto& i : m_Received)
+			Size += i.size();
+		//const std::size_t Size = GetReceivedSize();
+		if (Size < dev::settings::port_uart::ReceivedSizeMax)
+			return;
+		std::size_t Remove = Size - dev::settings::port_uart::ReceivedSizeMax;
 		while (Remove)
 		{
-			if (m_Received.size() == 1) // Last part shall be kept even if it bigger than the limit (4096).
+			if (m_Received.size() == 1) // Last part shall be kept even if it bigger than the limit (dev::settings::port_uart::ReceivedSizeMax).
 				break;
 			const std::size_t PartSize = m_Received.front().size();
 			m_Received.pop_front();
@@ -83,13 +103,6 @@ protected:
 			Remove -= PartSize;
 		}
 	}
-};
-
-std::string ToString(const std::vector<std::uint8_t>& data)
-{
-	std::stringstream SStr;
-	std::for_each(data.begin(), data.end(), [&SStr](std::uint8_t val) { SStr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val); });
-	return SStr.str();
 };
 
 static void ThreadUART(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, int portIndex)
@@ -149,9 +162,8 @@ static void ThreadUART(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRS
 
 				if (Cmd == "receive")
 				{
-					std::vector<std::uint8_t> Data = (*PortPtr)().GetReceived();
-					std::string DataStr = std::string(Data.begin(), Data.end());
-					PTree.put("data", DataStr);
+					std::string Data = (*PortPtr)().GetReceived<std::string>(dev::settings::network_udp::PacketDataSizeMax); // [TBD] PacketSizeMax vs. PacketDataSizeMax
+ 					PTree.put("data", Data);
 					server.SendResponse(Pack.Endpoint, PTree, "ok");
 				}
 				else if (Cmd == "send")

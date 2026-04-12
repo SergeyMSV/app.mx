@@ -21,7 +21,7 @@ void tTWRServer::OnReceived(const share::network::udp::tEndpoint& endpoint, cons
 
 	tPacketTWRCmdEp Cmd;
 	std::optional<tTWRPacketCmd> CmdOpt = tTWRPacketCmd::Find(ReceivedData);
-	if (CmdOpt.has_value() || ReceivedData.size() > share::network::udp::PacketSizeMax)
+	if (CmdOpt.has_value() || ReceivedData.size() > dev::settings::network_udp::PacketSizeMax)
 		ReceivedData.clear();
 	if (!CmdOpt.has_value()) // A whole packet hasn't been received yet.
 		return;
@@ -44,7 +44,7 @@ void tTWRServer::HandlePacketBinary(const tPacketTWRCmdEp& cmd)
 
 	switch (cmd.Value.GetMsgId())
 	{
-	case tTWRMsgId::GetVersion: Pack = tTWRPacketRsp::Make(cmd.Value, settings::Version).ToVector(); break;
+	case tTWRMsgId::GetVersion: Pack = tTWRPacketRsp::Make(cmd.Value, dev::settings::Version).ToVector(); break;
 	default:
 	{
 		if (PutInQueue(cmd))
@@ -75,7 +75,7 @@ bool tTWRServer::HandlePacketJson(const share::network::udp::tEndpoint& endpoint
 			std::string Cmd = PTree.get<std::string>("cmd");
 			if (Cmd == "version")
 			{
-				PTree.put("version", settings::Version);
+				PTree.put("version", dev::settings::Version);
 				SendResponse(endpoint, PTree, "ok");
 			}
 		}
