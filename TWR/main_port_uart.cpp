@@ -175,6 +175,7 @@ static void ThreadUART_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, 
 				if (Cmd == "receive")
 				{
 					std::string Data = (*PortPtr)().GetReceived<std::string>(dev::settings::network_udp::PacketDataSizeMax); // [TBD] PacketSizeMax vs. PacketDataSizeMax
+					std::replace_if(Data.begin(), Data.end(), [](char c) { return c < 0x20 && c != 0x0a && c != 0x0d; }, '.');
  					PTree.put("data", std::move(Data));
 					server.SendResponse(Pack.Endpoint, PTree, "ok");
 				}
