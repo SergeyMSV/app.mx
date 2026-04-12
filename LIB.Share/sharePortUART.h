@@ -82,7 +82,7 @@ public:
 	}
 
 protected:
-	virtual void OnReceived(const std::vector<std::uint8_t>& data) = 0;
+	virtual void OnReceived(std::vector<std::uint8_t>& data) = 0;
 
 	void Receiving()
 	{
