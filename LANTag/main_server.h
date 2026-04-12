@@ -8,13 +8,15 @@
 
 #include <memory>
 
-class tLANTagServer : public share::network::udp::tUDPServerAsync
+using tLANTagServerBase = share::network::udp::tUDPServerAsync<1024>;
+
+class tLANTagServer : public tLANTagServerBase
 {
 	std::weak_ptr<dev::tDataSetConfig> m_DataSetConfig;
 
 public:
 	tLANTagServer(boost::asio::io_context& ioc, std::uint16_t port, const std::shared_ptr<dev::tDataSetConfig>& dataSetConfig)
-		:tUDPServerAsync(ioc, port), m_DataSetConfig(dataSetConfig)
+		:tLANTagServerBase(ioc, port), m_DataSetConfig(dataSetConfig)
 	{}
 
 	void OnReceived(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& data) override;
