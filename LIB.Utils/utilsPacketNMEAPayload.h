@@ -774,7 +774,7 @@ namespace sirf_gsu_7x
 	using tSatID = type::tUIntFixed<2>;									// 00		Satellite ID (GPS: 1-32, SBAS 33-64 (33=PRN120), GLONASS: 65-96) 
 	using tHDOP = type::tFloatFixedNoNull<2, 1>;						// 00.0
 	using tAltitude = type::tFloatFixedNoNullUnitNoNull<5, 1>;			// 00000.0,M		-0014.2,M
-	using tGeoidSeparation = type::tFloatFixedNoNullUnitNoNull<4, 1>;	// 0000.0,M
+	using tGeoidSeparation = type::tFloatFixedNoNullUnitNoNull<4, 1>;	// 0000.0,M			-014.2,M
 	using tDiffAge = type::tFloatFixedNoNull<3, 1>;						// 000.0
 	using tDiffStation = type::tUIntFixedNoNull<4>;						// 0000
 	using tSpeed = type::tFloatFixedNoNull<4, 2>;						// 9999.99
@@ -782,8 +782,8 @@ namespace sirf_gsu_7x
 	using tDay = type::tUIntFixedNoNull<2>;								// 00
 	using tMonth = type::tUIntFixedNoNull<2>;							// 00
 	using tYear = type::tUIntFixedNoNull<4>;							// 1980
-	using tLocalZoneHours = type::tIntFixed<2>;							// 00 to ±13 hrs
-	using tLocalZoneMinutes = type::tUIntFixed<2>;						// 00 to +59
+	using tLocalZoneHours = type::tInt<3>;								// 00 to ±13 hrs	(not supported)
+	using tLocalZoneMinutes = type::tUIntFixed<2>;						// 00 to +59		(not supported)
 	
 	using tContentGGA = base::tContentGGA<tTime, tLatitude, tLongitude, tQuality, tSatQty, tHDOP, tAltitude, tGeoidSeparation, tDiffAge, tDiffStation>;
 	using tContentGLL = base::tContentGLL7<tLatitude, tLongitude, tTime>;

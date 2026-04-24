@@ -58,11 +58,7 @@ bool IsInteger(const std::string& value)
 
 bool CheckSignedIntFixed(const std::string& value, std::size_t size)
 {
-	if (value.empty())
-		return false;
-	if (value[0] == '-' && value.size() != size + 1)
-		return false;
-	if (value[0] != '-' && value.size() != size)
+	if (value.size() != size)
 		return false;
 	return hidden::IsInteger(value);
 }

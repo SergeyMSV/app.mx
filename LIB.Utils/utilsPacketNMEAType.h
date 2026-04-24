@@ -268,10 +268,14 @@ std::ostream& operator<<(std::ostream& out, const tIntFixed<Size>& value)
 {
 	if (value.IsEmpty())
 		return out;
+	std::size_t ValSize = Size;
 	std::int32_t Val = value.GetValue();
 	if (Val < 0)
+	{
 		out << '-';
-	out << std::setfill('0') << std::setw(Size) << std::abs(Val);
+		--ValSize;
+	}
+	out << std::setfill('0') << std::setw(ValSize) << std::abs(Val);
 	//out << std::setfill('0') << std::setw(Size) << value.GetValue(); // 0000-1.34
 	return out;
 }
@@ -300,6 +304,8 @@ public:
 	explicit tInt(tTypeVerified::tStatus verified) :tTypeVerified(verified) {}
 	explicit tInt(const std::string& value)
 	{
+		if (value.empty())
+			return;
 		if (!hidden::CheckSignedInt(value, SizeMax))
 		{
 			SetVerified(false);
