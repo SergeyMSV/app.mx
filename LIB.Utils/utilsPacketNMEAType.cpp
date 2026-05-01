@@ -9,7 +9,7 @@ namespace nmea
 namespace type
 {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-namespace hidden
+namespace hide
 {
 std::pair<std::uint32_t, std::uint32_t> SplitDouble(double value, std::size_t precision)
 {
@@ -31,7 +31,7 @@ double MakeDouble(std::int32_t valueInt, std::int32_t valueFract, std::size_t pr
 
 int CountDigits(std::int32_t num)
 {
-	int Count = 0;
+	int Count = num < 0 ? 1 : 0;
 	while (num != 0)
 	{
 		num /= 10;
@@ -40,7 +40,7 @@ int CountDigits(std::int32_t num)
 	return Count;
 }
 
-bool IsInteger(const std::string& value)
+bool IsInt(const std::string& value)
 {
 	if (value.empty())
 		return false;
@@ -56,22 +56,16 @@ bool IsInteger(const std::string& value)
 	return true;
 }
 
-bool CheckSignedIntFixed(const std::string& value, std::size_t size)
-{
-	if (value.size() != size)
-		return false;
-	return hidden::IsInteger(value);
-}
-
-bool CheckSignedInt(const std::string& value, std::size_t sizeMax)
+bool IsUInt(const std::string& value)
 {
 	if (value.empty())
 		return false;
-	if (value[0] == '-' && value.size() > sizeMax + 1)
-		return false;
-	if (value[0] != '-' && value.size() > sizeMax)
-		return false;
-	return hidden::IsInteger(value);
+	for (std::string::const_iterator i = value.cbegin(); i != value.cend(); ++i)
+	{
+		if (!std::isdigit(static_cast<unsigned char>(*i)))
+			return false;
+	}
+	return true;
 }
 
 bool IsChar(char ch)

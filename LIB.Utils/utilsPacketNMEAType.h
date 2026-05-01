@@ -14,12 +14,11 @@
 #include <utility>
 #include <vector>
 
+#include <cassert>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-
-//#include <iostream> // [TBD][TEST] REMOVE IT
 
 namespace utils
 {
@@ -30,15 +29,14 @@ namespace nmea
 namespace type
 {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-namespace hidden
+namespace hide
 {
 
 std::pair<std::uint32_t, std::uint32_t> SplitDouble(double value, std::size_t precision);
 double MakeDouble(std::int32_t valueInt, std::int32_t valueFract, std::size_t precision);
 int CountDigits(std::int32_t num);
-bool IsInteger(const std::string& value);
-bool CheckSignedIntFixed(const std::string& value, std::size_t size);
-bool CheckSignedInt(const std::string& value, std::size_t sizeMax);
+bool IsInt(const std::string& value);
+bool IsUInt(const std::string& value);
 bool IsChar(char ch);
 
 }
@@ -68,14 +66,13 @@ bool IsVerified(const T& ... value)
 		{
 			if (!verif)
 				Verified = false;
-//std::cout << "****** << " << (verif ? "T" : "F") << '\n'; // [TBD][TEST] REMOVE IT
 			return Verified;
 		};
 	(fn(value.IsVerified()) && ...);
 	return Verified;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-namespace hidden
+namespace hide
 {
 template<typename T>
 class tTypeNoNull
@@ -115,58 +112,6 @@ std::ostream& operator<<(std::ostream& out, const tTypeNoNull<T>& value)
 	return out;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-template <typename T>
-class tUnsigned
-{
-	template<typename S>
-	friend std::ostream& operator<<(std::ostream& out, const tUnsigned<S>& value);
-
-	T m_Value;
-
-public:
-	using value_type = typename T::value_type;
-
-	tUnsigned() = default;
-	explicit tUnsigned(tTypeVerified::tStatus verified) :m_Value(verified) {}
-	explicit tUnsigned(const std::string& value)
-	{
-		if (value.empty())
-			return;
-		if (value[0] == '-')
-		{
-			m_Value = T(tTypeVerified::tStatus::False);
-			return;
-		}
-		m_Value = T(value);
-	}
-	explicit tUnsigned(value_type value)
-	{
-		if (value < 0)
-		{
-			m_Value = T(tTypeVerified::tStatus::False);
-			return;
-		}
-		m_Value = T(value);
-	}
-
-	bool IsVerified() const { return m_Value.IsVerified(); }
-
-	bool IsEmpty() const { return m_Value.IsEmpty(); }
-
-	static constexpr std::size_t GetSize() { return T::GetSize(); }
-
-	value_type GetValue() const { return m_Value.GetValue(); }
-
-	std::string ToString() const { return m_Value.ToString(); }
-};
-
-template<typename T>
-std::ostream& operator<<(std::ostream& out, const tUnsigned<T>& value)
-{
-	out << value.m_Value;
-	return out;
-}
-
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 enum class tGNSS_State : std::uint8_t // It's like bitfield.
@@ -213,35 +158,41 @@ public:
 	std::string ToString() const;
 };
 
-using tStatusNoNull = hidden::tTypeNoNull<tStatus>;
+using tStatusNoNull = hide::tTypeNoNull<tStatus>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 template <std::size_t Size>
-class tIntFixed : public tTypeVerified
+class tUIntFixed : public tTypeVerified
 {
+	static_assert(Size > 0, "Size must be greater than 0.");
+
 	template<std::size_t S>
-	friend std::ostream& operator<<(std::ostream& out, const tIntFixed<S>& value);
+	friend std::ostream& operator<<(std::ostream& out, const tUIntFixed<S>& value);
 
 	std::optional<std::int32_t> m_Value;
 
 public:
 	using value_type = std::int32_t;
 
-	tIntFixed() = default;
-	explicit tIntFixed(tTypeVerified::tStatus verified) :tTypeVerified(verified) {}
-	explicit tIntFixed(const std::string& value)
+	tUIntFixed() = default;
+	explicit tUIntFixed(tTypeVerified::tStatus verified) :tTypeVerified(verified) {}
+	explicit tUIntFixed(const std::string& value)
 	{
 		if (value.empty())
 			return;
-		if (!hidden::CheckSignedIntFixed(value, Size))
+		if (value.size() == Size)
 		{
-			SetVerified(false);
-			return;
+			std::int32_t Value = std::strtol(value.c_str(), nullptr, 10);
+			if (Value >= 0)
+			{
+				m_Value = Value;
+				return;
+			}
 		}
-		m_Value = std::strtol(value.c_str(), nullptr, 10);
+		SetVerified(false);
 	}
-	explicit tIntFixed(std::int32_t value)
+	explicit tUIntFixed(std::int32_t value)
 	{
-		if (hidden::CountDigits(value) > Size)
+		if (value < 0 || hide::CountDigits(value) > Size)
 		{
 			SetVerified(false);
 			return;
@@ -249,9 +200,9 @@ public:
 		m_Value = value;
 	}
 
-	bool IsEmpty() const { return !m_Value.has_value(); }
-
 	static constexpr std::size_t GetSize() { return Size; }
+
+	bool IsEmpty() const { return !m_Value.has_value(); }
 
 	std::int32_t GetValue() const { return m_Value.value_or(0); }
 
@@ -264,7 +215,49 @@ public:
 };
 
 template<std::size_t Size>
-std::ostream& operator<<(std::ostream& out, const tIntFixed<Size>& value)
+std::ostream& operator<<(std::ostream& out, const tUIntFixed<Size>& value)
+{
+	if (value.IsEmpty())
+		return out;
+	std::int32_t Val = value.GetValue();
+	out << std::setfill('0') << std::setw(Size) << Val;
+	return out;
+}
+
+template <std::size_t Size>
+using tUIntFixedNoNull = hide::tTypeNoNull<tUIntFixed<Size>>;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+namespace hide
+{
+template <std::size_t Size>
+class tIntFixedBase : public tTypeVerified
+{
+	template<std::size_t S>
+	friend std::ostream& operator<<(std::ostream& out, const tIntFixedBase<S>& value);
+
+protected:
+	std::optional<std::int32_t> m_Value;
+
+public:
+	using value_type = std::int32_t;
+
+	tIntFixedBase() = default;
+	explicit tIntFixedBase(tTypeVerified::tStatus verified) :tTypeVerified(verified) {}
+
+	bool IsEmpty() const { return !m_Value.has_value(); }
+
+	std::int32_t GetValue() const { return m_Value.value_or(0); }
+
+	std::string ToString() const
+	{
+		std::stringstream SStr;
+		SStr << *this;
+		return SStr.str();
+	}
+};
+
+template<std::size_t Size>
+std::ostream& operator<<(std::ostream& out, const tIntFixedBase<Size>& value)
 {
 	if (value.IsEmpty())
 		return out;
@@ -279,19 +272,152 @@ std::ostream& operator<<(std::ostream& out, const tIntFixed<Size>& value)
 	//out << std::setfill('0') << std::setw(Size) << value.GetValue(); // 0000-1.34
 	return out;
 }
-
-template <std::size_t Size>
-using tIntFixedNoNull = hidden::tTypeNoNull<tIntFixed<Size>>;
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 template <std::size_t Size>
-using tUIntFixed = hidden::tUnsigned<tIntFixed<Size>>;
+class tIntFixedStrict : public hide::tIntFixedBase<Size> // Example: 000, 012, 123, -02, -12 for Size = 3
+{
+	using tBase = hide::tIntFixedBase<Size>;
+
+	static_assert(Size > 1, "Size must be greater than 1.");
+
+public:
+	tIntFixedStrict() = default;
+	explicit tIntFixedStrict(tTypeVerified::tStatus verified) :tBase(verified) {}
+	explicit tIntFixedStrict(const std::string& value)
+	{
+		if (value.empty())
+			return;
+		if (value.size() != Size || !hide::IsInt(value))
+		{
+			tBase::SetVerified(false);
+			return;
+		}
+		tBase::m_Value = std::strtol(value.c_str(), nullptr, 10);
+	}
+	explicit tIntFixedStrict(std::int32_t value)
+	{
+		if (hide::CountDigits(value) > Size)
+		{
+			tBase::SetVerified(false);
+			return;
+		}
+		tBase::m_Value = value;
+	}
+
+	static constexpr std::size_t GetSize() { return Size; }
+};
 
 template <std::size_t Size>
-using tUIntFixedNoNull = hidden::tTypeNoNull<tUIntFixed<Size>>;
+using tIntFixedStrictNoNull = hide::tTypeNoNull<tIntFixedStrict<Size>>;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t Size>
+class tIntFixed : public hide::tIntFixedBase<Size> // Example: 000, 012, 123, -02, -12, -123  for Size = 3. It can't be unsigned.
+{
+	using tBase = hide::tIntFixedBase<Size>;
+
+	static_assert(Size > 0, "Size must be greater than 0.");
+
+public:
+	tIntFixed() = default;
+	explicit tIntFixed(tTypeVerified::tStatus verified) :tBase(verified) {}
+	explicit tIntFixed(const std::string& value)
+	{
+		assert(Size >= 1);
+		if (value.empty())
+			return;
+		const std::size_t SizeReal = value.size() > Size && value[0] == '-' && value[1] != '0' ? Size + 1 : Size; // -01, -12, -123
+		if (!hide::IsInt(value) || value.size() != SizeReal)
+		{
+			tBase::SetVerified(false);
+			return;
+		}
+		tBase::m_Value = std::strtol(value.c_str(), nullptr, 10);
+	}
+	explicit tIntFixed(std::int32_t value)
+	{
+		const std::size_t SizeMax = value < 0 ? Size + 1 : Size;
+		if (hide::CountDigits(value) > SizeMax)
+		{
+			tBase::SetVerified(false);
+			return;
+		}
+		tBase::m_Value = value;
+	}
+
+	//static constexpr std::size_t GetSize() { return Size; } // [TBD] that's wrong, the size depends on sign and quantity of digits
+};
+
+template <std::size_t Size>
+using tIntFixedNoNull = hide::tTypeNoNull<tIntFixed<Size>>;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t SizeMax>
+class tUInt : public tTypeVerified // It can consist of any quantity of digits from 1 upto Size.
+{
+	static_assert(SizeMax > 0, "Size must be greater than 0.");
+
+	template <std::size_t S>
+	friend std::ostream& operator<<(std::ostream& out, const tUInt<S>& value);
+
+	std::optional<std::int32_t> m_Value;
+
+public:
+	using value_type = std::int32_t;
+
+	tUInt() = default;
+	explicit tUInt(tTypeVerified::tStatus verified) :tTypeVerified(verified) {}
+	explicit tUInt(const std::string& value)
+	{
+		if (value.empty() )
+			return;
+		if (!hide::IsUInt(value) || value.size() > SizeMax)
+		{
+			SetVerified(false);
+			return;
+		}
+		m_Value = std::strtol(value.c_str(), nullptr, 10);
+	}
+	explicit tUInt(std::int32_t value)
+	{
+		if (value < 0 || hide::CountDigits(value) > SizeMax)
+		{
+			SetVerified(false);
+			return;
+		}
+		m_Value = value;
+	}
+
+	static constexpr std::size_t GetSize() { return SizeMax; }
+
+	bool IsEmpty() const { return !m_Value.has_value(); }
+
+	std::int32_t GetValue() const { return m_Value.value_or(0); }
+
+	std::string ToString() const
+	{
+		std::stringstream SStr;
+		SStr << *this;
+		return SStr.str();
+	}
+};
+
+template <std::size_t SizeMax>
+std::ostream& operator<<(std::ostream& out, const tUInt<SizeMax>& value)
+{
+	if (value.IsEmpty())
+		return out;
+	out << *value.m_Value;
+	return out;
+}
+
+template <std::size_t SizeMax>
+using tUIntNoNull = hide::tTypeNoNull<tUInt<SizeMax>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 template <std::size_t SizeMax>
 class tInt : public tTypeVerified // It can consist of any quantity of digits from 1 upto Size.
 {
+	static_assert(SizeMax > 1, "Size must be greater than 1.");
+
 	template <std::size_t S>
 	friend std::ostream& operator<<(std::ostream& out, const tInt<S>& value);
 
@@ -306,7 +432,7 @@ public:
 	{
 		if (value.empty())
 			return;
-		if (!hidden::CheckSignedInt(value, SizeMax))
+		if (!hide::IsInt(value) || value.size() > SizeMax)
 		{
 			SetVerified(false);
 			return;
@@ -315,7 +441,7 @@ public:
 	}
 	explicit tInt(std::uint32_t value)
 	{
-		if (hidden::CountDigits(value) > SizeMax)
+		if (hide::CountDigits(value) > SizeMax)
 		{
 			SetVerified(false);
 			return;
@@ -323,9 +449,9 @@ public:
 		m_Value = value;
 	}
 
-	bool IsEmpty() const { return !m_Value.has_value(); }
+	static constexpr std::size_t GetSize() { return SizeMax; } 
 
-	static constexpr std::size_t GetSize() { return SizeMax; }
+	bool IsEmpty() const { return !m_Value.has_value(); }
 
 	std::int32_t GetValue() const { return m_Value.value_or(0); }
 
@@ -337,8 +463,6 @@ public:
 	}
 };
 
-template <> class tInt<0>; // Such an object cannot be created.
-
 template <std::size_t SizeMax>
 std::ostream& operator<<(std::ostream& out, const tInt<SizeMax>& value)
 {
@@ -349,15 +473,9 @@ std::ostream& operator<<(std::ostream& out, const tInt<SizeMax>& value)
 }
 
 template <std::size_t SizeMax>
-using tIntNoNull = hidden::tTypeNoNull<tInt<SizeMax>>;
+using tIntNoNull = hide::tTypeNoNull<tInt<SizeMax>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-template <std::size_t SizeMax>
-using tUInt = hidden::tUnsigned<tInt<SizeMax>>;
-
-template <std::size_t SizeMax>
-using tUIntNoNull = hidden::tTypeNoNull<tUInt<SizeMax>>;
-///////////////////////////////////////////////////////////////////////////////////////////////////
-namespace hidden
+namespace hide
 {
 
 template <typename TInt, typename TFract>
@@ -386,11 +504,13 @@ public:
 	}
 	explicit tFloatBase(double value)
 	{
-		std::pair<std::int32_t, std::int32_t> Data = hidden::SplitDouble(std::abs(value), tValueFract::GetSize());
+		std::pair<std::int32_t, std::int32_t> Data = hide::SplitDouble(std::abs(value), tValueFract::GetSize());
 		if (value < 0)
 			Data.first *= -1;
 		m_Value = { tValueInt(Data.first), tValueFract(Data.second) };
 	}
+
+	static constexpr std::size_t GetSize() { return tValueInt::GetSize() + 1 + tValueFract::GetSize(); }
 
 	bool IsVerified() const
 	{
@@ -408,13 +528,11 @@ public:
 		return m_Value->first.IsEmpty() || m_Value->second.IsEmpty();
 	}
 
-	static constexpr std::size_t GetSize() { return tValueInt::GetSize() + 1 + tValueFract::GetSize(); }
-
 	double GetValue() const
 	{
 		if (!m_Value.has_value())
 			return 0;
-		return hidden::MakeDouble(m_Value->first.GetValue(), m_Value->second.GetValue(), tValueFract::GetSize());
+		return hide::MakeDouble(m_Value->first.GetValue(), m_Value->second.GetValue(), tValueFract::GetSize());
 	}
 
 	std::string ToString() const
@@ -436,42 +554,6 @@ std::ostream& operator<<(std::ostream& out, const tFloatBase<TInt, TFract>& valu
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-template <std::size_t SizeInt, std::size_t Precision>
-using tFloatFixed = hidden::tFloatBase<tIntFixed<SizeInt>, tUIntFixed<Precision>>;
-
-template <std::size_t SizeInt, std::size_t Precision>
-using tFloatFixedNoNull = hidden::tTypeNoNull<tFloatFixed<SizeInt, Precision>>;
-///////////////////////////////////////////////////////////////////////////////////////////////////
-template <std::size_t SizeInt, std::size_t Precision>
-using tUFloatFixed = hidden::tUnsigned<tFloatFixed<SizeInt, Precision>>;
-
-template <std::size_t SizeInt, std::size_t Precision>
-using tUFloatFixedNoNull = hidden::tTypeNoNull<tUFloatFixed<SizeInt, Precision>>;
-///////////////////////////////////////////////////////////////////////////////////////////////////
-template <std::size_t SizeInt, std::size_t Precision>
-using tFloat = hidden::tFloatBase<tInt<SizeInt>, tUInt<Precision>>;
-
-template <std::size_t SizeIntMax, std::size_t PrecisionMax>
-using tFloatNoNull = hidden::tTypeNoNull<tFloat<SizeIntMax, PrecisionMax>>;
-///////////////////////////////////////////////////////////////////////////////////////////////////
-template <std::size_t SizeIntMax, std::size_t PrecisionMax>
-using tUFloat = hidden::tUnsigned<tFloat<SizeIntMax, PrecisionMax>>;
-
-template <std::size_t SizeIntMax, std::size_t PrecisionMax>
-using tUFloatNoNull = hidden::tTypeNoNull<tUFloat<SizeIntMax, PrecisionMax>>;
-///////////////////////////////////////////////////////////////////////////////////////////////////
-template<std::size_t SizeIntMax, std::size_t Precision>
-using tFloatPrecisionFixed = hidden::tFloatBase<tInt<SizeIntMax>, tUIntFixed<Precision>>;
-
-template<std::size_t SizeIntMax, std::size_t Precision>
-using tFloatPrecisionFixedNoNull = hidden::tTypeNoNull<tFloatPrecisionFixed<SizeIntMax, Precision>>;
-///////////////////////////////////////////////////////////////////////////////////////////////////
-template<std::size_t SizeIntMax, std::size_t Precision>
-using tUFloatPrecisionFixed = hidden::tFloatBase<tUInt<SizeIntMax>, tUIntFixed<Precision>>;
-
-template<std::size_t SizeIntMax, std::size_t Precision>
-using tUFloatPrecisionFixedNoNull = hidden::tTypeNoNull<tUFloatPrecisionFixed<SizeIntMax, Precision>>;
-///////////////////////////////////////////////////////////////////////////////////////////////////
 template<typename T>
 class tUnit
 {
@@ -489,19 +571,19 @@ public:
 	tUnit(const std::string& value, const std::string& unit)
 	{
 		m_Value = T(value);
-		if (unit.size() == 1 && hidden::IsChar(unit[0]))
+		if (unit.size() == 1 && hide::IsChar(unit[0]))
 			m_Unit = unit[0]; // It should be parsed in any case even if Value is null.
 	}
 	tUnit(value_type value, char unit)
 	{
 		m_Value = T(value);
-		if (hidden::IsChar(unit))
+		if (hide::IsChar(unit))
 			m_Unit = unit;
 	}
 
-	bool IsVerified() const { return m_Value.IsVerified() && (!m_Unit || hidden::IsChar(m_Unit)); }
+	bool IsVerified() const { return m_Value.IsVerified() && (!m_Unit || hide::IsChar(m_Unit)); }
 
-	bool IsEmpty() const { return m_Value.IsEmpty() && !hidden::IsChar(m_Unit); }
+	bool IsEmpty() const { return m_Value.IsEmpty() && !hide::IsChar(m_Unit); }
 
 	static constexpr std::size_t GetSize() { return 0; }
 
@@ -523,7 +605,7 @@ public:
 
 	std::string ToStringUnit() const
 	{
-		if (!hidden::IsChar(m_Unit))
+		if (!hide::IsChar(m_Unit))
 			return {};
 		return std::string(1, m_Unit);
 	}
@@ -533,7 +615,7 @@ template<typename T>
 std::ostream& operator<<(std::ostream& out, const tUnit<T>& value)
 {
 	out << value.m_Value << ',';
-	if (hidden::IsChar(value.m_Unit))
+	if (hide::IsChar(value.m_Unit))
 		out << value.m_Unit;
 	return out;
 }
@@ -550,11 +632,35 @@ public:
 	tUnitNoNull(const std::string& value, const std::string& unit) :tBase(value, unit) {}
 	tUnitNoNull(value_type value, char unit) :tBase(value, unit) {}
 
-	bool IsVerified() const { return this->m_Value.IsVerified() && hidden::IsChar(this->m_Unit); }
+	bool IsVerified() const { return this->m_Value.IsVerified() && hide::IsChar(this->m_Unit); }
 
 	bool IsEmpty() const { return this->m_Value.IsEmpty(); }
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t SizeInt, std::size_t Precision>
+using tFloatFixedStrict = hide::tFloatBase<tIntFixedStrict<SizeInt>, tUIntFixed<Precision>>;
+
+template <std::size_t SizeInt, std::size_t Precision>
+using tFloatFixedStrictNoNull = hide::tTypeNoNull<tFloatFixedStrict<SizeInt, Precision>>;
+
+template<std::size_t SizeInt, std::size_t Precision>
+using tFloatFixedStrictUnit = tUnit<tFloatFixedStrict<SizeInt, Precision>>;
+
+template<std::size_t SizeInt, std::size_t Precision>
+using tFloatFixedStrictUnitNoNull = tUnitNoNull<tFloatFixedStrict<SizeInt, Precision>>;
+
+template<std::size_t SizeInt, std::size_t Precision>
+using tFloatFixedStrictNoNullUnit = tUnit<tFloatFixedStrictNoNull<SizeInt, Precision>>;
+
+template<std::size_t SizeInt, std::size_t Precision>
+using tFloatFixedStrictNoNullUnitNoNull = tUnitNoNull<tFloatFixedStrictNoNull<SizeInt, Precision>>;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t SizeInt, std::size_t Precision>
+using tFloatFixed = hide::tFloatBase<tIntFixed<SizeInt>, tUIntFixed<Precision>>;
+
+template <std::size_t SizeInt, std::size_t Precision>
+using tFloatFixedNoNull = hide::tTypeNoNull<tFloatFixed<SizeInt, Precision>>;
+
 template<std::size_t SizeInt, std::size_t Precision>
 using tFloatFixedUnit = tUnit<tFloatFixed<SizeInt, Precision>>;
 
@@ -562,11 +668,17 @@ template<std::size_t SizeInt, std::size_t Precision>
 using tFloatFixedUnitNoNull = tUnitNoNull<tFloatFixed<SizeInt, Precision>>;
 
 template<std::size_t SizeInt, std::size_t Precision>
-using tFloatFixedNoNullUnit = tUnit<hidden::tTypeNoNull<tFloatFixed<SizeInt, Precision>>>;
+using tFloatFixedNoNullUnit = tUnit<tFloatFixedNoNull<SizeInt, Precision>>;
 
 template<std::size_t SizeInt, std::size_t Precision>
-using tFloatFixedNoNullUnitNoNull = tUnitNoNull<hidden::tTypeNoNull<tFloatFixed<SizeInt, Precision>>>;
+using tFloatFixedNoNullUnitNoNull = tUnitNoNull<tFloatFixedNoNull<SizeInt, Precision>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t SizeInt, std::size_t Precision>
+using tUFloatFixed = hide::tFloatBase<tUIntFixed<SizeInt>, tUIntFixed<Precision>>;
+
+template <std::size_t SizeInt, std::size_t Precision>
+using tUFloatFixedNoNull = hide::tTypeNoNull<tUFloatFixed<SizeInt, Precision>>;
+
 template<std::size_t SizeInt, std::size_t Precision>
 using tUFloatFixedUnit = tUnit<tUFloatFixed<SizeInt, Precision>>;
 
@@ -574,11 +686,23 @@ template<std::size_t SizeInt, std::size_t Precision>
 using tUFloatFixedUnitNoNull = tUnitNoNull<tUFloatFixed<SizeInt, Precision>>;
 
 template<std::size_t SizeInt, std::size_t Precision>
-using tUFloatFixedNoNullUnit = tUnit<hidden::tTypeNoNull<tUFloatFixed<SizeInt, Precision>>>;
+using tUFloatFixedNoNullUnit = tUnit<tUFloatFixedNoNull<SizeInt, Precision>>;
 
 template<std::size_t SizeInt, std::size_t Precision>
-using tUFloatFixedNoNullUnitNoNull = tUnitNoNull<hidden::tTypeNoNull<tUFloatFixed<SizeInt, Precision>>>;
+using tUFloatFixedNoNullUnitNoNull = tUnitNoNull<tUFloatFixedNoNull<SizeInt, Precision>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t SizeIntMax, std::size_t Precision>
+using tFloat = hide::tFloatBase<tInt<SizeIntMax>, tUInt<Precision>>;
+
+template <std::size_t SizeIntMax, std::size_t PrecisionMax>
+using tFloatNoNull = hide::tTypeNoNull<tFloat<SizeIntMax, PrecisionMax>>;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template<std::size_t SizeIntMax, std::size_t Precision>
+using tFloatPrecisionFixed = hide::tFloatBase<tInt<SizeIntMax>, tUIntFixed<Precision>>;
+
+template<std::size_t SizeIntMax, std::size_t Precision>
+using tFloatPrecisionFixedNoNull = hide::tTypeNoNull<tFloatPrecisionFixed<SizeIntMax, Precision>>;
+
 template<std::size_t SizeIntMax, std::size_t Precision>
 using tFloatPrecisionFixedUnit = tUnit<tFloatPrecisionFixed<SizeIntMax, Precision>>;
 
@@ -586,11 +710,23 @@ template<std::size_t SizeIntMax, std::size_t Precision>
 using tFloatPrecisionFixedUnitNoNull = tUnitNoNull<tFloatPrecisionFixed<SizeIntMax, Precision>>;
 
 template<std::size_t SizeIntMax, std::size_t Precision>
-using tFloatPrecisionFixedNoNullUnit = tUnit<hidden::tTypeNoNull<tFloatPrecisionFixed<SizeIntMax, Precision>>>;
+using tFloatPrecisionFixedNoNullUnit = tUnit<tFloatPrecisionFixedNoNull<SizeIntMax, Precision>>;
 
 template<std::size_t SizeIntMax, std::size_t Precision>
-using tFloatPrecisionFixedNoNullUnitNoNull = tUnitNoNull<hidden::tTypeNoNull<tFloatPrecisionFixed<SizeIntMax, Precision>>>;
+using tFloatPrecisionFixedNoNullUnitNoNull = tUnitNoNull<tFloatPrecisionFixedNoNull<SizeIntMax, Precision>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+template <std::size_t SizeIntMax, std::size_t PrecisionMax>
+using tUFloat = hide::tFloatBase<tUInt<SizeIntMax>, tUInt<PrecisionMax>>;
+
+template <std::size_t SizeIntMax, std::size_t PrecisionMax>
+using tUFloatNoNull = hide::tTypeNoNull<tUFloat<SizeIntMax, PrecisionMax>>;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+template<std::size_t SizeIntMax, std::size_t Precision>
+using tUFloatPrecisionFixed = hide::tFloatBase<tUInt<SizeIntMax>, tUIntFixed<Precision>>;
+
+template<std::size_t SizeIntMax, std::size_t Precision>
+using tUFloatPrecisionFixedNoNull = hide::tTypeNoNull<tUFloatPrecisionFixed<SizeIntMax, Precision>>;
+
 template<std::size_t SizeIntMax, std::size_t Precision>
 using tUFloatPrecisionFixedUnit = tUnit<tUFloatPrecisionFixed<SizeIntMax, Precision>>;
 
@@ -598,10 +734,10 @@ template<std::size_t SizeIntMax, std::size_t Precision>
 using tUFloatPrecisionFixedUnitNoNull = tUnitNoNull<tUFloatPrecisionFixed<SizeIntMax, Precision>>;
 
 template<std::size_t SizeIntMax, std::size_t Precision>
-using tUFloatPrecisionFixedNoNullUnit = tUnit<hidden::tTypeNoNull<tUFloatPrecisionFixed<SizeIntMax, Precision>>>;
+using tUFloatPrecisionFixedNoNullUnit = tUnit<tUFloatPrecisionFixedNoNull<SizeIntMax, Precision>>;
 
 template<std::size_t SizeIntMax, std::size_t Precision>
-using tUFloatPrecisionFixedNoNullUnitNoNull = tUnitNoNull<hidden::tTypeNoNull<tUFloatPrecisionFixed<SizeIntMax, Precision>>>;
+using tUFloatPrecisionFixedNoNullUnitNoNull = tUnitNoNull<tUFloatPrecisionFixedNoNull<SizeIntMax, Precision>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 class tDate
 {
@@ -641,9 +777,9 @@ private:
 
 std::ostream& operator<<(std::ostream& out, const tDate& value);
 
-using tDateNoNull = hidden::tTypeNoNull<tDate>;
+using tDateNoNull = hide::tTypeNoNull<tDate>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-namespace hidden
+namespace hide
 {
 
 template<typename TSecond>
@@ -752,10 +888,10 @@ struct tTimeHelper<0>
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 template<std::size_t Precision>
-using tTime = typename hidden::tTimeHelper<Precision>::type;
+using tTime = typename hide::tTimeHelper<Precision>::type;
 
 template<std::size_t Precision>
-using tTimeNoNull = hidden::tTypeNoNull<tTime<Precision>>;
+using tTimeNoNull = hide::tTypeNoNull<tTime<Precision>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // The valid range of latitude in degrees is -90 and +90 for the southern and northern hemisphere, respectively.
 // Longitude is in the range -180 and +180 specifying coordinates west and east of the Prime Meridian, respectively. For reference,
@@ -869,13 +1005,13 @@ template <std::size_t Precision>
 using tLatitude = tGeoDegree<2, Precision>;
 
 template <std::size_t Precision>
-using tLatitudeNoNull = hidden::tTypeNoNull<tLatitude<Precision>>;
+using tLatitudeNoNull = hide::tTypeNoNull<tLatitude<Precision>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 template <std::size_t Precision>
 using tLongitude = tGeoDegree<3, Precision>;
 
 template <std::size_t Precision>
-using tLongitudeNoNull = hidden::tTypeNoNull<tLongitude<Precision>>;
+using tLongitudeNoNull = hide::tTypeNoNull<tLongitude<Precision>>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 class tMode : public tTypeVerified // NMEA version 2.3 and later
 {
@@ -897,7 +1033,7 @@ public:
 
 std::ostream& operator<<(std::ostream& out, const tMode& value);
 
-using tModeNoNull = hidden::tTypeNoNull<tMode>;
+using tModeNoNull = hide::tTypeNoNull<tMode>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 class tQuality : public tTypeVerified
 {
@@ -924,7 +1060,7 @@ public:
 
 std::ostream& operator<<(std::ostream& out, const tQuality& value);
 
-using tQualityNoNull = hidden::tTypeNoNull<tQuality>;
+using tQualityNoNull = hide::tTypeNoNull<tQuality>;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 }
 }
