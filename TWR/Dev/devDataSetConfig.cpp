@@ -21,9 +21,10 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
 	m_SPI0_CS0 = share::config::port::tSPI_Config(SPI0_CS0_ID, "spi", PTreeConfig);
 	m_Dallas = share::config::port::tUART_Config("uart_dallas", m_Platform.ID, PTreeConfig);
-	m_UART[0] = share::config::port::tUART_Config("uart_1", m_Platform.ID, PTreeConfig);
-	m_UART[1] = share::config::port::tUART_Config("uart_2", m_Platform.ID, PTreeConfig);
-	m_UART[2] = share::config::port::tUART_Config("uart_3", m_Platform.ID, PTreeConfig);
+	m_UART[0] = share::config::port::tUART_Config("uart_0", m_Platform.ID, PTreeConfig);
+	m_UART[1] = share::config::port::tUART_Config("uart_1", m_Platform.ID, PTreeConfig);
+	m_UART[2] = share::config::port::tUART_Config("uart_2", m_Platform.ID, PTreeConfig);
+	m_UART[3] = share::config::port::tUART_Config("uart_3", m_Platform.ID, PTreeConfig);
 }
 
 }
