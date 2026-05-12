@@ -106,7 +106,8 @@
 ```
 {
  "ep": "uart_X",
- "cmd": "open"
+ "cmd": "open",
+ "br": <br>					- baudrate, optionally
  }
  ```
 

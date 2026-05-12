@@ -6,7 +6,7 @@ namespace dev
 {
 namespace settings
 {
-	constexpr char Version[] = "TWR.0.3.3";
+	constexpr char Version[] = "TWR.0.3.4";
 
 namespace network_udp
 {
@@ -26,5 +26,6 @@ namespace port_uart
 
 #ifdef _WIN32
 #define UDP_SERVER_TEST
+#define TWR_DEBUG
 #define _WIN32_WINNT 0x0601
 #endif // _WIN32
