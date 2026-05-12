@@ -45,12 +45,15 @@ namespace utils.twr
 
         public static string MakeReceive(string ep) => MakeJSON(MakeHeader(ep, "receive"));
 
-        //public static string Make(string ep, string cmd, Dictionary<string, string> content)
-        //{
-        //    content.Add("ep", ep);
-        //    content.Add("cmd", cmd);
-        //    return MakeJSON(content);
-        //}
+        public static string MakeDallasSearch(string ep) => MakeJSON(MakeHeader(ep, "search"));
+
+        public static string MakeDallasGetThermo(string ep, List<string> ids)
+        {
+            Dictionary<string, string> Header = MakeHeader(ep, "thermo");
+            var Data = Header.ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
+            Data.Add("ids", ids);
+            return MakeJSON(Data);
+        }
 
         public static Dictionary<string, string> MakeHeader(string ep, string cmd)
         {
@@ -62,24 +65,7 @@ namespace utils.twr
             return Data;
         }
 
-        //static string Make(string ep, string cmd, List<KeyValuePair<string, string>> content)
-        //{
-        //    Dictionary<string, string> Data = MakeHeader(ep, cmd);
-        //    foreach (var i in content)
-        //    {
-        //        Data.Add(i.Key, i.Value);
-        //    }
-        //    return MakeJSON(Data);
-        //}
-        //
-        //static string Make(string ep, string cmd, KeyValuePair<string, string> content)
-        //{
-        //    Dictionary<string, string> Data = MakeHeader(ep, cmd);
-        //    Data.Add(content.Key, content.Value);
-        //    return MakeJSON(Data);
-        //}
-
-        static string MakeJSON(Dictionary<string, string> dict)
+        static string MakeJSON<T>(Dictionary<string, T> dict)
         {
             var Options = new JsonSerializerOptions
             {

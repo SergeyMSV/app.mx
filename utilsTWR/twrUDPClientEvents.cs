@@ -14,6 +14,26 @@ namespace utils.twr
         }
     }
 
+    public class DallasSearchedEventArgs : EventArgs
+    {
+        public Dictionary<string, string> ROMs { get; }
+
+        public DallasSearchedEventArgs(Dictionary<string, string> roms)
+        {
+            ROMs = roms;
+        }
+    }
+
+    public class DallasReceivedEventArgs : EventArgs
+    {
+        public Dictionary<string, string> Values { get; }
+
+        public DallasReceivedEventArgs(Dictionary<string, string> values)
+        {
+            Values = values;
+        }
+    }
+
     public class UARTReceivedEventArgs : EventArgs
     {
         public string Data { get; }
