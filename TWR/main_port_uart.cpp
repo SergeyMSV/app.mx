@@ -182,7 +182,10 @@ static void ThreadUART_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, 
 					std::cout << "OPEN\n";
 #endif // TWR_DEBUG
 					if (PortPtr)
-						PortPtr.reset();
+					{
+						server.SendResponse(Pack.Endpoint, PTree, "unable to open port: " + PortConfig.ID);
+						continue;
+					}
 					std::uint32_t Baudrate = PTree.get<std::uint32_t>("br", 0);
 					share::config::port::tUART_Config PConf = PortConfig;
 					if (Baudrate)
