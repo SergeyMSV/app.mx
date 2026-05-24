@@ -44,7 +44,7 @@ namespace SergeM
         {
             BeginInvoke(new Action(() =>
             {
-                Text = m_Text + ": " + e.Version + " (" + e.Endpoint.ToString() + ")";
+                Text = m_Text + ": " + e.Version + " (" + e.Endpoint.ToString() + ", " + Properties.Settings.Default.UART + ")";
             }));
         }
 
@@ -163,7 +163,7 @@ namespace SergeM
                     string FileName = "Record " + UTC.ToString("yyyy-MM-dd") + ".txt";
                     bool FileNew = !File.Exists(FileName);
                     m_RecordingFile = new StreamWriter(FileName, true);
-                    string StartLine = (FileNew ? "" : "\n") + "--------- START, UTC: " + UTC.ToString("yyyy-MM-dd HH:mm:ss") + ", port: " + Properties.Settings.Default.UART; ;
+                    string StartLine = (FileNew ? "" : "\n") + "--------- START, UTC: " + UTC.ToString("yyyy-MM-dd HH:mm:ss") + ", port: " + Properties.Settings.Default.UART;
                     m_RecordingFile.WriteLine(StartLine);
                 }
                 else
