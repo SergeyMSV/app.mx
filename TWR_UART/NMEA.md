@@ -21,11 +21,11 @@ It seems to be no response even if the baudrate is the same.
 Request
 
 ```
-PSRF101,0,0,0,0,0,0,12,1	- Hot Start— All data valid
-PSRF101,0,0,0,0,0,0,12,2	- Warm Start—Ephemeris cleared	
-PSRF101,0,0,0,0,0,0,12,3	- Warm Start (with Init)—Ephemeris cleared, initialization data loaded
-PSRF101,0,0,0,0,0,0,12,4	- Cold Start—Clears all data in memory
-PSRF101,0,0,0,0,0,0,12,8	- Clear Memory—Clears all data in memory and resets the receiver back to factory defaults (it resets SerialPort Baudrate)
+PSRF101,0,0,0,0,0,0,12,1	- Hot Start — All data valid
+PSRF101,0,0,0,0,0,0,12,2	- Warm Start — Ephemeris cleared	
+PSRF101,0,0,0,0,0,0,12,3	- Warm Start (with Init) — Ephemeris cleared, initialization data loaded
+PSRF101,0,0,0,0,0,0,12,4	- Cold Start — Clears all data in memory
+PSRF101,0,0,0,0,0,0,12,8	- Clear Memory — Clears all data in memory and resets the receiver back to factory defaults (it resets SerialPort Baudrate)
 ```
 
 #### Response
