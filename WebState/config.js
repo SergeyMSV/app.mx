@@ -14,7 +14,7 @@ exports.GetConfig = function () { return config; }
 exports.GetConfigMXGNSS = function () {
     try {
         let conf = ReadConfigMXGNSS();
-        conf.NMEA.PeriodMAX_ms = conf.NMEA.PeriodMAX_us / 1000; // converted to ms from us
+        conf.NaviValidityPeriod = 5000; // [#] in ms
 
         if (!PRODUICTION)
             SetTestRootPaths(conf);
