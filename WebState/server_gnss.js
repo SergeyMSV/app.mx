@@ -66,12 +66,12 @@ exports.GetPageData = function () {
 
         data.utc = sc_utils.DateToString(new Date(utcGNSS));
 
-        if (Math.abs(utcNow - utcFile) > g_confMXGNSS.NMEA.PeriodMAX_ms) { // The file is outdated, the containing data is not interesting.
+        if (Math.abs(utcNow - utcFile) > g_confMXGNSS.NaviValidityPeriod) { // The file is outdated, the containing data is not interesting.
             data.status = Object.assign({}, sc_status.GNSS.NoData); // copying the object
             data.status.class = 'text_red';
         }
         // The file is not outdated but UTC in the containing data is not correct (e.g. GPS spoofing).
-        //else if (Math.abs(utcNow - utcGNSS) > g_confMXGNSS.NMEA.PeriodMAX_ms) {
+        //else if (Math.abs(utcNow - utcGNSS) > g_confMXGNSS.NaviValidityPeriod) {
         //    data.status = Object.assign({}, sc_status.GNSS.NoData); // copying the object --- ???
         //}
         else if (Math.abs(utcFile - utcGNSS) > 1000) { // if the difference between utcFile and utcGNSS is more then 1 s - it doesn't seem to be all right.
