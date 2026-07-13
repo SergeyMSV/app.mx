@@ -2,5 +2,40 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsLinux.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsPath.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsException.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="LIB.Utils">
+      <UniqueIdentifier>{014ddcbc-33f8-4b1e-83dd-ab2f00890f42}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LIB.Utils\!Refresh.bat">
+      <Filter>LIB.Utils</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\LIB.Utils\utilsExits.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsLinux.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="devConfig.h" />
+    <ClInclude Include="libConfig.h" />
+    <ClInclude Include="..\LIB.Utils\utilsPath.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsException.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
