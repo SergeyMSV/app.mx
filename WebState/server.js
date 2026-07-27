@@ -2,7 +2,7 @@
 
 'use strict';
 
-const version = 'v.0.1.11';
+const version = 'v.0.1.12';
 
 const np_fs = require('fs');
 const np_express = require('express');
@@ -13,7 +13,7 @@ app.use(np_favicon(__dirname + '/public/favicon.ico'));
 
 const sc_config = require('./config.js');
 const sc_server_cpu = require('./server_cpu.js');
-const sc_server_state = require('./server_state.js');
+//const sc_server_state = require('./server_state.js');
 const sc_server_gnss = require('./server_gnss.js');
 const sc_utils = require('./utils.js');
 
@@ -30,7 +30,8 @@ app.get('/', (req, res) => {
         data.cpu = sc_server_cpu.GetPageData(g_conf);
         data.host = {};
         data.host.utc = sc_utils.DateToString(new Date);
-        data.host.uptime = sc_server_state.GetUptime(g_conf.uptime.path);
+        data.host.uptime = sc_utils.GetUptime();
+        data.host.color = 'green'; // [TBD] it is to be more useful
         data.host.color = 'green'; // [TBD] it is to be more useful
         data.gnss = sc_server_gnss.GetPageData();
         data.update_period = 500; // ms
@@ -94,4 +95,4 @@ app.get('/sound/no_answer_peep.mp3', (req, res) => {
     });
 });
 
-app.listen(sc_config.PORT);
+app.listen(process.env.PORT || 1337);

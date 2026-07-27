@@ -1,11 +1,6 @@
 'use strict'
 
-const np_fs = require('fs');
-
-const PRODUICTION = process.env.NODE_ENV === 'production';
-
-exports.PRODUICTION = PRODUICTION;
-exports.PORT = process.env.PORT || 1337;
+const sc_utils = require('./utils.js');
 
 exports.GetHostname = function () { return hostname; }
 
@@ -13,12 +8,8 @@ exports.GetConfig = function () { return config; }
 
 exports.GetConfigMXGNSS = function () {
     try {
-        let conf = ReadConfigMXGNSS();
+        const conf = sc_utils.ReadConfig('mxgnss.conf.json', '/usr/local/etc/');
         conf.NaviValidityPeriod = 5000; // [#] in ms
-
-        if (!PRODUICTION)
-            SetTestRootPaths(conf);
-
         return conf;
     }
     catch { } // console.error(err); - it can be absent
@@ -26,11 +17,8 @@ exports.GetConfigMXGNSS = function () {
 
 const config = (() => {
     try {
-        const conf_mx = ReadConfigMX(); // get platform id in order to select appropriate settings
-
-        let conf = np_fs.readFileSync('server.conf.json', 'utf-8');
-        conf = JSON.parse(conf);
-
+        const conf_mx = sc_utils.ReadConfig('mx.conf.json', '/etc'); // get platform id in order to select appropriate settings
+        const conf = sc_utils.ReadConfig('server.conf.json', ''); 
         for (const i in conf) { // add new config items in accordance with the platform id
             const platformId = i.split('_').pop();
             if (platformId == conf_mx.platform.id) {
@@ -38,10 +26,6 @@ const config = (() => {
                 conf[paramId] = conf[i];
             }
         }
-
-        if (!PRODUICTION)
-            SetTestRootPaths(conf);
-
         return conf;
     }
     catch (err) {
@@ -49,39 +33,28 @@ const config = (() => {
     }
 })();
 
-const hostname = (() => {
-    try {
-        return np_fs.readFileSync(config.hostname.path, 'utf-8');
-    }
-    catch (err) {
-        console.error(err); // it can be written only once when the device is started.
-    }
-    return 'NONAME';
-})();
+const hostname = (() => { return sc_utils.GetHostname(); })();
 
-function ReadConfig(a_filepath) {
-    let conf = np_fs.readFileSync(a_filepath, 'utf-8');
-    return JSON.parse(conf);
-}
+//function ReadConfig(a_filepath) {
+//    const conf = sc_utils.ReadFileConfigSync(a_filepath);
+//    return JSON.parse(conf);
+//}
 
-function ReadConfigMX() {
-    const filename = 'mx.conf.json';
-    return ReadConfig(!PRODUICTION ? filename : '/etc/' + filename);
-}
+//function ReadConfigMX() { return  }
 
-function ReadConfigMXGNSS() {
-    const filename = 'mxgnss.conf.json';
-    return ReadConfig(!PRODUICTION ? filename : '/usr/local/etc/' + filename);
-}
+//function ReadConfigMXGNSS() {
+//    const filename = 'mxgnss.conf.json';
+//    return ReadConfig(!PRODUICTION ? filename : '/usr/local/etc/' + filename);
+//}
 
-function SetTestRootPaths(a_confServer) {
-    for (const i in a_confServer) { // add prefixes to paths in accordance with the platform id
-        let val = a_confServer[i];
-        if (Array.isArray(val)) {
-            SetTestRootPaths(val);
-        }
-        else if (val.path != undefined && typeof (val.path) === 'string' && val.path.length > 0 && val.path[0] === '/') {
-            val.path = 'test_root_fs' + val.path;
-        }
-    }
-}
+//function SetTestRootPaths(a_confServer) { // DEPRECATED
+//    for (const i in a_confServer) { // add prefixes to paths in accordance with the platform id
+//        let val = a_confServer[i];
+//        if (Array.isArray(val)) {
+//            SetTestRootPaths(val);
+//        }
+//        else if (val.path != undefined && typeof (val.path) === 'string' && val.path.length > 0 && val.path[0] === '/') {
+//            val.path = 'test_root_fs' + val.path;
+//        }
+//    }
+//}

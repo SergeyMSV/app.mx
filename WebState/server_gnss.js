@@ -1,7 +1,5 @@
 'use strict';
 
-const np_fs = require('fs');
-
 const sc_config = require('./config.js');
 const sc_status = require('./status.js');
 const sc_utils = require('./utils.js')
@@ -29,7 +27,7 @@ exports.GetPageData = function () {
 
     let filesGNSS = [];
     try {
-        let filesAll = np_fs.readdirSync(g_confMXGNSS.out.path);
+        const filesAll = sc_utils.ReadDir(g_confMXGNSS.out.path);
         for (const i of filesAll) {
             if (i.includes(g_confMXGNSS.out.prefix, 0)) {
                 filesGNSS.push(i);
@@ -52,8 +50,7 @@ exports.GetPageData = function () {
 
     const filePath = g_confMXGNSS.out.path + '/' + fileLast;
     try {
-        let gnssData = np_fs.readFileSync(filePath, 'utf-8');
-        gnssData = JSON.parse(gnssData);
+        const gnssData = sc_utils.ReadFileJSON(filePath);
 
         data.mode = gnssData.mode_indicator.toLowerCase();
         data.sats = GetSatStatus(gnssData);
