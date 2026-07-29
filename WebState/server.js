@@ -12,28 +12,24 @@ let app = np_express();
 app.use(np_favicon(__dirname + '/public/favicon.ico'));
 
 const sc_config = require('./config.js');
-const sc_server_cpu = require('./server_cpu.js');
-//const sc_server_state = require('./server_state.js');
-const sc_server_gnss = require('./server_gnss.js');
+const sc_page_cpu = require('./page_cpu.js');
+const sc_page_gnss = require('./page_gnss.js');
 const sc_utils = require('./utils.js');
-
-const g_conf = sc_config.GetConfig();
-const g_hostname = sc_config.GetHostname();
 
 app.get('/', (req, res) => {
 
-    if (g_conf === undefined)
+    const conf = sc_config.GetConfig();
+    if (conf === undefined)
         return;
 
     if (req.query.content == 'data') {
         let data = {};
-        data.cpu = sc_server_cpu.GetPageData(g_conf);
+        data.cpu = sc_page_cpu.GetPageData(conf);
         data.host = {};
         data.host.utc = sc_utils.DateToString(new Date);
         data.host.uptime = sc_utils.GetUptime();
         data.host.color = 'green'; // [TBD] it is to be more useful
-        data.host.color = 'green'; // [TBD] it is to be more useful
-        data.gnss = sc_server_gnss.GetPageData();
+        data.gnss = sc_page_gnss.GetPageData();
         data.update_period = 500; // ms
         res.status(200).json(data);
         return;
@@ -43,29 +39,26 @@ app.get('/', (req, res) => {
     res.append('Content-Type', 'text/html; charset=UTF-8');
     res.append('Content-Script-Type', 'text/javascript');
 
-    let HtmlHead = '<title>' + g_hostname + '</title>';
-    HtmlHead += '<link rel="stylesheet" href="css/content.css" type="text/css" />';
-    //HtmlHead += '<script src="js/jquery-3.7.1.js" type="text/javascript"></script>';
-    HtmlHead += '<script src="js/jquery-3.7.1.min.js" type="text/javascript"></script>';
-    HtmlHead += '<script src="js/page.js" type="text/javascript"></script>';
-    HtmlHead += '<script>$(document).ready(function () { update(); });</script>';
-
-    let HtmlBodyMain = '<table>';
-    HtmlBodyMain += `<tr><td id="host_color" width=1px></td><td>Host:</td><td id="host_name">${g_hostname} (${version})</td></tr>`;
-    HtmlBodyMain += '<tr><td width=1px></td><td>- UTC:</td><td id="host_utc"></td></tr>';
-    HtmlBodyMain += '<tr><td></td><td>- uptime:</td><td id="host_uptime"></td></tr>';
-    HtmlBodyMain += sc_server_cpu.GetPage();
-    HtmlBodyMain += sc_server_gnss.GetPage();
-    HtmlBodyMain += '</table>';
+    const hostname = sc_utils.GetHostname();
 
     const htmlDoc = `<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-${HtmlHead}
+<title>${hostname}</title>
+<link rel="stylesheet" href="css/content.css" type="text/css" />
+<script src="js/jquery-3.7.1.min.js" type="text/javascript"></script>
+<script src="js/page.js" type="text/javascript"></script>
+<script>$(document).ready(function () { update(); });</script>
 </head>
 <body>
-${HtmlBodyMain}
+<table>
+<tr><td id="host_color" width=1px></td><td>Host:</td><td id="host_name">${hostname} (${version})</td></tr>
+<tr><td width=1px></td><td>- UTC:</td><td id="host_utc"></td></tr>
+<tr><td></td><td>- uptime:</td><td id="host_uptime"></td></tr>
+${sc_page_cpu.GetPage()}
+${sc_page_gnss.GetPage()}
+</table>
 </body>
 </html>`;
 

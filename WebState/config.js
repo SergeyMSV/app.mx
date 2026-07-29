@@ -2,8 +2,6 @@
 
 const sc_utils = require('./utils.js');
 
-exports.GetHostname = function () { return hostname; }
-
 exports.GetConfig = function () { return config; }
 
 exports.GetConfigMXGNSS = function () {
@@ -32,29 +30,3 @@ const config = (() => {
         console.error(err); // it can be written only once when the device is started.
     }
 })();
-
-const hostname = (() => { return sc_utils.GetHostname(); })();
-
-//function ReadConfig(a_filepath) {
-//    const conf = sc_utils.ReadFileConfigSync(a_filepath);
-//    return JSON.parse(conf);
-//}
-
-//function ReadConfigMX() { return  }
-
-//function ReadConfigMXGNSS() {
-//    const filename = 'mxgnss.conf.json';
-//    return ReadConfig(!PRODUICTION ? filename : '/usr/local/etc/' + filename);
-//}
-
-//function SetTestRootPaths(a_confServer) { // DEPRECATED
-//    for (const i in a_confServer) { // add prefixes to paths in accordance with the platform id
-//        let val = a_confServer[i];
-//        if (Array.isArray(val)) {
-//            SetTestRootPaths(val);
-//        }
-//        else if (val.path != undefined && typeof (val.path) === 'string' && val.path.length > 0 && val.path[0] === '/') {
-//            val.path = 'test_root_fs' + val.path;
-//        }
-//    }
-//}
