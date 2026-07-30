@@ -39,10 +39,7 @@
     <Content Include="public\js\jquery-3.7.1.js" />
     <Content Include="public\js\jquery-3.7.1.min.js" />
     <Content Include="public\sound\blip_no_answer.wav" />
-    <Content Include="server_state.js">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="server_gnss.js" />
+    <Content Include="page_gnss.js" />
     <Content Include="start.sh">
       <SubType>Code</SubType>
     </Content>
@@ -51,7 +48,7 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="server.conf.json" />
-    <Content Include="server_cpu.js">
+    <Content Include="page_cpu.js">
       <SubType>Code</SubType>
     </Content>
     <Content Include="status.js">
