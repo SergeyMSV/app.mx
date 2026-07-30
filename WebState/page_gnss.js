@@ -11,8 +11,8 @@ exports.GetPage = function () {
     const str = '<tr><td id="gnss_status_color" bgcolor="white"></td><td>GNSS</td><td id="gnss_status_text"></td></tr>';
     if (!g_isSupportedMXGNSS)
         return str;
-    return str +
-`<tr><td></td><td> - UTC fixed:</td><td id="gnss_utc_file_text"></td></tr>
+    return str + `
+<tr><td></td><td> - UTC fixed:</td><td id="gnss_utc_file_text"></td></tr>
 <tr><td></td><td> - UTC:</td><td id="gnss_utc_text"></td></tr>
 <tr><td></td><td> - mode:</td><td id="gnss_mode_text"></td></tr>
 <tr><td></td><td> - satellites:</td><td><span id="gnss_sats_gps"></span> <span id="gnss_sats_glo"></span></td></tr>
