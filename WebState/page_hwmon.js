@@ -14,11 +14,11 @@ exports.GetPageData = function () {
     let data = { input: {}, color: {} };
     for (let i of g_hwmon) {
         if (Object.hasOwn(i, 'temp1_input')) {
-            data['input'][i.id] = sc_utils.ReadFile(i.dir + '/' + 'temp1_input'); // [TBD]
+            data['input'][i.id] = sc_utils.ReadFile(i.dir + '/' + 'temp1_input', ''); // [TBD]
             data['color'][i.id] = 'green'; // [TBD]
         }
         if (Object.hasOwn(i, 'humidity1_input')) {
-            data['input'][i.id] += ' --> ' + sc_utils.ReadFile(i.dir + '/' + 'humidity1_input'); // [TBD]
+            data['input'][i.id] += ' --> ' + sc_utils.ReadFile(i.dir + '/' + 'humidity1_input', ''); // [TBD]
         }
     }
     return data;
