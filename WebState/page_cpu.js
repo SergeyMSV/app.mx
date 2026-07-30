@@ -4,14 +4,15 @@ const sc_status = require('./status.js');
 const sc_utils = require('./utils.js');
 
 exports.GetPage = function () {
-    return `<tr><td></td><td>- load avg.:</td><td id="cpu_loadavg"></td></tr>
-<tr><td id="cpu_thermal_color" bgcolor="white"></td><td>CPU thermal:</td><td id="cpu_thermal_text"></td></tr>`;
+    return '';
+    //return `<tr><td></td><td>- load avg.:</td><td id="cpu_loadavg"></td></tr>
+//<tr><td id="cpu_thermal_color" bgcolor="white"></td><td>CPU thermal:</td><td id="cpu_thermal_text"></td></tr>`;
 }
 
 exports.GetPageData = function (a_config) {
     let data = {};
     data.cpu_loadavg = sc_utils.GetLoadAvg();
-    data.cpu_thermal = GetThermal('/sys/class/hwmon/hwmon0/temp1_input', a_config.cpu_thermaldiv);
+    //data.cpu_thermal = GetThermal('/sys/class/hwmon/hwmon0/temp1_input', a_config.cpu_thermaldiv);
     return data;
 }
 
