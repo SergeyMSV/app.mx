@@ -33,6 +33,16 @@ function update() {
                             SetElemBgColor('cpu_thermal_color', data[key]['cpu_thermal']?.['color']);
                         }
                         break;
+                    case 'hwmon':
+                        for (const hwmon_type in data[key]) { // type = input, color
+                            for (const hwmon_id in data[key][hwmon_type]) { // id = hwmon0, hwmon1, ...
+                                switch (hwmon_type) {
+                                    case 'input': SetElemText(hwmon_type + hwmon_id, data[key][hwmon_type][hwmon_id]); break;
+                                    case 'color': SetElemBgColor(hwmon_type + hwmon_id, data[key][hwmon_type][hwmon_id]); break;
+                                }
+                            }
+                        }
+                        break;
                     case 'gnss':
                         {
                             SetElemText('gnss_status_text', data[key]['status']?.['text']);
