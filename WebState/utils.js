@@ -1,5 +1,9 @@
 'use strict'
 
+const np_fs = require('fs');
+
+const PRODUICTION = process.env.NODE_ENV === 'production';
+
 exports.DateToString = function (a_date) {
     let dt = a_date.toISOString();
     dt = dt.replace('T', ' ');
@@ -8,7 +12,6 @@ exports.DateToString = function (a_date) {
 }
 
 exports.PeriodToString = function (a_period) { // period is in ms
-
     const per = ParsePeriod(a_period);
     const str = (per.negative ? '- ' : '') + per.days + ' days ' + // format: "85 days 05:10:18"
         per.hours.toString(10).padStart(2, '0') + ':' + // ECMAScript 2017
@@ -17,6 +20,7 @@ exports.PeriodToString = function (a_period) { // period is in ms
     //per.milliseconds.toString(10).padStart(3, '0');
     return str;
 }
+
 function ParsePeriod(a_period) { // period is in ms
     let per = {};
     per.negative = a_period < 0;
@@ -34,8 +38,7 @@ function ParsePeriod(a_period) { // period is in ms
     return per;
 }
 
-exports.ParseFileName = function (a_fileName)
-{
+exports.ParseFileName = function (a_fileName) {
     let temp = a_fileName.split('.');
     if (temp.length != 2)
         return undefined;
@@ -49,4 +52,62 @@ exports.ParseFileName = function (a_fileName)
     value.utc = Date.parse(date);
     value.dateTime = temp[1] + ' ' + timeStr;
     return value;
+}
+
+function GetRealPath(a_path) {
+    if (!PRODUICTION && typeof (a_path) === 'string' && a_path[0] === '/')
+        return 'test_root_fs' + a_path;
+    return a_path;
+}
+
+exports.ReadDir = function (a_path) {
+    try {
+        return np_fs.readdirSync(GetRealPath(a_path));
+    }
+    catch (err) {
+        console.error(err);
+    }
+    return [];
+}
+
+exports.ReadFile = function (a_path, a_default) {
+    try {
+        return np_fs.readFileSync(GetRealPath(a_path), 'utf-8');
+    }
+    catch (err) {
+        console.error(err);
+    }
+    return a_default;
+}
+
+exports.ReadFileJSON = function (a_path) {
+    try {
+        const conf = np_fs.readFileSync(GetRealPath(a_path), 'utf-8');
+        return JSON.parse(conf);
+    }
+    catch (err) {
+        console.error(err);
+    }
+    return '';
+}
+
+exports.ReadConfig = function (a_configName, a_configDir) {
+    try {
+        const conf = np_fs.readFileSync(PRODUICTION ? a_configDir + '/' + a_configName : a_configName, 'utf-8');
+        return JSON.parse(conf);
+    }
+    catch (err) {
+        console.error(err);
+    }
+    return '';
+}
+
+exports.GetHostname = function () { return exports.ReadFile('/etc/hostname', 'NONAME'); }
+exports.GetLoadAvg = function () { return exports.ReadFile('/proc/loadavg', ''); }
+exports.GetUptime = function () {
+    let val = exports.ReadFile('/proc/uptime', '');
+    val = val.split(' ');
+    if (val.length != 2)
+        return '-';
+    return exports.PeriodToString(val[0] * 1000);
 }
