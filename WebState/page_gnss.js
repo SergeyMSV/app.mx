@@ -1,7 +1,5 @@
 'use strict';
 
-const np_fs = require('fs');
-
 const sc_config = require('./config.js');
 const sc_status = require('./status.js');
 const sc_utils = require('./utils.js')
@@ -10,16 +8,16 @@ const g_confMXGNSS = sc_config.GetConfigMXGNSS();
 const g_isSupportedMXGNSS = g_confMXGNSS !== undefined;
 
 exports.GetPage = function () {
-    let str =  '<tr><td id="gnss_status_color" bgcolor="white"></td><td>GNSS</td><td id="gnss_status_text"></td></tr>';
-    if (g_isSupportedMXGNSS) {
-        str += '<tr><td></td><td> - UTC fixed:</td><td id="gnss_utc_file_text"></td></tr>';
-        str += '<tr><td></td><td> - UTC:</td><td id="gnss_utc_text"></td></tr>';
-        str += '<tr><td></td><td> - mode:</td><td id="gnss_mode_text"></td></tr>';
-        str += '<tr><td></td><td> - satellites:</td><td><span id="gnss_sats_gps"></span> <span id="gnss_sats_glo"></span></td></tr>';
-        str += '<tr><td></td><td> - location:</td><td id="gnss_location_text"></td></tr>';
-        str += '<tr><td></td><td> - speed:</td><td id="gnss_speed_text"></td></tr>';
-    }
-    return str;
+    const str = '<tr><td id="gnss_status_color" bgcolor="white"></td><td>GNSS</td><td id="gnss_status_text"></td></tr>';
+    if (!g_isSupportedMXGNSS)
+        return str;
+    return str + `
+<tr><td></td><td> - UTC fixed:</td><td id="gnss_utc_file_text"></td></tr>
+<tr><td></td><td> - UTC:</td><td id="gnss_utc_text"></td></tr>
+<tr><td></td><td> - mode:</td><td id="gnss_mode_text"></td></tr>
+<tr><td></td><td> - satellites:</td><td><span id="gnss_sats_gps"></span> <span id="gnss_sats_glo"></span></td></tr>
+<tr><td></td><td> - location:</td><td id="gnss_location_text"></td></tr>
+<tr><td></td><td> - speed:</td><td id="gnss_speed_text"></td></tr>`;
 }
 
 exports.GetPageData = function () {
@@ -29,7 +27,7 @@ exports.GetPageData = function () {
 
     let filesGNSS = [];
     try {
-        let filesAll = np_fs.readdirSync(g_confMXGNSS.out.path);
+        const filesAll = sc_utils.ReadDir(g_confMXGNSS.out.path);
         for (const i of filesAll) {
             if (i.includes(g_confMXGNSS.out.prefix, 0)) {
                 filesGNSS.push(i);
@@ -52,8 +50,7 @@ exports.GetPageData = function () {
 
     const filePath = g_confMXGNSS.out.path + '/' + fileLast;
     try {
-        let gnssData = np_fs.readFileSync(filePath, 'utf-8');
-        gnssData = JSON.parse(gnssData);
+        const gnssData = sc_utils.ReadFileJSON(filePath);
 
         data.mode = gnssData.mode_indicator.toLowerCase();
         data.sats = GetSatStatus(gnssData);
