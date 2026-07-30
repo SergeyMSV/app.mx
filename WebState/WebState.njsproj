@@ -34,6 +34,7 @@
     <Content Include="mx.conf.json" />
     <Content Include="mxgnss.conf.json" />
     <Content Include="package-lock.json" />
+    <Content Include="page_hwmon.js" />
     <Content Include="public\css\content.css" />
     <Content Include="public\favicon.ico" />
     <Content Include="public\js\jquery-3.7.1.js" />
