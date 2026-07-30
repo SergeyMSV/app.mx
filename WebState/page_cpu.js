@@ -4,8 +4,8 @@ const sc_status = require('./status.js');
 const sc_utils = require('./utils.js');
 
 exports.GetPage = function () {
-    return '<tr><td></td><td>- load avg.:</td><td id="cpu_loadavg"></td></tr>' +
-        '<tr><td id="cpu_thermal_color" bgcolor="white"></td><td>CPU thermal:</td><td id="cpu_thermal_text"></td></tr>';
+    return `<tr><td></td><td>- load avg.:</td><td id="cpu_loadavg"></td></tr>
+<tr><td id="cpu_thermal_color" bgcolor="white"></td><td>CPU thermal:</td><td id="cpu_thermal_text"></td></tr>`;
 }
 
 exports.GetPageData = function (a_config) {

@@ -8,16 +8,16 @@ const g_confMXGNSS = sc_config.GetConfigMXGNSS();
 const g_isSupportedMXGNSS = g_confMXGNSS !== undefined;
 
 exports.GetPage = function () {
-    let str =  '<tr><td id="gnss_status_color" bgcolor="white"></td><td>GNSS</td><td id="gnss_status_text"></td></tr>';
-    if (g_isSupportedMXGNSS) {
-        str += '<tr><td></td><td> - UTC fixed:</td><td id="gnss_utc_file_text"></td></tr>';
-        str += '<tr><td></td><td> - UTC:</td><td id="gnss_utc_text"></td></tr>';
-        str += '<tr><td></td><td> - mode:</td><td id="gnss_mode_text"></td></tr>';
-        str += '<tr><td></td><td> - satellites:</td><td><span id="gnss_sats_gps"></span> <span id="gnss_sats_glo"></span></td></tr>';
-        str += '<tr><td></td><td> - location:</td><td id="gnss_location_text"></td></tr>';
-        str += '<tr><td></td><td> - speed:</td><td id="gnss_speed_text"></td></tr>';
-    }
-    return str;
+    const str = '<tr><td id="gnss_status_color" bgcolor="white"></td><td>GNSS</td><td id="gnss_status_text"></td></tr>';
+    if (!g_isSupportedMXGNSS)
+        return str;
+    return str +
+`<tr><td></td><td> - UTC fixed:</td><td id="gnss_utc_file_text"></td></tr>
+<tr><td></td><td> - UTC:</td><td id="gnss_utc_text"></td></tr>
+<tr><td></td><td> - mode:</td><td id="gnss_mode_text"></td></tr>
+<tr><td></td><td> - satellites:</td><td><span id="gnss_sats_gps"></span> <span id="gnss_sats_glo"></span></td></tr>
+<tr><td></td><td> - location:</td><td id="gnss_location_text"></td></tr>
+<tr><td></td><td> - speed:</td><td id="gnss_speed_text"></td></tr>`;
 }
 
 exports.GetPageData = function () {
