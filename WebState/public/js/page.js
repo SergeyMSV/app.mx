@@ -28,7 +28,7 @@ function update() {
                         break;
                     case 'cpu':
                         {
-                            SetElemText('cpu_loadavg', data[key]['cpu_loadavg']);
+                            //SetElemText('cpu_loadavg', data[key]['cpu_loadavg']);
                             SetElemText('cpu_thermal_text', data[key]['cpu_thermal']?.['text']);
                             SetElemBgColor('cpu_thermal_color', data[key]['cpu_thermal']?.['color']);
                         }

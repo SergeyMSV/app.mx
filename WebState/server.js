@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
         data.host.uptime = sc_utils.GetUptime();
         data.host.color = 'green'; // [TBD] it is to be more useful
         data.hwmon = sc_page_hwmon.GetPageData();
-        data.gnss = sc_page_gnss.GetPageData();
+        //data.gnss = sc_page_gnss.GetPageData();
         data.update_period = 500; // ms
         res.status(200).json(data);
         return;
@@ -55,12 +55,11 @@ app.get('/', (req, res) => {
 </head>
 <body>
 <table>
-<tr><td id="host_color" width=1px></td><td>Host:</td><td id="host_name">${hostname} (${version})</td></tr>
-<tr><td width=1px></td><td>- UTC:</td><td id="host_utc"></td></tr>
-<tr><td></td><td>- uptime:</td><td id="host_uptime"></td></tr>
+<tr><td id="host_color" width=1px></td><td>Host</td><td id="host_name">${hostname} (${version})</td></tr>
+<tr><td width=1px></td><td> UTC</td><td id="host_utc"></td></tr>
+<tr><td></td><td> uptime</td><td id="host_uptime"></td></tr>
 ${sc_page_cpu.GetPage()}
 ${sc_page_hwmon.GetPage()}
-${sc_page_gnss.GetPage()}
 </table>
 </body>
 </html>`;

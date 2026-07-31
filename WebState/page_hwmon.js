@@ -6,7 +6,7 @@ const sc_utils = require('./utils.js');
 exports.GetPage = function () {
     let str = '';
     for (const i of g_hwmon)
-        str += `<tr><td id="color${i.id ?? ''}"></td><td>${i.name ?? ''}</td><td id="input${i.id ?? ''}" class="value"></td></tr>`; // '...-input' contains Temperature and Humidity at the same time.
+        str += `<tr><td id="color${i.id ?? ''}"></td><td>${i.name ?? ''}</td><td id="input${i.id ?? ''}"></td></tr>`; // '...-input' contains Temperature and Humidity at the same time.
     return str;
 }
 

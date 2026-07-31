@@ -1,15 +1,11 @@
 body {
-    font-family: Arial;
+    font-family: 'Menlo', 'Roboto Mono', monospace;
+    white-space: break-spaces;
     background-color: #000;
     color: lightgrey;
 }
 td {
     padding: 0px 5px;
-}
-
-.value {
-    font-family: 'Courier New';
-    white-space: break-spaces;
 }
 
 .text_green {
