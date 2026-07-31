@@ -6,20 +6,29 @@ const sc_utils = require('./utils.js');
 exports.GetPage = function () {
     let str = '';
     for (const i of g_hwmon)
-        str += `<tr><td id="color${i.id ?? ''}"></td><td>${i.name ?? ''}</td><td id="input${i.id ?? ''}"></td></tr>`; // '...-input' contains Temperature and Humidity at the same time.
+        str += `<tr><td id="color${i.id ?? ''}"></td><td>${i.name ?? ''}</td><td id="input${i.id ?? ''}" class="value"></td></tr>`; // '...-input' contains Temperature and Humidity at the same time.
     return str;
 }
 
 exports.GetPageData = function () {
+    // data - input - hwmon0 = "T: 21.35°C H: 65.43%"
+    //      |       - hwmon1 = "T:121.35°C H:100.00%"
+    //      |       - hwmon2 = "T:-21.35°C H:100.00%"
+    //      |       - hwmon3 = "T: -2.35°C H:  2.34%"
+    //      |       - ...
+    //      |
+    //      - color - hwmon0 = "green"
+    //              - hwmon1 = "yellow"
+    //              - ...
     let data = { input: {}, color: {} };
     for (let i of g_hwmon) {
         if (Object.hasOwn(i, 'temp1_input')) {
-            data['input'][i.id] = sc_utils.ReadFile(i.dir + '/' + 'temp1_input', ''); // [TBD]
-            data['color'][i.id] = 'green'; // [TBD]
+            data['input'][i.id] = GetTemperature(i.dir + '/' + 'temp1_input', 1000); // [#] 1000
         }
         if (Object.hasOwn(i, 'humidity1_input')) {
-            data['input'][i.id] += ' --> ' + sc_utils.ReadFile(i.dir + '/' + 'humidity1_input', ''); // [TBD]
+            data['input'][i.id] += ' ' + GetHumidity(i.dir + '/' + 'humidity1_input', 1000); // [#] 1000
         }
+        data['color'][i.id] = 'green'; // [TBD] it depends on both things: temperature and humidity
     }
     return data;
 }
@@ -55,6 +64,34 @@ let g_hwmon = (() => {
     }
     return [];
 })();
+
+function GetTemperature(a_path, a_div) {
+    try {
+        const str = sc_utils.ReadFile(a_path, '');
+        if (isNaN(parseInt(str)))
+            return 'n/a';
+        let val = (parseInt(str) / a_div).toFixed(2);
+        val = val.padStart(6, ' '); 
+        return 'T:' + val + '\xB0C'; // 0xB0 - Celsius degree sign.
+    }
+    catch {
+        return 'err';
+    }
+}
+
+function GetHumidity(a_path, a_div) {
+    try {
+        const str = sc_utils.ReadFile(a_path, '');
+        if (isNaN(parseInt(str)))
+            return 'n/a';
+        let val = (parseInt(str) / a_div).toFixed(2);
+        val = val.padStart(6, ' ');
+        return 'H:' + val + '%';
+    }
+    catch {
+        return 'err';
+    }
+}
 
 /*
 function GetThermal(a_filePath, a_thermalDiv) { // DEPRECATED
