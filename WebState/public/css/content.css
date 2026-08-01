@@ -1,18 +1,19 @@
 body {
-    font-family: Arial;
+    font-family: 'Menlo', 'Roboto Mono', monospace;
     background-color: #000;
     color: lightgrey;
 }
 td {
     padding: 0px 5px;
+    white-space: break-spaces;
 }
 
 .text_blue {
-	color: blue;
+    color: blue;
 }
 
 .text_green {
-	color: green;
+    color: green;
 }
 
 .text_orange {
@@ -20,7 +21,7 @@ td {
 }
 
 .text_red {
-	color: red;
+    color: red;
 }
 
 .text_yellow {
