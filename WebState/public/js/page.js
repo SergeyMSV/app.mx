@@ -22,16 +22,10 @@ function update() {
                             g_update_period = g_update_period_min;
                         break;
                     case 'host':
-                        SetElemText('host_utc', data[key]['utc']);
-                        SetElemText('host_uptime', data[key]['uptime']);
-                        SetElemBgColor('host_color', data[key]['color']);
-                        break;
-                    case 'cpu':
-                        {
-                            //SetElemText('cpu_loadavg', data[key]['cpu_loadavg']);
-                            SetElemText('cpu_thermal_text', data[key]['cpu_thermal']?.['text']);
-                            SetElemBgColor('cpu_thermal_color', data[key]['cpu_thermal']?.['color']);
-                        }
+                        SetElemText('host_utc', data[key]['utc'] ?? '');
+                        SetElemText('host_uptime', data[key]['uptime'] ?? '');
+                        SetElemText('host_loadavg', data[key]['loadavg'] ?? '');
+                        SetElemBgColor('host_color', data[key]['color'] ?? 'red');
                         break;
                     case 'hwmon':
                         for (const hwmon_type in data[key]) { // type = input, color

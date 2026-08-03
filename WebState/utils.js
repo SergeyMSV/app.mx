@@ -104,6 +104,16 @@ exports.ReadConfig = function (a_configName, a_configDir) {
 
 exports.GetHostname = function () { return exports.ReadFile('/etc/hostname', 'NONAME'); }
 exports.GetLoadAvg = function () { return exports.ReadFile('/proc/loadavg', ''); }
+exports.GetLoadAvgShort = function () {
+    const loadavg = exports.GetLoadAvg();
+    for (let i = 0, space_counter = 0; i < loadavg.length; ++i) {
+        //0.22 0.15 0.10 1/104 36525
+        if (loadavg[i] === ' ' && ++space_counter === 4) {
+            return loadavg.slice(0, i);
+            }
+    }
+    return loadavg;
+}
 exports.GetUptime = function () {
     let val = exports.ReadFile('/proc/uptime', '');
     val = val.split(' ');
