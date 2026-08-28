@@ -12,12 +12,12 @@ exports.GetPage = function () {
     if (!g_isSupportedMXGNSS)
         return str;
     return str + `
-<tr><td></td><td> - UTC fixed:</td><td id="gnss_utc_file_text"></td></tr>
-<tr><td></td><td> - UTC:</td><td id="gnss_utc_text"></td></tr>
-<tr><td></td><td> - mode:</td><td id="gnss_mode_text"></td></tr>
-<tr><td></td><td> - satellites:</td><td><span id="gnss_sats_gps"></span> <span id="gnss_sats_glo"></span></td></tr>
-<tr><td></td><td> - location:</td><td id="gnss_location_text"></td></tr>
-<tr><td></td><td> - speed:</td><td id="gnss_speed_text"></td></tr>`;
+<tr><td></td><td> UTC fixed</td><td id="gnss_utc_file_text"></td></tr>
+<tr><td></td><td> UTC</td><td id="gnss_utc_text"></td></tr>
+<tr><td></td><td> mode</td><td id="gnss_mode_text"></td></tr>
+<tr><td></td><td> satellites</td><td><span id="gnss_sats_gps"></span> <span id="gnss_sats_glo"></span></td></tr>
+<tr><td></td><td> location</td><td id="gnss_location_text"></td></tr>
+<tr><td></td><td> speed</td><td id="gnss_speed_text"></td></tr>`;
 }
 
 exports.GetPageData = function () {

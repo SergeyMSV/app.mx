@@ -49,9 +49,6 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="server.conf.json" />
-    <Content Include="page_cpu.js">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="status.js">
       <SubType>Code</SubType>
     </Content>
