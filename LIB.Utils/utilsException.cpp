@@ -1,3 +1,4 @@
+#ifdef LIB_UTILS_BASE_DEPRECATED
 #include "utilsException.h"
 
 #include <filesystem>
@@ -15,3 +16,4 @@ std::string GetLogMessage(const std::string& msg, const std::string& filename, i
 
 }
 }
+#endif // LIB_UTILS_BASE_DEPRECATED
