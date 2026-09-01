@@ -822,13 +822,13 @@ namespace sirf_lr9548s
 	using tDiffAge = type::tFloatPrecisionFixedNoNull<3, 1>;			// ?.0
 	using tDiffStation = type::tUIntFixedNoNull<4>;						// 0000
 	using tSpeed = type::tUFloatNoNull<4, 2>;							// ?.?
-	using tCourse = type::tUFloatPrecisionFixedNoNull<3, 2>;				// ?.00
+	using tCourse = type::tUFloatPrecisionFixedNoNull<3, 2>;			// ?.00
 	using tMode = type::tModeNoNull;									// A
 
 	using tContentGGA = base::tContentGGA<tTime, tLatitude, tLongitude, tQuality, tSatQty, tHDOP, tAltitude, tGeoidSeparation, tDiffAge, tDiffStation>;
 	using tContentGLL = base::tContentGLL7<tLatitude, tLongitude, tTime>;
 	using tContentGSA = base::tContentGSA<tSatID, tHDOP>;
-	using tContentGSV = generic::tContentGSV;
+	using tContentGSV = advanced::tContentGSV;
 	using tContentRMC = base::tContentRMC13<tTime, tLatitude, tLongitude, tSpeed, tCourse, tDate, tMode>;
 	using tContentVTG = base::tContentVTG10<tCourse, tSpeed, tMode>;
 }
