@@ -55,3 +55,49 @@ int main(int argc, char* argv[])
 
 	return static_cast<int>(utils::exit_code::EX_OK);
 }
+
+namespace utils
+{
+namespace linux
+{
+#if defined(_WIN32)
+std::string CmdLineWinTest(const std::string& cmd)
+{
+//	if (cmd == "free")
+//	{
+//		return
+//			"               total        used        free      shared  buff / cache   available\n\
+//Mem:          492116       33240      129108        1184      329768      445984\n\
+//Swap:              0           0           0";
+//	}
+//
+//	std::string CmdValue = GetStringEnding("cat", cmd);
+//	if (!CmdValue.empty())
+//	{
+//		std::filesystem::path Path = path::GetPathNormal(CmdValue);
+//		if (Path.empty())
+//			return {};
+//
+//		std::fstream File(Path, std::ios::in);
+//		if (!File.good())
+//			return {};
+//
+//		std::string Data;
+//
+//		while (!File.eof())
+//		{
+//			std::string Line;
+//			std::getline(File, Line);
+//			Data += Line + "\n";
+//		}
+//
+//		File.close();
+//
+//		return Data;
+//	}
+//
+	return {};
+}
+#endif
+}
+}

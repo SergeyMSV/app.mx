@@ -22,22 +22,11 @@
 namespace utils
 {
 
-static std::string GetStringEnding(const std::string& pattern, const std::string& str)//utilsString
-{
-	std::size_t Pos = str.find(pattern);
-	if (Pos == std::string::npos)
-		return {};
-	std::string Str = str.substr(Pos + pattern.size());
-	std::string_view StrView = Str;
-	StrView.remove_prefix(std::min(StrView.find_first_not_of(" "), StrView.size()));
-	return StrView.data();
-}
-
 namespace linux
 {
 
 #if defined(_WIN32)
-static std::string CmdLineWinTest(const std::string& cmd);
+std::string CmdLineWinTest(const std::string& cmd);
 #endif
 
 std::string CmdLine(const std::string& cmd)
@@ -156,48 +145,6 @@ tCpuInfo GetCpuInfo()
 	return CpuInfo;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Functions for tests
-#if defined(_WIN32)
-static std::string CmdLineWinTest(const std::string& cmd)
-{
-	if (cmd == "free")
-	{
-		return
-			"               total        used        free      shared  buff / cache   available\n\
-Mem:          492116       33240      129108        1184      329768      445984\n\
-Swap:              0           0           0";
-	}
-
-	std::string CmdValue = GetStringEnding("cat", cmd);
-	if (!CmdValue.empty())
-	{
-		std::filesystem::path Path = path::GetPathNormal(CmdValue);
-		if (Path.empty())
-			return {};
-
-		std::fstream File(Path, std::ios::in);
-		if (!File.good())
-			return {};
-
-		std::string Data;
-
-		while (!File.eof())
-		{
-			std::string Line;
-			std::getline(File, Line);
-			Data += Line + "\n";
-		}
-
-		File.close();
-
-		return Data;
-	}
-
-	return {};
-}
-#endif
-///////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 }
