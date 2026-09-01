@@ -1,16 +1,17 @@
 #include "utilsLog.h"
 
 #include <chrono>
+#include <filesystem>
 #include <iomanip>
 #include <sstream>
 #include <time.h>
-
-#ifdef LIB_UTILS_LOG
 
 namespace utils
 {
 namespace log
 {
+
+#ifdef LIB_UTILS_LOG
 
 void tLog::Write(bool timestamp, const std::string& msg, tColor color)
 {
@@ -237,7 +238,13 @@ void tLog::WriteLog(bool timestamp, bool endl, const std::string& text, tColor t
 #endif // LIB_UTILS_LOG_COLOR
 }
 
-}
+#endif // LIB_UTILS_LOG
+
+std::string GetLogMessage(const std::string& msg, const std::string& filename, int line)
+{
+	const std::filesystem::path Path(filename); // C++17
+	return msg + " " + Path.filename().string() + ":" + std::to_string(line);
 }
 
-#endif // LIB_UTILS_LOG
+}
+}
