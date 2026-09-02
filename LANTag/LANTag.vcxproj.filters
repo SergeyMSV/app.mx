@@ -39,6 +39,7 @@
     <ClCompile Include="..\LIB.Utils\utilsLog.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Utils\utilsBase.h">
