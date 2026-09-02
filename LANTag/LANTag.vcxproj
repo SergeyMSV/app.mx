@@ -168,6 +168,7 @@
     <ClCompile Include="Dev\devDataSetConfig.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_server.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
