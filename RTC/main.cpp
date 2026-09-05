@@ -25,7 +25,7 @@ int main()
 			if (TimeRTC1.count())
 			{
 				int64_t Diff = std::abs(TimeSys.count() - TimeRTC1.count());
-				if (Diff > 1) // 1 s
+				if (Diff > 2) // 2 s
 					utils::linux::CmdLine("hwclock --rtc /dev/rtc1 -w --noadjfile --utc");
 			}
 		}
