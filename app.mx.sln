@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GNSS_Simulator", "GNSS_Simu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MQTT", "MQTT\MQTT.vcxproj", "{BC119134-31FF-4E7E-AE95-25814B70C257}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTC", "RTC\RTC.vcxproj", "{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -264,6 +266,18 @@ Global
 		{BC119134-31FF-4E7E-AE95-25814B70C257}.Release|x64.Build.0 = Release|x64
 		{BC119134-31FF-4E7E-AE95-25814B70C257}.Release|x86.ActiveCfg = Release|Win32
 		{BC119134-31FF-4E7E-AE95-25814B70C257}.Release|x86.Build.0 = Release|Win32
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Debug|Any CPU.Build.0 = Debug|x64
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Debug|x64.ActiveCfg = Debug|x64
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Debug|x64.Build.0 = Debug|x64
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Debug|x86.ActiveCfg = Debug|Win32
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Debug|x86.Build.0 = Debug|Win32
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Release|Any CPU.ActiveCfg = Release|x64
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Release|Any CPU.Build.0 = Release|x64
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Release|x64.ActiveCfg = Release|x64
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Release|x64.Build.0 = Release|x64
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Release|x86.ActiveCfg = Release|Win32
+		{EAE4EEE6-FC72-4734-93D8-BB5737A754CC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
