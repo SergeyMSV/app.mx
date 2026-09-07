@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include <ctime>
+
 namespace utils
 {
 
@@ -34,6 +36,9 @@ struct tCpuInfo
 };
 
 tCpuInfo GetCpuInfo();
+
+std::time_t GetTimeSystem();
+std::time_t GetTimeRTC(std::uint8_t rtcID);
 
 }
 

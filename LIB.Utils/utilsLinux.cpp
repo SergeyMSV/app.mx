@@ -145,6 +145,36 @@ tCpuInfo GetCpuInfo()
 	return CpuInfo;
 }
 
+static std::time_t GetTime(const std::string& cmd)
+{
+	std::istringstream SStr(utils::linux::CmdLine(cmd));
+	std::tm DTime{};
+	SStr >> std::get_time(&DTime, "%Y-%m-%d %H:%M:%S");
+	if (SStr.fail())
+		return {};
+	std::time_t Time = 0;
+#if defined(_WIN32) || defined(_MSC_VER)
+	Time = _mkgmtime(&DTime);
+#elif defined(__unix__) || defined(__APPLE__)
+	Time = timegm(&DTime);
+#else
+#error "Unsupported platform: no UTC mktime equivalent"
+#endif
+	if (Time == static_cast<std::time_t>(-1))
+		return {};
+	return Time;
+}
+
+std::time_t GetTimeSystem()
+{
+	return GetTime("date -u +\"%Y-%m-%d %H:%M:%S\""); // UTC
+}
+
+std::time_t GetTimeRTC(std::uint8_t rtcID)
+{
+	return GetTime("hwclock -f /dev/rtc" + std::to_string(rtcID));
+}
+
 }
 
 }
