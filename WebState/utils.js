@@ -91,13 +91,15 @@ exports.ReadFileJSON = function (a_path) {
     return '';
 }
 
-exports.ReadConfig = function (a_configName, a_configDir) {
+exports.ReadConfig = function (a_configName, a_configDir, nolog) {
     try {
-        const conf = np_fs.readFileSync(PRODUICTION ? a_configDir + '/' + a_configName : a_configName, 'utf-8');
+        const path = a_configDir ? a_configDir + '/' + a_configName : a_configName;
+        const conf = np_fs.readFileSync(PRODUICTION ? path : a_configName, 'utf-8');
         return JSON.parse(conf);
     }
     catch (err) {
-        console.error(err);
+        if (nolog !== true)
+            console.error(err);
     }
     return '';
 }
