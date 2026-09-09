@@ -133,7 +133,7 @@ static void ThreadUART_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, 
 			PortConfig = config->GetUART(portIndex);
 			if (PortConfig.IsWrong())
 			{
-				std::cerr << "Wrong config for UART index: " << portIndex << '\n';
+				std::cerr << "Failed to apply the config for uart" << portIndex << '\n';
 				return;
 			}
 		}
