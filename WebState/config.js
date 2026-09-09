@@ -6,7 +6,7 @@ exports.GetConfig = function () { return config; }
 
 exports.GetConfigMXGNSS = function () {
     try {
-        const conf = sc_utils.ReadConfig('mxgnss.conf.json', '/usr/local/etc/');
+        const conf = sc_utils.ReadConfig('mxgnss.conf.json', '/usr/local/etc', true);
         conf.NaviValidityPeriod = 5000; // [#] in ms
         return conf;
     }
@@ -15,8 +15,8 @@ exports.GetConfigMXGNSS = function () {
 
 const config = (() => {
     try {
-        const conf_mx = sc_utils.ReadConfig('mx.conf.json', '/etc'); // get platform id in order to select appropriate settings
-        const conf = sc_utils.ReadConfig('server.conf.json', ''); 
+        const conf_mx = sc_utils.ReadConfig('mx.conf.json', '/etc', true); // get platform id in order to select appropriate settings
+        const conf = sc_utils.ReadConfig('server.conf.json', '', true); 
         for (const i in conf) { // add new config items in accordance with the platform id
             const platformId = i.split('_').pop();
             if (platformId == conf_mx.platform.id) {
