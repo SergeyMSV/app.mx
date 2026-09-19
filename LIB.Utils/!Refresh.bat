@@ -14,6 +14,7 @@ xcopy /Y %LIB_UTILS%\utilsMIFARE.*
 xcopy /Y %LIB_UTILS%\utilsMultithread.*
 xcopy /Y %LIB_UTILS%\utilsPacket.*
 xcopy /Y %LIB_UTILS%\utilsPacketCameraVC0706.*
+xcopy /Y %LIB_UTILS%\utilsPacketMQTTv3_1_1.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEA.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayload.*
 xcopy /Y %LIB_UTILS%\utilsPacketNMEAPayloadP.*
@@ -26,6 +27,7 @@ xcopy /Y %LIB_UTILS%\utilsPacketTWR.*
 xcopy /Y %LIB_UTILS%\utilsPath.*
 xcopy /Y %LIB_UTILS%\utilsPortSerial.*
 xcopy /Y %LIB_UTILS%\utilsShell.*
+xcopy /Y %LIB_UTILS%\utilsStd.*
 xcopy /Y %LIB_UTILS%\utilsString.*
 xcopy /Y %LIB_UTILS%\utilsTime.*
 xcopy /Y %LIB_UTILS%\utilsVersion.*
