@@ -164,6 +164,7 @@
     <ClCompile Include="..\LIB.Share\shareMQTT.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsChrono.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsException.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsLog.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPacketMQTTv3_1_1.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
@@ -171,7 +172,6 @@
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
     <ClCompile Include="dev\config.cpp" />
     <ClCompile Include="dev\connection.cpp" />
-    <ClCompile Include="dev\hwmon.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +181,7 @@
     <ClInclude Include="..\LIB.Utils\utilsChrono.h" />
     <ClInclude Include="..\LIB.Utils\utilsException.h" />
     <ClInclude Include="..\LIB.Utils\utilsExits.h" />
+    <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
     <ClInclude Include="..\LIB.Utils\utilsLog.h" />
     <ClInclude Include="..\LIB.Utils\utilsMultithread.h" />
     <ClInclude Include="..\LIB.Utils\utilsPacketMQTTv3_1_1.h" />
@@ -190,7 +191,6 @@
     <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="dev\config.h" />
     <ClInclude Include="dev\connection.h" />
-    <ClInclude Include="dev\hwmon.h" />
     <ClInclude Include="libConfig.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>

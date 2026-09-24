@@ -1,5 +1,6 @@
 #include "shareMQTT.h"
-#include "utilsStd.h"
+
+#include <utilsStd.h>
 
 #ifndef LIB_SHARE_MQTT_CONNECTION_RECEIVE_BUFFER_SIZE
 #define LIB_SHARE_MQTT_CONNECTION_RECEIVE_BUFFER_SIZE 128
