@@ -1,8 +1,9 @@
 #include "connection.h"
-#include "hwmon.h"
 
 #include <shareMQTT.h>
+#include <utilsLinux.h>
 
+#include <iomanip>
 #include <sstream>
 
 #include <ctime>
@@ -38,7 +39,7 @@ void TaskConnectionHandler(std::string_view host, std::string_view service, std:
 	Connection.Subscribe({ ClientID + "_Settings", mqtt::tQoS::AtLeastOnceDelivery });
 
 	// Message format: [timespamp],[temperature*1000(°C)],[Humidity*1000(%)]
-	const std::vector<dev::tHwmon> Hwmon = dev::GetHwmon();
+	const std::vector<utils::linux::tHwmon> Hwmon = utils::linux::GetHwmon();
 	const std::time_t TimeNow = std::time(nullptr);
 	const std::string PackTime = std::to_string(TimeNow) + ',';
 	for (auto& i : Hwmon)
