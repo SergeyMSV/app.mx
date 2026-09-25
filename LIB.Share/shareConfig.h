@@ -19,12 +19,30 @@ struct tDevice
 	tDevice(const std::string& type, const utils::tVersion& version);
 };
 
-struct tPlatform
+struct tID
 {
 	std::string ID;
 
+	tID() = default;
+	explicit tID(const boost::property_tree::ptree& pTree, const std::string& name);
+};
+
+struct tPlatform : tID
+{
 	tPlatform() = default;
-	explicit tPlatform(const boost::property_tree::ptree& pTree);
+	explicit tPlatform(const boost::property_tree::ptree& pTree) :tID(pTree, "pid") {}
+};
+
+struct tUID : tID
+{
+	tUID() = default;
+	explicit tUID(const boost::property_tree::ptree& pTree) :tID(pTree, "uid") {}
+};
+
+struct tFamily : tID
+{
+	tFamily() = default;
+	explicit tFamily(const boost::property_tree::ptree& pTree) :tID(pTree, "fid") {}
 };
 
 struct tUpdateServer
