@@ -27,9 +27,9 @@ tDevice::tDevice(const std::string& type, const utils::tVersion& version)
 {
 }
 
-tPlatform::tPlatform(const boost::property_tree::ptree& pTree)
+tID::tID(const boost::property_tree::ptree& pTree, const std::string& name)
 {
-	ID = pTree.get<std::string>("platform.id");
+	ID = pTree.get<std::string>(name);
 }
 
 tUpdateServer::tUpdateServer(const boost::property_tree::ptree& pTree)
