@@ -1,0 +1,9 @@
+{
+  "pid": "win",
+  "uid": "100",
+  "fid": "748C93B777A5BBAB0E6DDF87C6CBE6B737902F88419824823CAA3BFAC2CD0453",
+  "mqtt": {
+    "host": "test.mosquitto.org",
+    "service": "1883"
+  }
+}
