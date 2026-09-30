@@ -1,4 +1,4 @@
-#include "dev_hwmon.h"
+#include "hwmon.h"
 
 #include <utilsPath.h>
 
