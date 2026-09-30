@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,7 +109,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +127,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,7 +147,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\LIB.Utils;..\LIB.Share;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,10 +169,10 @@
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsTime.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
-    <ClCompile Include="Dev\devDataSetConfig.cpp" />
-    <ClCompile Include="dev_hwmon.cpp" />
+    <ClCompile Include="dev\config.cpp" />
+    <ClCompile Include="dev\connection.cpp" />
+    <ClCompile Include="dev\hwmon.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="main_connection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
@@ -188,8 +188,9 @@
     <ClInclude Include="..\LIB.Utils\utilsStd.h" />
     <ClInclude Include="..\LIB.Utils\utilsTime.h" />
     <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
-    <ClInclude Include="Dev\devDataSetConfig.h" />
-    <ClInclude Include="dev_hwmon.h" />
+    <ClInclude Include="dev\config.h" />
+    <ClInclude Include="dev\connection.h" />
+    <ClInclude Include="dev\hwmon.h" />
     <ClInclude Include="libConfig.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>

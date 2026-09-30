@@ -17,7 +17,6 @@
     <ClCompile Include="..\LIB.Utils\utilsPacketMQTTv3_1_1.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
-    <ClCompile Include="main_connection.cpp" />
     <ClCompile Include="..\LIB.Share\shareMQTT.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
@@ -27,16 +26,21 @@
     <ClCompile Include="..\LIB.Share\shareConfig.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\devDataSetConfig.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
-    <ClCompile Include="dev_hwmon.cpp" />
+    <ClCompile Include="dev\config.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
+    <ClCompile Include="dev\connection.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
+    <ClCompile Include="dev\hwmon.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LIB.Utils">
@@ -48,7 +52,7 @@
     <Filter Include="LIB.Share">
       <UniqueIdentifier>{1afb47b6-22e2-47cb-a50b-6d250edce577}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dev">
+    <Filter Include="dev">
       <UniqueIdentifier>{aac461df-ceb7-4afe-90b2-be0f7a32ca4e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -88,16 +92,21 @@
     <ClInclude Include="..\LIB.Share\shareConfig.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\devDataSetConfig.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsPath.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsVersion.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
-    <ClInclude Include="dev_hwmon.h" />
+    <ClInclude Include="dev\config.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\hwmon.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\connection.h">
+      <Filter>dev</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat">

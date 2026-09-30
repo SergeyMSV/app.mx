@@ -7,14 +7,14 @@
 namespace dev
 {
 
-class tDataSetConfig
+class tConfig
 {
 	share::config::tPlatform m_Platform;
 	share::config::tUID m_UID;
 	share::config::tFamily m_Family;
 
 public:
-	explicit tDataSetConfig(const std::string& a_filename_mx);
+	explicit tConfig(const std::string& a_filename_mx);
 
 	share::config::tPlatform GetPlatform() const { return m_Platform; }
 	share::config::tUID GetUID() const { return m_UID; }

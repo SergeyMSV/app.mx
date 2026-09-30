@@ -5,7 +5,8 @@
       "includePath": [
         "${workspaceFolder}/**",
         "${workspaceFolder}/../LIB.Share/**",
-        "${workspaceFolder}/../LIB.Utils/**"
+        "${workspaceFolder}/../LIB.Utils/**",
+        "/usr/local/boost_1_77_0/**"
       ],
       "defines": [],
       "compilerPath": "/usr/bin/gcc-11",
