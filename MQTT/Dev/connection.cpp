@@ -1,12 +1,14 @@
-#include <devDataSetConfig.h>
+#include "connection.h"
+#include "hwmon.h"
 
 #include <shareMQTT.h>
-
-#include "dev_hwmon.h"
 
 #include <sstream>
 
 #include <ctime>
+
+namespace dev
+{
 
 std::string MakeClientID(std::string fid, const std::string& uid)
 {
@@ -49,4 +51,6 @@ void TaskConnectionHandler(std::string_view host, std::string_view service, std:
 	}
 
 	Connection.Disconnect();
+}
+
 }

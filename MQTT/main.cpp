@@ -1,5 +1,7 @@
 #include "main.h"
 
+#include "dev/connection.h"
+
 #include <future>
 #include <thread>
 
@@ -8,9 +10,7 @@
 #include <shareLog.h>
 #include <utilsTime.h>
 
-#include <devDataSetConfig.h>
-
-void TaskConnectionHandler(std::string_view host, std::string_view service, std::shared_ptr<dev::tDataSetConfig> сonfig);
+#include "dev/config.h"
 
 int main(int argc, char* argv[])
 {
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
 				try
 				{
-					std::future<void> TaskConnectionFuture = std::async(std::launch::async, TaskConnectionHandler, "test.mosquitto.org", "1883", DsConfig);
+					std::future<void> TaskConnectionFuture = std::async(std::launch::async, dev::TaskConnectionHandler, "test.mosquitto.org", "1883", DsConfig);
 					//std::future<void> TaskConnectionFuture = std::async(std::launch::async, TaskConnectionHandler, "test.mosquitto.org", "1883", SensorData);
 					//std::future<void> TaskConnectionFuture = std::async(std::launch::deferred, TaskConnectHandler, std::ref(Socket)); // a task is not started by wait_for(..), it'll be deferred forever
 
