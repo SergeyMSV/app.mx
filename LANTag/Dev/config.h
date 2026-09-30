@@ -4,18 +4,16 @@
 
 #include <string>
 
-#include <boost/property_tree/ptree.hpp>
-
 namespace dev
 {
 
-class tDataSetConfig
+class tConfig
 {
 	share::config::tPlatform m_Platform;
 	share::config::port::tUDP_Config m_UDPPort;
 
 public:
-	explicit tDataSetConfig(const std::string& fileNameMX);
+	explicit tConfig(const std::string& fileNameMX);
 
 	share::config::tPlatform GetPlatform() const { return m_Platform; }
 	share::config::port::tUDP_Config GetPortUDP() const { return m_UDPPort; }

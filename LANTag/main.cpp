@@ -1,7 +1,6 @@
 #include "main.h"
-#include "main_server.h"
-
-#include <devDataSetConfig.h>
+#include "dev/config.h"
+#include "dev/server.h"
 
 #include <utilsExits.h>
 #include <utilsPath.h>
@@ -23,11 +22,11 @@ int main(int argc, char* argv[])
 		//const std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
 		const std::string PathFileMX = utils::path::GetPathConfigExc("mx").string();
 
-		std::shared_ptr<dev::tDataSetConfig> DsConfig = std::make_shared<dev::tDataSetConfig>(PathFileMX);
+		std::shared_ptr<dev::tConfig> DsConfig = std::make_shared<dev::tConfig>(PathFileMX);
 		
 		boost::asio::io_context ioc;
 
-		tLANTagServer Server(ioc, DsConfig->GetPortUDP().Value, DsConfig);
+		dev::tLANTagServer Server(ioc, DsConfig->GetPortUDP().Value, DsConfig);
 
 		std::thread Thread_ioc([&]() { ioc.run(); });
 

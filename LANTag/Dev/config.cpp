@@ -1,13 +1,11 @@
-#include "devDataSetConfig.h"
-
-#include <utilsPath.h>
+#include "config.h"
 
 #include <boost/property_tree/json_parser.hpp>
 
 namespace dev
 {
 
-tDataSetConfig::tDataSetConfig(const std::string& fileNameMX)
+tConfig::tConfig(const std::string& fileNameMX)
 {
 	boost::property_tree::ptree PTreeMX;
 	boost::property_tree::json_parser::read_json(fileNameMX, PTreeMX);
