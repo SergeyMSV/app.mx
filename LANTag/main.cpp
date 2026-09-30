@@ -1,7 +1,6 @@
 #include "main.h"
-#include "main_server.h"
-
-#include <devDataSetConfig.h>
+#include "dev/config.h"
+#include "dev/server.h"
 
 #include <utilsExits.h>
 #include <utilsPath.h>
@@ -27,7 +26,7 @@ int main(int argc, char* argv[])
 		
 		boost::asio::io_context ioc;
 
-		tLANTagServer Server(ioc, DsConfig->GetPortUDP().Value, DsConfig);
+		dev::tLANTagServer Server(ioc, DsConfig->GetPortUDP().Value, DsConfig);
 
 		std::thread Thread_ioc([&]() { ioc.run(); });
 
