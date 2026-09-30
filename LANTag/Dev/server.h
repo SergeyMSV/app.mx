@@ -1,21 +1,23 @@
 #pragma once
 
 #include "main.h"
+#include "config.h"
 
 #include <shareNetwork.h>
 
-#include <devDataSetConfig.h>
-
 #include <memory>
+
+namespace dev
+{
 
 using tLANTagServerBase = share::network::udp::tUDPServerAsync<1024>;
 
 class tLANTagServer : public tLANTagServerBase
 {
-	std::weak_ptr<dev::tDataSetConfig> m_DataSetConfig;
+	std::weak_ptr<tConfig> m_DataSetConfig;
 
 public:
-	tLANTagServer(boost::asio::io_context& ioc, std::uint16_t port, const std::shared_ptr<dev::tDataSetConfig>& dataSetConfig)
+	tLANTagServer(boost::asio::io_context& ioc, std::uint16_t port, const std::shared_ptr<tConfig>& dataSetConfig)
 		:tLANTagServerBase(ioc, port), m_DataSetConfig(dataSetConfig)
 	{}
 
@@ -24,3 +26,5 @@ public:
 private:
 	void OnSent(boost::shared_ptr<std::vector<std::uint8_t>> packet, const boost::system::error_code& error, std::size_t bytes_transferred) override;
 };
+
+}
