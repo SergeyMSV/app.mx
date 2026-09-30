@@ -1,12 +1,14 @@
 #pragma once
 
 #include "main.h"
+#include "config.h"
 
 #include <shareNetwork.h>
 
-#include <devDataSetConfig.h>
-
 #include <memory>
+
+namespace dev
+{
 
 using tLANTagServerBase = share::network::udp::tUDPServerAsync<1024>;
 
@@ -24,3 +26,5 @@ public:
 private:
 	void OnSent(boost::shared_ptr<std::vector<std::uint8_t>> packet, const boost::system::error_code& error, std::size_t bytes_transferred) override;
 };
+
+}

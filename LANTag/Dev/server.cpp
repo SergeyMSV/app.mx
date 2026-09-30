@@ -1,4 +1,4 @@
-#include "main_server.h"
+#include "server.h"
 #include <utilsLinux.h>
 
 #include <chrono>
@@ -7,6 +7,9 @@
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+
+namespace dev
+{
 
 void tLANTagServer::OnReceived(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& data)
 {
@@ -63,4 +66,6 @@ void tLANTagServer::OnReceived(const share::network::udp::tEndpoint& endpoint, c
 void tLANTagServer::OnSent(boost::shared_ptr<std::vector<std::uint8_t>> packet, const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	//std::cout << "HandleSend: " << packet->size() << " cerr: " << error << " --- bytes: " << bytes_transferred << '\n';
+}
+
 }
