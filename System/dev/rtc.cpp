@@ -15,6 +15,9 @@
 #include <iostream>
 #endif // LINUX_TEST
 
+namespace dev
+{
+
 bool CheckRTC(int id, int count, int pause)
 {
 	for (int i = 0; i < count; ++i)
@@ -105,6 +108,8 @@ void ThreadRTC()
 		if (Diff > 1) // [#] in seconds
 			AjustRTC(RtcID);
 	}
+}
+
 }
 
 // # hwclock
