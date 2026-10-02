@@ -3,6 +3,7 @@
 
 #include <shareMQTT.h>
 
+#include <iomanip>
 #include <sstream>
 
 #include <ctime>
