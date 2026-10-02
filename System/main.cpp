@@ -1,11 +1,11 @@
+#include "dev/rtc.h"
+
 #include <utilsExits.h>
 #include <thread>
 
-void ThreadRTC();
-
 int main()
 {
-	std::thread Thread_RTC([]() { ThreadRTC(); });
+	std::thread Thread_RTC([]() { dev::ThreadRTC(); });
 
 	Thread_RTC.join();
 
