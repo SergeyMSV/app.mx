@@ -1,11 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// utilsLinux.h
-// 2022-09-02
+// utilsLinux
+// 2022-09-02 - 2026-10-05
 // Standard ISO/IEC 114882, C++20
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <ctime>
 
@@ -39,6 +40,18 @@ tCpuInfo GetCpuInfo();
 
 std::time_t GetTimeSystem();
 std::time_t GetTimeRTC(std::uint8_t rtcID);
+
+struct tHwmon
+{
+	std::string ID;
+	std::string Name;
+	std::string Label;
+	std::string Temperature;
+	std::string Humidity;
+	std::uint8_t Reg;
+};
+
+std::vector<tHwmon> GetHwmon();
 
 }
 
