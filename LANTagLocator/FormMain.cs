@@ -85,7 +85,7 @@ namespace LANTagLocator
 
         void RequestTags()
         {
-            if (m_UDPLocator == null)
+            if (m_UDPLocator == null || m_IPAddrBroadcast == null)
                 return;
             Byte[] LocatorRequest = Encoding.ASCII.GetBytes("{\"cmd\":\"get_tag\"}");
             m_UDPLocator.Send(LocatorRequest, LocatorRequest.Length, new IPEndPoint(m_IPAddrBroadcast, Properties.Settings.Default.UDPPortRemote));
@@ -104,7 +104,10 @@ namespace LANTagLocator
                 if (NodeCmd == null || NodeCmd.ToString() != "get_tag")
                     return;
 
-                JsonNode NodePlatformID = Node["platform_id"]!;
+                JsonNode NodePlatformID = Node["pid"]!;
+                if (NodePlatformID == null) // It's only for compatibility with previous versions.
+                    NodePlatformID = Node["platform_id"]!;
+                JsonNode NodeUID = Node["uid"]!;
                 JsonNode NodeHostName = Node["hostname"]!;
                 JsonNode NodeUptime = Node["uptime"]!;
 
@@ -123,8 +126,9 @@ namespace LANTagLocator
                         continue;
 
                     SetSubItem(i, 1, NodePlatformID);
-                    SetSubItem(i, 2, NodeHostName);
-                    SetSubItem(i, 3, NodeUptime);
+                    SetSubItem(i, 2, NodeUID);
+                    SetSubItem(i, 3, NodeHostName);
+                    SetSubItem(i, 4, NodeUptime);
 
                     i.Tag = DateTime.Now;
                     return;
@@ -134,12 +138,14 @@ namespace LANTagLocator
 
                 ListViewItem item = new ListViewItem(RemoteEndPointStr); // DisplayIndex = 0
                 item.SubItems.Add("-----"); // DisplayIndex = 1; PlatformID
-                item.SubItems.Add("-----"); // DisplayIndex = 2; HostName
-                item.SubItems.Add("-----"); // DisplayIndex = 3; Uptime
+                item.SubItems.Add("-----"); // DisplayIndex = 2; UID
+                item.SubItems.Add("-----"); // DisplayIndex = 3; HostName
+                item.SubItems.Add("-----"); // DisplayIndex = 4; Uptime
 
                 SetSubItem(item, 1, NodePlatformID);
-                SetSubItem(item, 2, NodeHostName);
-                SetSubItem(item, 3, NodeUptime);
+                SetSubItem(item, 2, NodeUID);
+                SetSubItem(item, 3, NodeHostName);
+                SetSubItem(item, 4, NodeUptime);
 
                 item.Tag = DateTime.Now;
 

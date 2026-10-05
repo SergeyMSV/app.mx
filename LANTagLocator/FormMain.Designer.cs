@@ -31,7 +31,7 @@
             components = new System.ComponentModel.Container();
             listViewTags = new ListView();
             columnIPAddress = new ColumnHeader();
-            columnPlatform = new ColumnHeader();
+            columnPlatformID = new ColumnHeader();
             columnHost = new ColumnHeader();
             columnUptime = new ColumnHeader();
             contextMenuStripTags = new ContextMenuStrip(components);
@@ -39,12 +39,13 @@
             toolStripMenuItemHalt = new ToolStripMenuItem();
             timerTagsListView = new System.Windows.Forms.Timer(components);
             timerTagsRequest = new System.Windows.Forms.Timer(components);
+            columnUID = new ColumnHeader();
             contextMenuStripTags.SuspendLayout();
             SuspendLayout();
             // 
             // listViewTags
             // 
-            listViewTags.Columns.AddRange(new ColumnHeader[] { columnIPAddress, columnPlatform, columnHost, columnUptime });
+            listViewTags.Columns.AddRange(new ColumnHeader[] { columnIPAddress, columnPlatformID, columnUID, columnHost, columnUptime });
             listViewTags.ContextMenuStrip = contextMenuStripTags;
             listViewTags.Dock = DockStyle.Fill;
             listViewTags.FullRowSelect = true;
@@ -62,10 +63,10 @@
             columnIPAddress.Text = "IP-address";
             columnIPAddress.Width = 100;
             // 
-            // columnPlatform
+            // columnPlatformID
             // 
-            columnPlatform.Text = "Platform";
-            columnPlatform.Width = 100;
+            columnPlatformID.Text = "Platform";
+            columnPlatformID.Width = 100;
             // 
             // columnHost
             // 
@@ -107,6 +108,10 @@
             // 
             timerTagsRequest.Tick += timerTagsRequest_Tick;
             // 
+            // columnUID
+            // 
+            columnUID.Text = "UID";
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -125,7 +130,7 @@
         #endregion
 
         private ListView listViewTags;
-        private ColumnHeader columnPlatform;
+        private ColumnHeader columnPlatformID;
         private ColumnHeader columnHost;
         private ColumnHeader columnIPAddress;
         private ContextMenuStrip contextMenuStripTags;
@@ -134,5 +139,6 @@
         private ColumnHeader columnUptime;
         private System.Windows.Forms.Timer timerTagsListView;
         private System.Windows.Forms.Timer timerTagsRequest;
+        private ColumnHeader columnUID;
     }
 }
