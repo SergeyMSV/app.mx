@@ -2,7 +2,7 @@
 
 'use strict';
 
-const version = '0.2.2';
+const version = '0.2.3';
 
 const np_fs = require('fs');
 const np_express = require('express');
@@ -54,7 +54,7 @@ app.get('/', (req, res) => {
 </head>
 <body>
 <table>
-<tr><td id="host_color" width=1px></td><td>Host</td><td id="host_name">${hostname} (${version})</td></tr>
+<tr><td id="host_color" width=1px></td><td>Host</td><td id="host_name">${conf.mx.pid} ${conf.mx.uid} ${hostname} (${version})</td></tr>
 <tr><td width=1px></td><td> UTC</td><td id="host_utc"></td></tr>
 <tr><td></td><td> uptime</td><td id="host_uptime"></td></tr>
 <tr><td></td><td> load avg.</td><td id="host_loadavg"></td></tr>

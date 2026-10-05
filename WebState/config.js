@@ -16,11 +16,12 @@ exports.GetConfigMXGNSS = function () {
 const config = (() => {
     try {
         const conf_mx = sc_utils.ReadConfig('mx.conf.json', '/etc', true); // get platform id in order to select appropriate settings
-        const conf = sc_utils.ReadConfig('server.conf.json', '', true); 
+        const conf = sc_utils.ReadConfig('server.conf.json', '', true);
+        conf["mx"] = conf_mx;
         for (const i in conf) { // add new config items in accordance with the platform id
             const platformId = i.split('_').pop();
-            if (platformId == conf_mx.platform.id) {
-                let paramId = i.slice(0, i.length - platformId.length - 1); // gets first part of the string; '- 1' is for '_'
+            if (platformId == conf_mx.pid) {
+                const paramId = i.slice(0, i.length - platformId.length - 1);
                 conf[paramId] = conf[i];
             }
         }
