@@ -38,7 +38,8 @@ void tLANTagServer::OnReceived(const share::network::udp::tEndpoint& endpoint, c
 			std::shared_ptr<tConfig> DataSetConfig = m_DataSetConfig.lock();
 			if (!DataSetConfig)
 				return;
-			PTree.put("platform_id", DataSetConfig->GetPlatform().ID);
+			PTree.put("pid", DataSetConfig->GetPlatformID());
+			PTree.put("uid", DataSetConfig->GetUID());
 			PTree.put("hostname", utils::linux::CmdLine("hostname"));
 			PTree.put("uptime", utils::linux::GetUptimeString());
 			SendRsp(PTree, SStr, "ok");
