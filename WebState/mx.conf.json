@@ -1,5 +1,4 @@
 {
-  "platform": {
-    "id": "win"
-  }
+  "pid": "win",
+  "uid": "100"
 }
