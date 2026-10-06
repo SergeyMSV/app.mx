@@ -1,10 +1,18 @@
 #pragma once
 
-#include "main.h"
+#include <devConfig.h>
+
+#include "types.h"
+
+#include <shareNetwork.h>
+
 #include <unordered_map>
 #include <vector>
 
 #include <boost/property_tree/ptree.hpp>
+
+namespace dev
+{
 
 using tTWRServerBase = share::network::udp::tUDPServerAsync<dev::settings::network_udp::PacketSizeMax>;
 
@@ -64,3 +72,5 @@ public:
 
 	T& operator()() { return m_Port; }
 };
+
+}
