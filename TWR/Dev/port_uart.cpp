@@ -1,13 +1,9 @@
-#include "main.h"
-#include "main_server.h"
-
-#include "devDataSetConfig.h"
+#include "port_uart.h"
 
 #include <algorithm>
 #include <chrono>
 #include <deque>
 #include <iostream>
-#include <memory>
 #include <mutex>
 #include <optional>
 #include <sstream>
@@ -17,6 +13,9 @@
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+
+namespace dev
+{
 
 using tUARTBase = utils::port::serial::tPortSerialAsync<dev::settings::port_uart::ReceiveBufferSize>;
 
@@ -119,17 +118,17 @@ private:
 	}
 };
 
-static void ThreadUART_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server, int portIndex)
+static void ThreadUART_JSON(const std::shared_ptr<tConfig>& config, tTWRServer& server, int portIndex)
 {
 	using tPortHld = tPortHolder<tUART>;
 
 	try
 	{
-		std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
+		std::weak_ptr<tConfig> ConfigWeak(config);
 
 		share::config::port::tUART_Config PortConfig{};
 		{
-			std::shared_ptr<dev::tDataSetConfig> Config = ConfigWeak.lock();
+			std::shared_ptr<tConfig> Config = ConfigWeak.lock();
 			PortConfig = config->GetUART(portIndex);
 			if (PortConfig.IsWrong())
 			{
@@ -237,22 +236,24 @@ static void ThreadUART_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, 
 	}
 }
 
-void ThreadUART0_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART0_JSON(const std::shared_ptr<tConfig>& config, tTWRServer& server)
 {
 	ThreadUART_JSON(config, server, 0);
 }
 
-void ThreadUART1_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART1_JSON(const std::shared_ptr<tConfig>& config, tTWRServer& server)
 {
 	ThreadUART_JSON(config, server, 1);
 }
 
-void ThreadUART2_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART2_JSON(const std::shared_ptr<tConfig>& config, tTWRServer& server)
 {
 	ThreadUART_JSON(config, server, 2);
 }
 
-void ThreadUART3_JSON(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadUART3_JSON(const std::shared_ptr<tConfig>& config, tTWRServer& server)
 {
 	ThreadUART_JSON(config, server, 3);
+}
+
 }

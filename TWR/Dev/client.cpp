@@ -1,4 +1,5 @@
-#include "main.h"
+#include "client.h"
+#include "types.h"
 
 #include <iostream>
 #include <string>
@@ -6,6 +7,9 @@
 namespace asio_ip = boost::asio::ip;
 
 #ifdef UDP_SERVER_TEST
+
+namespace dev
+{
 
 void UDP_ClientTest(std::uint16_t port)
 {
@@ -96,6 +100,8 @@ void UDP_ClientTest(std::uint16_t port)
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	}
+}
+
 }
 
 #endif // UDP_SERVER_TEST
