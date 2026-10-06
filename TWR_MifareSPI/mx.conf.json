@@ -1,7 +1,5 @@
 {
-  "platform": {
-    "id": "win"
-  },
+  "pid": "win",
   "pipe": {
     "mifare": "\\\\.\\pipe\\mxmifare_pipe",
     "1 mifare": "/tmp/mxmifare_pipe",
