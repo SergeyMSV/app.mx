@@ -1,12 +1,13 @@
 #pragma once
 
-#include <devConfig.h>
-
-#include <utilsPacketTWR.h>
 
 #include <shareNetwork.h>
 
+#include <utilsPacketTWR.h>
 #include <utilsMultithread.h>
+
+namespace dev
+{
 
 using tTWRMsgId = utils::packet::twr::tMsgId;
 using tTWRMsgStatus = utils::packet::twr::tMsgStatus;
@@ -43,3 +44,5 @@ struct tTWRQueue
 };
 
 extern tTWRQueue TWRQueue;
+
+}
