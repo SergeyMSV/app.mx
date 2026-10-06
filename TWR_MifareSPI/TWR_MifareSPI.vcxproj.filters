@@ -15,7 +15,7 @@
     <Filter Include=".vscode">
       <UniqueIdentifier>{bd71a565-dd67-4695-ac0f-a06cb5a264d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dev">
+    <Filter Include="dev">
       <UniqueIdentifier>{5242ebee-25d3-46f0-8c0a-705fdb14cf33}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -36,8 +36,8 @@
     <ClCompile Include="..\LIB.MFRC522v2\Arduino.cpp">
       <Filter>LIB.MFRC522v2</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\devDataSetConfig.cpp">
-      <Filter>Dev</Filter>
+    <ClCompile Include="Dev\config.cpp">
+      <Filter>dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Share\sharePortSPI.cpp">
       <Filter>LIB.Share</Filter>
@@ -48,11 +48,11 @@
     <ClCompile Include="..\LIB.Share\sharePortGPIO.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\devMFRC522.cpp">
-      <Filter>Dev</Filter>
+    <ClCompile Include="Dev\mfrc522.cpp">
+      <Filter>dev</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\devDataSet.cpp">
-      <Filter>Dev</Filter>
+    <ClCompile Include="Dev\dataset.cpp">
+      <Filter>dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsMIFARE.cpp">
       <Filter>LIB.Utils</Filter>
@@ -61,6 +61,9 @@
       <Filter>LIB.Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp">
+      <Filter>LIB.Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsLog.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
   </ItemGroup>
@@ -112,8 +115,8 @@
     <ClInclude Include="..\LIB.MFRC522v2\Arduino.h">
       <Filter>LIB.MFRC522v2</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\devDataSetConfig.h">
-      <Filter>Dev</Filter>
+    <ClInclude Include="Dev\config.h">
+      <Filter>dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Share\sharePortSPI.h">
       <Filter>LIB.Share</Filter>
@@ -138,14 +141,14 @@
     <ClInclude Include="..\LIB.Share\sharePortGPIO.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\devMFRC522.h">
-      <Filter>Dev</Filter>
+    <ClInclude Include="Dev\mfrc522.h">
+      <Filter>dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Share\sharePipe.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\devDataSet.h">
-      <Filter>Dev</Filter>
+    <ClInclude Include="Dev\dataset.h">
+      <Filter>dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsMIFARE.h">
       <Filter>LIB.Utils</Filter>
@@ -157,6 +160,9 @@
       <Filter>LIB.Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsVersion.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsLog.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
   </ItemGroup>

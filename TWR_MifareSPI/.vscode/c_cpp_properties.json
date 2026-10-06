@@ -4,7 +4,6 @@
       "name": "Linux",
       "includePath": [
         "${workspaceFolder}/**",
-        "${workspaceFolder}/Dev/**",
         "${workspaceFolder}/../LIB.MFRC522v2/**",
         "${workspaceFolder}/../LIB.Share/**",
         "${workspaceFolder}/../LIB.Utils/**",
