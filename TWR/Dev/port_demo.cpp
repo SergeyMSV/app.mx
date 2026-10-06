@@ -1,15 +1,15 @@
-#include "devDataSetConfig.h"
-#include "main.h"
-#include "main_server.h"
+#include "port_demo.h"
 
 #include <algorithm>
-#include <memory>
 
 #ifdef UDP_SERVER_TEST
 
-void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+namespace dev
 {
-	std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
+
+void ThreadPortDEMO(const std::shared_ptr<tConfig>& config, tTWRServer& server)
+{
+	std::weak_ptr<tConfig> ConfigWeak(config);
 
 	tTWRQueueDEMOCmd& QueueIn = TWRQueue.DEMO;
 
@@ -41,4 +41,7 @@ void ThreadPortDEMO(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServ
 		server.Send(Cmd.Endpoint, PacketRsp);
 	}
 }
+
+}
+
 #endif // UDP_SERVER_TEST

@@ -1,7 +1,12 @@
-#include "main_server.h"
+#include "server.h"
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+
+namespace dev
+{
+
+tTWRQueue TWRQueue;
 
 void tTWRServer::OnReceived(const share::network::udp::tEndpoint& endpoint, const std::vector<std::uint8_t>& data)
 {
@@ -135,4 +140,6 @@ bool tTWRServer::PutInQueue(const tPacketTWRCmdEp& cmd)
 	//case tTWREndpoint::SPI0_CS2:
 	}
 	return false;
+}
+
 }

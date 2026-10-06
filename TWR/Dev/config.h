@@ -1,7 +1,5 @@
 #pragma once
 
-#include <devConfig.h>
-
 #include <shareConfig.h>
 
 #include <string>
@@ -9,7 +7,7 @@
 namespace dev
 {
 
-class tDataSetConfig
+class tConfig
 {
 	share::config::tPlatform m_Platform;
 	share::config::port::tUDP_Config m_UDPPort;
@@ -19,7 +17,7 @@ class tDataSetConfig
 	share::config::port::tUART_Config m_UART[4];
 
 public:
-	tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNameMX);
+	tConfig(const std::string& fileNameConfig, const std::string& fileNameMX);
 
 	share::config::port::tUDP_Config GetUDPPort() const { return m_UDPPort; }
 	share::config::port::tSPI_Config GetSPI0_CS0() const { return m_SPI0_CS0; }
