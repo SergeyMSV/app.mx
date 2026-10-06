@@ -1,9 +1,9 @@
 #pragma once
 
 #include <devConfig.h>
-#include <devDataSet.h>
 
-#include <Arduino.h>
+#include "dataset.h"
+
 // These header are to be here in order to avoid troubles with defined 'F' in Arduino.h
 #include <MFRC522v2.h>
 #include <MFRC522DriverSPI.h>

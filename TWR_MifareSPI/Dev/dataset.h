@@ -1,11 +1,8 @@
 #pragma once
 
-#include <devConfig.h>
 #include <utilsMIFARE.h>
 
 #include <mutex>
-#include <string>
-#include <vector>
 
 namespace dev
 {
