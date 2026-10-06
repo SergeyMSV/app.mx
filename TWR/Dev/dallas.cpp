@@ -1,12 +1,8 @@
-#include "main.h"
-#include "main_server.h"
-
-#include "devDataSetConfig.h"
+#include "dallas.h"
 
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
-#include <memory>
 #include <sstream>
 #include <string>
 
@@ -16,6 +12,9 @@
 #include <boost/property_tree/ptree.hpp>
 
 namespace dallas = utils::dallas;
+
+namespace dev
+{
 
 dallas::tID ToDallasID(std::string& keyIDStr)
 {
@@ -74,17 +73,17 @@ std::string ToString(const dallas::tID& id)
 //	WrongKeyID,
 //};
 
-void ThreadDALLAS(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadDALLAS(const std::shared_ptr<tConfig>& config, tTWRServer& server)
 {
 	using tPortHld = tPortHolder<dallas::tDALLAS>;
 
 	try
 	{
-		std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
+		std::weak_ptr<tConfig> ConfigWeak(config);
 
 		std::string PortID;
 		{
-			std::shared_ptr<dev::tDataSetConfig> Config = ConfigWeak.lock();
+			std::shared_ptr<tConfig> Config = ConfigWeak.lock();
 			PortID = config->GetDallas().ID;
 			if (PortID.empty())
 				return; // [TBD] throw an exception
@@ -248,4 +247,6 @@ void ThreadDALLAS(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer
 	{
 		std::cerr << e.what() << '\n';
 	}
+}
+
 }

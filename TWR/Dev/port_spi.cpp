@@ -1,11 +1,10 @@
-#include "devDataSetConfig.h"
-#include "main.h"
-#include "main_server.h"
+#include "port_spi.h"
 
 #include <sharePortGPIO.h>
 #include <sharePortSPI.h>
 
-#include <memory>
+namespace dev
+{
 
 class tPortSPIHolder
 {
@@ -36,9 +35,9 @@ public:
 	void SetRST(bool state) { m_RST.SetState(state); }
 };
 
-static void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, const share::config::port::tSPI_Config& configSPI, share::config::port::tGPIO_Config configRST, tTWRServer& server, tTWRQueueSPICmd& queueIn)
+static void ThreadPortSPI(const std::shared_ptr<tConfig>& config, const share::config::port::tSPI_Config& configSPI, share::config::port::tGPIO_Config configRST, tTWRServer& server, tTWRQueueSPICmd& queueIn)
 {
-	std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
+	std::weak_ptr<tConfig> ConfigWeak(config);
 
 	using tPortHld = tPortSPIHolder;
 
@@ -156,14 +155,14 @@ static void ThreadPortSPI(const std::shared_ptr<dev::tDataSetConfig>& config, co
 	}
 }
 
-void ThreadPortSPI0_CS0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWRServer& server)
+void ThreadPortSPI0_CS0(const std::shared_ptr<tConfig>& config, tTWRServer& server)
 {
-	std::weak_ptr<dev::tDataSetConfig> ConfigWeak(config);
+	std::weak_ptr<tConfig> ConfigWeak(config);
 
 	share::config::port::tSPI_Config ConfSPI;
 	share::config::port::tGPIO_Config ConfRST;
 	{
-		std::shared_ptr<dev::tDataSetConfig> Conf = ConfigWeak.lock();
+		std::shared_ptr<tConfig> Conf = ConfigWeak.lock();
 		ConfSPI = Conf->GetSPI0_CS0();
 		if (ConfSPI.IsWrong())
 			return; // [TBD] throw an exception
@@ -173,4 +172,6 @@ void ThreadPortSPI0_CS0(const std::shared_ptr<dev::tDataSetConfig>& config, tTWR
 	}
 
 	ThreadPortSPI(config, ConfSPI, ConfRST, server, TWRQueue.SPI0_CS0);
+}
+
 }
