@@ -1,18 +1,16 @@
-#include <devConfig.h>
-#include <devDataSet.h>
-#include <devDataSetConfig.h>
-#include <devMFRC522.h>
+#include "dev/config.h"
+#include "dev/dataset.h"
+#include "dev/mfrc522.h"
 
 #include <sharePipe.h>
 
 #include <utilsExits.h>
 #include <utilsBase.h>
-#include <utilsPacketTWR.h>
 #include <utilsPath.h>
 
 #include <iostream>
-#include <iomanip>
-#include <sstream>
+//#include <iomanip>
+//#include <sstream>
 #include <thread>
 
 namespace twr = utils::packet::twr;
@@ -136,7 +134,7 @@ int main(int argc, char* argv[])
 		std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
 		std::string PathFileMX = utils::path::GetPathConfigExc("mx").string();
 
-		dev::tDataSetConfig DsConfig(PathFileConfig, PathFileMX);
+		dev::tConfig DsConfig(PathFileConfig, PathFileMX);
 
 		dev::tDataSet DataSet;
 

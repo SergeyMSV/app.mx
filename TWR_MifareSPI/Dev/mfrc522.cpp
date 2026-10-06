@@ -1,11 +1,8 @@
-#include "devMFRC522.h"
-
-#include <utilsBase.h>
+#include "mfrc522.h"
 
 #include <iostream>//[TEST]
 #include <iomanip>//[TEST]
 
-#include <algorithm>
 #include <chrono>
 #include <sstream>
 #include <thread>
