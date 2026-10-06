@@ -1,7 +1,5 @@
 {
-  "platform": {
-    "id": "win"
-  },
+  "pid": "win",
   "network": {
     "lantag_port": "58188",
     "twr_port": "58200"
