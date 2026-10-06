@@ -1,13 +1,11 @@
-#include "devDataSetConfig.h"
-
-#include <utilsPath.h>
+#include "config.h"
 
 #include <boost/property_tree/json_parser.hpp>
 
 namespace dev
 {
 
-tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNameMX)
+tConfig::tConfig(const std::string& fileNameConfig, const std::string& fileNameMX)
 {
 	boost::property_tree::ptree PTreeMX;
 	boost::property_tree::json_parser::read_json(fileNameMX, PTreeMX);
@@ -18,7 +16,7 @@ tDataSetConfig::tDataSetConfig(const std::string& fileNameConfig, const std::str
 	boost::property_tree::ptree PTreeConfig;
 	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
 	m_SPI = share::config::port::tSPI_Config(SPI_ID, "spi_mifare", PTreeConfig);
-	m_Log = config::tLog(PTreeConfig);
+	m_Log = share::config::tOutFileCap("log_read", PTreeConfig);
 }
 
 }

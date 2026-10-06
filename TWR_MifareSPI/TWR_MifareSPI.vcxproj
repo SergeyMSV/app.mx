@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\;..\LIB.MFRC522v2;..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\LIB.MFRC522v2;..\LIB.Utils;..\LIB.Share;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\;..\LIB.MFRC522v2;..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\LIB.MFRC522v2;..\LIB.Utils;..\LIB.Share;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -127,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\;..\LIB.MFRC522v2;..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\LIB.MFRC522v2;..\LIB.Utils;..\LIB.Share;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -145,7 +145,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\;..\LIB.MFRC522v2;..\LIB.Utils;..\LIB.Share;Dev;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\LIB.MFRC522v2;..\LIB.Utils;..\LIB.Share;.;$(LIB_BOOST);</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -165,12 +165,13 @@
     <ClCompile Include="..\LIB.Share\sharePortGPIO.cpp" />
     <ClCompile Include="..\LIB.Share\sharePortSPI.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsException.cpp" />
+    <ClCompile Include="..\LIB.Utils\utilsLog.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsMIFARE.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
-    <ClCompile Include="Dev\devDataSet.cpp" />
-    <ClCompile Include="Dev\devDataSetConfig.cpp" />
-    <ClCompile Include="Dev\devMFRC522.cpp" />
+    <ClCompile Include="Dev\dataset.cpp" />
+    <ClCompile Include="Dev\config.cpp" />
+    <ClCompile Include="Dev\mfrc522.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +200,7 @@
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsException.h" />
     <ClInclude Include="..\LIB.Utils\utilsExits.h" />
+    <ClInclude Include="..\LIB.Utils\utilsLog.h" />
     <ClInclude Include="..\LIB.Utils\utilsMIFARE.h" />
     <ClInclude Include="..\LIB.Utils\utilsPacket.h" />
     <ClInclude Include="..\LIB.Utils\utilsPacketStar.h" />
@@ -206,9 +208,9 @@
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
     <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="devConfig.h" />
-    <ClInclude Include="Dev\devDataSet.h" />
-    <ClInclude Include="Dev\devDataSetConfig.h" />
-    <ClInclude Include="Dev\devMFRC522.h" />
+    <ClInclude Include="Dev\dataset.h" />
+    <ClInclude Include="Dev\config.h" />
+    <ClInclude Include="Dev\mfrc522.h" />
     <ClInclude Include="libConfig.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
