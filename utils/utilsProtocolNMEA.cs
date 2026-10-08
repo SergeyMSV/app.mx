@@ -1,6 +1,4 @@
-﻿// utilsProtocolNMEA: 2026-03-21
-using System.Reflection;
-using System.Reflection.Metadata;
+﻿// utilsProtocolNMEA: 2026-09-10
 using System.Text;
 
 namespace utils
