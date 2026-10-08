@@ -4,7 +4,7 @@ namespace utils.twr
 {
     public class ConnectedEventArgs : EventArgs
     {
-        public IPEndPoint Endpoint;
+        public IPEndPoint Endpoint { get; }
         public string Version { get; }
 
         public ConnectedEventArgs(IPEndPoint ep, string ver)
@@ -38,7 +38,6 @@ namespace utils.twr
     {
         public string Data { get; }
         public UARTReceivedEventArgs(string data)
-
         {
             Data = data;
         }
