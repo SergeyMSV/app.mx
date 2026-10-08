@@ -1,5 +1,6 @@
-﻿// utilsNetwork: 2024-03-04
-using System.Collections;
+﻿// utilsNetwork: 2024-10-09
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -8,9 +9,9 @@ namespace utils
 {
     public static class Network
     {
-        public static ArrayList GetLocalIPAddresses()
+        public static List<IPAddress> GetLocalIPAddresses()
         {
-            ArrayList Addrs = new ArrayList();
+            List<IPAddress> Addrs = new();
             IPHostEntry HostEntry = Dns.GetHostEntry(Dns.GetHostName());
             foreach (IPAddress ip in HostEntry.AddressList)
             {
@@ -20,10 +21,10 @@ namespace utils
             return Addrs;
         }
 
-        public static ArrayList GetLocalIPAddresses(string network)
+        public static List<IPAddress> GetLocalIPAddresses(string network)
         {
-            ArrayList AddrsRaw = GetLocalIPAddresses();
-            ArrayList Addrs = new ArrayList();
+            List<IPAddress> AddrsRaw = GetLocalIPAddresses();
+            List<IPAddress> Addrs = new();
             foreach (IPAddress ip in AddrsRaw)
             {
                 if (Contains(network, ip))
@@ -88,19 +89,30 @@ namespace utils
             if (PrefixLengthBits == 0)
                 return true;
 
-            BitArray NetAddrBits = new BitArray(NetAddr.GetAddressBytes().ToArray());
-            BitArray IpBits = new BitArray(ip.GetAddressBytes().ToArray());
+            byte[] netBytes = NetAddr.GetAddressBytes();
+            byte[] ipBytes = ip.GetAddressBytes();
 
-            if (NetAddrBits.Length != NetAddrBits.Length)
+            if (netBytes.Length != ipBytes.Length)
                 throw new ArgumentException("Lengths of the IP-addresses do not match.");
 
-            for (int i = 0; i < PrefixLengthBits; ++i)
+            int maxPrefixBits = netBytes.Length * 8;
+            if (PrefixLengthBits > maxPrefixBits)
+                throw new NotSupportedException("Wrong prefix length format.");
+
+            int fullBytes = PrefixLengthBits / 8;
+            int remainderBits = PrefixLengthBits % 8;
+
+            for (int i = 0; i < fullBytes; ++i)
             {
-                if (NetAddrBits[i] != IpBits[i])
+                if (netBytes[i] != ipBytes[i])
                     return false;
             }
 
-            return true;
+            if (remainderBits == 0)
+                return true;
+
+            byte mask = (byte)(0xFF << (8 - remainderBits));
+            return (netBytes[fullBytes] & mask) == (ipBytes[fullBytes] & mask);
         }
     }
 }

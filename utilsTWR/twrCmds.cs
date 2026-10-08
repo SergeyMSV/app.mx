@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace utils.twr
 {
@@ -7,7 +6,7 @@ namespace utils.twr
     {
         public static string Make(string ep, string cmd, List<KeyValuePair<string, string>> content)
         {
-            Dictionary<string, string> Data = MakeHeader(cmd, ep);
+            Dictionary<string, string> Data = MakeHeader(ep, cmd);
             foreach (var i in content)
             {
                 Data.Add(i.Key, i.Value);
@@ -67,11 +66,7 @@ namespace utils.twr
 
         static string MakeJSON<T>(Dictionary<string, T> dict)
         {
-            var Options = new JsonSerializerOptions
-            {
-                //WriteIndented = true // Each pair will be on a separate line.
-            };
-            return JsonSerializer.Serialize(dict, Options);
+            return JsonSerializer.Serialize(dict);
         }
     }
 }

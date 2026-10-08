@@ -15,7 +15,10 @@ namespace SergeM
             {
                 Application.Run(new FormMain());
             }
-            catch { } // for Close inside Init... of FormMain
+            catch (Exception ex)
+            {
+                Log.WriteError(ex, false);
+            }
         }
     }
 }

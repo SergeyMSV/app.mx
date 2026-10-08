@@ -88,7 +88,7 @@ namespace utils.twr
                     while (true)
                     {
                         UdpReceiveResult RecvResult = await m_UDPClient.ReceiveAsync(m_ReceiveCancellaton.Token);
-                        string RecvStr = Encoding.Default.GetString(RecvResult.Buffer);
+                        string RecvStr = Encoding.UTF8.GetString(RecvResult.Buffer);
                         PacketDecoder(RecvResult.RemoteEndPoint, RecvStr);
                     }
                 }
@@ -98,6 +98,10 @@ namespace utils.twr
                 catch (Exception ex)
                 {
                     LogWriteError(ex.Message);
+                }
+                finally
+                {
+                    m_WaitForReceivingStop.Set();
                 }
             });
 
@@ -128,17 +132,18 @@ namespace utils.twr
             {
                 LogWriteTrace("Received from " + ep.ToString() + "\n" + rsp);
 
-                JsonNode Node = JsonNode.Parse(rsp)!;
-                JsonNode NodeCmd = Node?["cmd"] ?? "unknown";
-                JsonNode NodeResponse = Node!["rsp"]!;
+                JsonNode? Node = JsonNode.Parse(rsp);
+                if (Node == null)
+                    return;
 
-                string Response = NodeResponse == null ? "" : NodeResponse.ToString();
+                string Cmd = Node["cmd"]?.ToString() ?? "unknown";
+                string Response = Node["rsp"]?.ToString() ?? "";
 
-                switch (NodeCmd.ToString())
+                switch (Cmd)
                 {
                     case "version":
                         {
-                            string Ver = Node?["version"]?.ToString()! ?? "unknown";
+                            string Ver = Node["version"]?.ToString() ?? "unknown";
                             Connected?.Invoke(this, new(ep, Ver));
                             SendInternal(twr.Cmds.MakeOpen(m_TWREndpoint, m_TWREndpointUARTBaudrate));
                             break;
@@ -177,14 +182,18 @@ namespace utils.twr
                 return false;
             try
             {
-                Byte[] Req = Encoding.ASCII.GetBytes(msg);
+                Byte[] Req = Encoding.UTF8.GetBytes(msg);
                 lock (m_UDPClientSendLock)
                 {
                     m_UDPClient?.Send(Req, Req.Length, m_EnpointRemote);
                 }
                 LogWriteTrace("Sent to " + (m_EnpointRemote?.ToString() ?? "unknown endpoint") + " " + msg);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                LogWriteError(ex.Message);
+                return false;
+            }
             return true;
         }
 

@@ -1,15 +1,18 @@
 using System.Net;
 using System.Text.Json;
+using utils.twr;
 
 namespace SergeM
 {
     public partial class FormMain : Form
     {
-        utils.twr.UDPClientEndpointDallas m_TWRClient = new();
+        UDPClientAsyncEndpointDallas? m_TWRClient;
         readonly string m_Text;
         uint m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
         int m_AutoGetValuePeriodCounter = 0;
-        ManualResetEvent m_WaitForResponse = new(false);
+        bool m_closingAfterDisconnect = false;
+        bool m_reconnecting = false;
+        System.Windows.Forms.Timer? m_AutoGetValueTimer;
 
         public FormMain()
         {
@@ -17,27 +20,43 @@ namespace SergeM
 
             m_Text = Text;
 
-            SetStateNotConnected();
-
-            m_TWRClient.Connected += OnConnected;
-            m_TWRClient.Searched += OnSearched;
-            m_TWRClient.Received += OnReceived;
             Cursor = Cursors.WaitCursor;
-            Task.Run(() =>
-            {
-                Thread.Sleep(100); // [#] It is here in order to avoid the following exception: "Invoke or BeginInvoke cannot be called on a control until the window handle has been created."
-                if (TWRClientOpen())
-                    BeginInvoke(new Action(() => { m_TWRClient.SendSearch(); }));
-                BeginInvoke(new Action(() => { Cursor = Cursors.Default; }));
-            });
+            SetStateNotConnected();
+            InitializeTWRClient();
+            _ = TWRClientOpen();
             AutoGetValue();
         }
 
-        bool TWRClientOpen()
+        void InitializeTWRClient()
         {
+            if (m_TWRClient != null)
+                m_TWRClient.Dispose();
             string IPAddrStr = Properties.Settings.Default.Localhost ? "127.0.0.1" : Properties.Settings.Default.IPAddressRemote;
             IPEndPoint Ep = new(IPAddress.Parse(IPAddrStr), Properties.Settings.Default.UDPPortRemote);
-            return m_TWRClient.Open(Properties.Settings.Default.UDPPortLocal, Ep, Properties.Settings.Default.Log);
+            m_TWRClient = new(Properties.Settings.Default.UDPPortLocal, Ep, Properties.Settings.Default.Log);
+            m_TWRClient.Connected += OnConnected;
+            m_TWRClient.Opened += OnOpened;
+            m_TWRClient.Closed += OnClosed;
+            m_TWRClient.Searched += OnSearched;
+            m_TWRClient.Received += OnReceived;
+        }
+
+        async Task<bool> TWRClientOpen()
+        {
+            if (m_TWRClient == null)
+                return false;
+            return await m_TWRClient.Open();
+        }
+
+        void OnOpened(object? sender, EventArgs e)
+        {
+            Cursor = Cursors.Default;
+            ControlsEnabled(true);
+        }
+
+        void OnClosed(object? sender, EventArgs e)
+        {
+            ControlsEnabled(false);
         }
 
         void OnConnected(object? sender, utils.twr.ConnectedEventArgs e)
@@ -63,7 +82,6 @@ namespace SergeM
                 foreach (var rom in e.ROMs)
                 {
                     ListViewItem item = new(rom.Value); // DisplayIndex = 0
-                    //item.Tag = DateTime.Now;
                     item.SubItems.Add(rom.Key); // DisplayIndex = 1
                     item.SubItems.Add("---"); // DisplayIndex = 2
                     listViewBus.Items.Add(item);
@@ -72,7 +90,6 @@ namespace SergeM
                 if (!checkBoxAutoGetValue.Checked)
                     ControlsEnabled(true);
             }));
-            m_WaitForResponse.Set();
         }
 
         void OnReceived(object? sender, utils.twr.DallasReceivedEventArgs e)
@@ -104,12 +121,10 @@ namespace SergeM
                 if (!checkBoxAutoGetValue.Checked)
                     ControlsEnabled(true);
             }));
-            m_WaitForResponse.Set();
         }
 
         void ControlsEnabled(bool state)
         {
-            Cursor = state ? Cursors.Default : Cursors.WaitCursor;
             buttonSearch.Enabled = state && !checkBoxAutoGetValue.Checked;
             buttonGetValue.Enabled = state && !checkBoxAutoGetValue.Checked;
         }
@@ -121,17 +136,37 @@ namespace SergeM
             ControlsEnabled(false);
         }
 
-        void Reconnect()
+        async Task Reconnect()
         {
-            Cursor = Cursors.WaitCursor;
-            SetStateNotConnected();
-            m_TWRClient.Close();
-            ControlsEnabled(TWRClientOpen());
-            Cursor = Cursors.Default;
+            if (m_reconnecting || m_closingAfterDisconnect)
+                return;
+            m_reconnecting = true;
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                SetStateNotConnected();
+                if (m_TWRClient != null && m_TWRClient.IsOpen)
+                    await m_TWRClient.Close(1000);
+
+                InitializeTWRClient();
+                if (!await TWRClientOpen())
+                    Cursor = Cursors.Default;
+            }
+            catch (Exception ex)
+            {
+                Cursor = Cursors.Default;
+                Log.WriteError(ex.Message);
+            }
+            finally
+            {
+                m_reconnecting = false;
+            }
         }
 
-        void GetValue()
+        async Task GetValue()
         {
+            if (m_TWRClient == null || !m_TWRClient.IsOpen)
+                return;
             ControlsEnabled(false);
             List<string> IDs = new();
             foreach (var i in listViewBus.Items)
@@ -139,60 +174,80 @@ namespace SergeM
                 if (((ListViewItem)i).SubItems[0].Text == "28") // DS18B20
                     IDs.Add(((ListViewItem)i).SubItems[1].Text);
             }
-            m_WaitForResponse.Reset();
-            m_TWRClient.SendGetThermo(IDs);
+            try
+            {
+                await m_TWRClient.SendGetThermo(IDs);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(ex.Message);
+                ControlsEnabled(true);
+            }
         }
 
         void AutoGetValue()
         {
-            Task.Run(() =>
+            m_AutoGetValueTimer = new System.Windows.Forms.Timer { Interval = 1000 };
+            m_AutoGetValueTimer.Tick += async (s, e) =>
             {
-                while (true)
+                try
                 {
-                    try
-                    {
-                        // [#] It is here in order to avoid the following exception: "Invoke or BeginInvoke cannot be called on a control until the window handle has been created."
-                        Thread.Sleep(1000); // [TBD] it's possible to set sleeping period twice less.
-
-                        if (!checkBoxAutoGetValue.Checked)
-                            continue;
-                        if (++m_AutoGetValuePeriodCounter < m_AutoGetValuePeriod)
-                            continue;
-                        m_AutoGetValuePeriodCounter = 0;
-
-                        Invoke(new Action(() => GetValue()));
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.WriteError(ex.Message);
-                    }
+                    if (!checkBoxAutoGetValue.Checked)
+                        return;
+                    if (++m_AutoGetValuePeriodCounter < m_AutoGetValuePeriod)
+                        return;
+                    m_AutoGetValuePeriodCounter = 0;
+                    await GetValue();
                 }
-            });
+                catch (Exception ex)
+                {
+                    Log.WriteError(ex.Message);
+                }
+            };
+            m_AutoGetValueTimer.Start();
         }
 
-        void buttonSettings_Click(object sender, EventArgs e)
+        async void buttonSettings_Click(object sender, EventArgs e)
         {
-            FormSettings FormSettings = new();
-            FormSettings.ShowDialog();
+            try
+            {
+                FormSettings FormSettings = new();
+                FormSettings.ShowDialog();
 
-            m_AutoGetValuePeriodCounter = 0;
-            m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
+                m_AutoGetValuePeriodCounter = 0;
+                m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
 
-            if (FormSettings.IsPortSettingsChanged)
-                Reconnect();
-            m_TWRClient.LogEnabled = Properties.Settings.Default.Log;
+                if (FormSettings.IsPortSettingsChanged)
+                    await Reconnect();
+                if (m_TWRClient != null)
+                    m_TWRClient.LogEnabled = Properties.Settings.Default.Log;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(ex.Message);
+            }
         }
 
-        void buttonReconnect_Click(object sender, EventArgs e) => Reconnect();
+        async void buttonReconnect_Click(object sender, EventArgs e) => await Reconnect();
 
-        private void buttonSearch_Click(object sender, EventArgs e)
+        async void buttonSearch_Click(object sender, EventArgs e)
         {
-            ControlsEnabled(false);
-            listViewBus.Items.Clear();
-            m_TWRClient.SendSearch();
+            if (m_TWRClient == null)
+                return;
+            try
+            {
+                ControlsEnabled(false);
+                listViewBus.Items.Clear();
+                await m_TWRClient.SendSearch();
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(ex.Message);
+                ControlsEnabled(true);
+            }
         }
 
-        private void buttonGetValue_Click(object sender, EventArgs e) => GetValue();
+        async void buttonGetValue_Click(object sender, EventArgs e) => await GetValue();
 
         private void checkBoxAutoGetValue_CheckedChanged(object sender, EventArgs e)
         {
@@ -203,21 +258,15 @@ namespace SergeM
             }
             else
             {
-                m_WaitForResponse.WaitOne(30000); // [#] 30 s.
                 ControlsEnabled(true);
             }
         }
 
-        void FormMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            m_TWRClient.Connected -= OnConnected;
-            m_TWRClient.Searched -= OnSearched;
-            m_TWRClient.Received -= OnReceived;
-            m_TWRClient.Close();
-        }
-
         void FormMain_KeyDown(object sender, KeyEventArgs e)
         {
+            if (!e.Control)
+                return;
+
             switch (e.KeyCode)
             {
                 case Keys.C:
@@ -239,12 +288,8 @@ namespace SergeM
                             Items.Add(Item);
                         }
                         Dictionary<string, object> Data = new() { { "values", Items } };
-                        var Options = new JsonSerializerOptions
-                        {
-                            //WriteIndented = true // Each pair will be on a separate line.
-                        };
-                        string DataJSON = JsonSerializer.Serialize(Data, Options);
-                        
+                        string DataJSON = JsonSerializer.Serialize(Data);
+
                         if (DataJSON.Length > 0)
                             Clipboard.SetText(DataJSON);
                         else
@@ -252,6 +297,34 @@ namespace SergeM
 
                         break;
                     }
+            }
+        }
+
+        protected override async void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            if (m_closingAfterDisconnect)
+                return;
+
+            m_closingAfterDisconnect = true;
+            m_AutoGetValueTimer?.Stop();
+            if (m_TWRClient != null && m_TWRClient.IsOpen)
+            {
+                e.Cancel = true;
+                try
+                {
+                    await m_TWRClient.Close(1000); // waits for "ok" up to 1 sec
+                }
+                catch (Exception ex)
+                {
+                    Log.WriteError(ex.Message);
+                }
+                finally
+                {
+                    e.Cancel = false;
+                    BeginInvoke(new Action(Close));
+                }
+                return;
             }
         }
     }
