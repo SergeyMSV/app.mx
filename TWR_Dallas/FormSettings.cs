@@ -24,18 +24,42 @@ namespace SergeM
         {
             try
             {
+                if (!ushort.TryParse(textBoxUDPPortLocal.Text, out ushort udpPortLocal))
+                {
+                    MessageBox.Show("UDP Port Local has invalid format.", "Settings");
+                    return;
+                }
+
+                if (!ushort.TryParse(textBoxUDPPortRemote.Text, out ushort udpPortRemote))
+                {
+                    MessageBox.Show("UDP Port Remote has invalid format.", "Settings");
+                    return;
+                }
+
+                if (udpPortLocal == udpPortRemote)
+                {
+                    MessageBox.Show("Remote and local ports must be different.", "Settings");
+                    return;
+                }
+
+                if (!uint.TryParse(textBoxAutoGetValuePeriod.Text, out uint autoGetValuePeriod) || autoGetValuePeriod == 0)
+                {
+                    MessageBox.Show("AutoGetValuePeriod must be greater of zero", "Settings");
+                    return;
+                }
+
                 bool UpdateSettings = false;
 
                 if (textBoxUDPPortLocal.Text != Properties.Settings.Default.UDPPortLocal.ToString())
                 {
-                    Properties.Settings.Default.UDPPortLocal = ushort.Parse(textBoxUDPPortLocal.Text);
+                    Properties.Settings.Default.UDPPortLocal = udpPortLocal;
                     IsPortSettingsChanged = true;
                     UpdateSettings = true;
                 }
 
                 if (textBoxUDPPortRemote.Text != Properties.Settings.Default.UDPPortRemote.ToString())
                 {
-                    Properties.Settings.Default.UDPPortRemote = ushort.Parse(textBoxUDPPortRemote.Text);
+                    Properties.Settings.Default.UDPPortRemote = udpPortRemote;
                     IsPortSettingsChanged = true;
                     UpdateSettings = true;
                 }
@@ -49,7 +73,12 @@ namespace SergeM
 
                 if (!Properties.Settings.Default.Localhost && textBoxIPAddressRemote.Text != Properties.Settings.Default.IPAddressRemote.ToString())
                 {
-                    IPAddress Addr = IPAddress.Parse(textBoxIPAddressRemote.Text);
+                    if (!IPAddress.TryParse(textBoxIPAddressRemote.Text, out IPAddress? Addr))
+                    {
+                        MessageBox.Show("IP Address Remote has invalid format.", "Settings");
+                        return;
+                    }
+
                     if (IPAddress.IsLoopback(Addr))
                     {
                         Properties.Settings.Default.Localhost = true;
@@ -65,13 +94,7 @@ namespace SergeM
 
                 if (textBoxAutoGetValuePeriod.Text != Properties.Settings.Default.AutoGetValuePeriod.ToString())
                 {
-                    uint Value = uint.Parse(textBoxAutoGetValuePeriod.Text);
-                    if (Value <= 0)
-                    {
-                        MessageBox.Show("AutoGetValuePeriod must be greater of zero", "Settings");
-                        return;
-                    }
-                    Properties.Settings.Default.AutoGetValuePeriod = Value;
+                    Properties.Settings.Default.AutoGetValuePeriod = autoGetValuePeriod;
                     UpdateSettings = true;
                 }
 
@@ -80,9 +103,6 @@ namespace SergeM
                     Properties.Settings.Default.Log = checkBoxLog.Checked;
                     UpdateSettings = true;
                 }
-
-                if (textBoxUDPPortLocal.Text == textBoxUDPPortRemote.Text)
-                    throw new Exception("Remote and local ports must be different.");
 
                 if (UpdateSettings)
                     Properties.Settings.Default.Save();
