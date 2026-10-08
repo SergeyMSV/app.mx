@@ -62,13 +62,10 @@ namespace utils
         {
             try
             {
-                StreamWriter Stream = File.AppendText(fileName);
-
                 string Str = "[" + DateTime.Now.ToString("HH.mm.ss") + " " + String.Format("{0:d3}", DateTime.Now.Millisecond) + "] " + value;
 
+                using StreamWriter Stream = File.AppendText(fileName);
                 Stream.WriteLine(Str);
-
-                Stream.Close();
 
                 Console.WriteLine(Str);
             }
@@ -89,6 +86,7 @@ namespace utils
         }
 
         public static void WriteError(string message) => WriteLine(GetLogFileName(), message);
+        public static void WriteError(Exception ex) => WriteError(ex, false);
         public static void WriteError(Exception ex, bool shortFormat)
         {
             if (shortFormat == true)

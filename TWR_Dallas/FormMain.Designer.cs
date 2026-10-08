@@ -141,7 +141,6 @@
             Name = "FormMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "DALLAS BUS";
-            FormClosing += FormMain_FormClosing;
             KeyDown += FormMain_KeyDown;
             ResumeLayout(false);
             PerformLayout();
