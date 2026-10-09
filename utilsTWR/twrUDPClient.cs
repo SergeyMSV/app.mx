@@ -5,39 +5,33 @@ using System.Text.Json.Nodes;
 
 namespace utils.twr
 {
-    public abstract class UDPClient
+    public abstract class UDPClient : IDisposable // [TBD] -> UDPClient - just for DALLAS because it requests data and doesn't receive everything
     {
         public event EventHandler<ConnectedEventArgs>? Connected;
 
         UdpClient? m_UDPClient;
-        object m_UDPClientSendLock = new();
-        protected CancellationTokenSource? m_ReceiveCancellaton;
-        protected object m_ReceiveCancellatonLock = new();
-        ManualResetEvent m_WaitForOpen = new(false);
-        ManualResetEvent m_WaitForClose = new(false);
-        protected ManualResetEvent m_WaitForReceivingStop = new(false);
         IPEndPoint? m_EnpointRemote;
-        protected string m_TWREndpoint = ""; // [TEST]
-        protected UInt32 m_TWREndpointUARTBaudrate = 0; // [TEST]
+        protected string m_TWREndpoint = "";
+        protected UInt32 m_TWREndpointUARTBaudrate = 0;
 
         public bool IsOpen { get; private set; } = false;
-
         public bool LogEnabled { get; set; } = false;
 
-        protected bool OpenInternal(ushort udpPortLocal, IPEndPoint udpEndpointRemote, bool logEnabled, string uartID, UInt32 uartBR)
+        CancellationTokenSource? m_cts;
+        Task? m_receiveLoopTask;
+        TaskCompletionSource<bool>? m_CloseTcs;
+        readonly SemaphoreSlim m_closeLock = new(1, 1);
+        volatile bool m_disposed;
+
+        public UDPClient(ushort udpPortLocal, IPEndPoint udpEndpointRemote, bool logEnabled, string uartID, UInt32 uartBR)
         {
             m_EnpointRemote = udpEndpointRemote;
             LogEnabled = logEnabled;
             m_TWREndpoint = uartID;
             m_TWREndpointUARTBaudrate = uartBR;
-            return OpenInternal(udpPortLocal);
-        }
 
-        bool OpenInternal(ushort udpPortLocal)
-        {
             try
             {
-                m_UDPClient?.Close();
                 m_UDPClient = new UdpClient(udpPortLocal)
                 {
                     EnableBroadcast = false,
@@ -47,86 +41,103 @@ namespace utils.twr
             catch (Exception ex)
             {
                 LogWriteError(ex.Message);
-                return false;
+                return;
             }
 
-            lock (m_ReceiveCancellatonLock)
+            m_cts = new();
+            m_receiveLoopTask = ReceiveLoopAsync(m_cts.Token);
+        }
+
+        public void Dispose()
+        {
+            if (m_disposed)
+                return;
+            m_disposed = true;
+            m_cts?.Cancel();
+            try
             {
-                if (m_ReceiveCancellaton != null)
-                {
-                    m_ReceiveCancellaton.Cancel();
-                    m_ReceiveCancellaton.Dispose();
-                }
-                m_ReceiveCancellaton = new CancellationTokenSource();
+                m_receiveLoopTask?.Wait(1000);
             }
+            catch { }
+            m_UDPClient?.Close();
+        }
 
-            //Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        while (true)//!m_ReceiveCts.Token.IsCancellationRequested)
-            //        {
-            //            IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            //            Byte[] ReceiveBytes = m_UDPClient.Receive(ref RemoteIpEndPoint);
-            //            string RecvStr = Encoding.Default.GetString(ReceiveBytes);
-            //            Received?.Invoke(this, new(RecvResult.RemoteEndPoint, RecvStr));
-            //            //PacketDecoder(RemoteIpEndPoint, RecvStr);
-            //            //Invoke(new Action(() => PacketDecoder(RemoteIpEndPoint, RecvStr))); // [TBD] is it OK ?
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        LogWriteError(ex.Message);
-            //    }
-            //}
-            //);
+        public async Task<bool> Open()
+        {
+            return await SendInternal(Cmds.MakeGetVersion());
+        }
 
-            Task.Run(async () => // [*] It doesn't increase amount of threads for some unknown reason.
+        async Task ReceiveLoopAsync(CancellationToken ct)
+        {
+            if (m_UDPClient == null)
+                return;
+            while (!ct.IsCancellationRequested)
             {
                 try
                 {
-                    while (true)
+                    UdpReceiveResult Res = await m_UDPClient.ReceiveAsync(ct);
+                    if (!IsExpectedSender(Res.RemoteEndPoint))
                     {
-                        UdpReceiveResult RecvResult = await m_UDPClient.ReceiveAsync(m_ReceiveCancellaton.Token);
-                        string RecvStr = Encoding.UTF8.GetString(RecvResult.Buffer);
-                        PacketDecoder(RecvResult.RemoteEndPoint, RecvStr);
+                        LogWriteTrace("Ignored packet from " + Res.RemoteEndPoint);
+                        continue;
                     }
+                    string ResStr = Encoding.UTF8.GetString(Res.Buffer);
+                    await PacketDecoder(Res.RemoteEndPoint, ResStr);
                 }
-                catch (OperationCanceledException)
+                catch (OperationCanceledException) when (ct.IsCancellationRequested)
                 {
+                    break;
+                }
+                catch (ObjectDisposedException)
+                {
+                    break;
                 }
                 catch (Exception ex)
                 {
                     LogWriteError(ex.Message);
+                    try
+                    {
+                        await Task.Delay(100, ct);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
                 }
-                finally
-                {
-                    m_WaitForReceivingStop.Set();
-                }
-            });
-
-            m_WaitForOpen.Reset();
-            SendInternal(Cmds.MakeGetVersion());
-            return m_WaitForOpen.WaitOne(1000); // [#] 1 sec
+            }
         }
 
-        public bool Close()
+        bool IsExpectedSender(IPEndPoint ep)
         {
-            IsOpen = false;
-            m_WaitForClose.Reset();
-            bool Res = SendInternal(Cmds.MakeClose(m_TWREndpoint));
-            if (Res)
-                Res = m_WaitForClose.WaitOne(1000); // [#] 1 sec
-            m_WaitForReceivingStop.Reset();
-            m_ReceiveCancellaton?.Cancel();
-            m_WaitForReceivingStop.WaitOne(1000); // [#] 1 sec
-            return Res;
+            if (m_EnpointRemote == null)
+                return true;
+            return ep.Port == m_EnpointRemote.Port && ep.Address.Equals(m_EnpointRemote.Address);
         }
 
-        protected abstract void ReceivedCmdOpen();
+        public async Task<bool> Close(int timeoutMs = 1000)
+        {
+            await m_closeLock.WaitAsync();
+            try
+            {
+                var Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                m_CloseTcs = Tcs;
+                if (!await SendInternal(Cmds.MakeClose(m_TWREndpoint)))
+                    return false;
+                Task Done = await Task.WhenAny(Tcs.Task, Task.Delay(timeoutMs));
+                return Done == Tcs.Task && Tcs.Task.Result;
+            }
+            finally
+            {
+                m_CloseTcs = null;
+                m_closeLock.Release();
+            }
+        }
+
+        protected abstract Task ReceivedCmdOpen();
+        protected abstract Task ReceivedCmdClose();
         protected abstract void ReceivedCmd(IPEndPoint ep, JsonNode rspJson);
 
-        void PacketDecoder(IPEndPoint ep, string rsp)
+        async Task PacketDecoder(IPEndPoint ep, string rsp)
         {
             try
             {
@@ -135,7 +146,6 @@ namespace utils.twr
                 JsonNode? Node = JsonNode.Parse(rsp);
                 if (Node == null)
                     return;
-
                 string Cmd = Node["cmd"]?.ToString() ?? "unknown";
                 string Response = Node["rsp"]?.ToString() ?? "";
 
@@ -145,7 +155,7 @@ namespace utils.twr
                         {
                             string Ver = Node["version"]?.ToString() ?? "unknown";
                             Connected?.Invoke(this, new(ep, Ver));
-                            SendInternal(twr.Cmds.MakeOpen(m_TWREndpoint, m_TWREndpointUARTBaudrate));
+                            await SendInternal(twr.Cmds.MakeOpen(m_TWREndpoint, m_TWREndpointUARTBaudrate));
                             break;
                         }
                     case "open":
@@ -153,14 +163,14 @@ namespace utils.twr
                             IsOpen = Response == "ok";
                             if (!IsOpen)
                                 break;
-                            m_WaitForOpen.Set();
-                            ReceivedCmdOpen();
+                            await ReceivedCmdOpen();
                             break;
                         }
                     case "close": // It means that the existed connection already closed.
                         {
                             IsOpen = false;
-                            m_WaitForClose.Set();
+                            m_CloseTcs?.TrySetResult(Response == "ok");
+                            await ReceivedCmdClose();
                             break;
                         }
                     default:
@@ -176,30 +186,33 @@ namespace utils.twr
             }
         }
 
-        protected bool SendInternal(string msg)
+        async Task<bool> SendInternal(string msg)
         {
             if (m_UDPClient == null)
                 return false;
             try
             {
                 Byte[] Req = Encoding.UTF8.GetBytes(msg);
-                lock (m_UDPClientSendLock)
-                {
-                    m_UDPClient?.Send(Req, Req.Length, m_EnpointRemote);
-                }
+                await m_UDPClient.SendAsync(Req, Req.Length, m_EnpointRemote);
                 LogWriteTrace("Sent to " + (m_EnpointRemote?.ToString() ?? "unknown endpoint") + " " + msg);
+                return true;
             }
             catch (Exception ex)
             {
                 LogWriteError(ex.Message);
                 return false;
             }
-            return true;
+        }
+
+        public async Task<bool> Send(string msg)
+        {
+            if (!IsOpen)
+                return false;
+            return await SendInternal(msg);
         }
 
         protected void LogWriteError(string message)
         {
-            //if (LogEnabled)
             Log.WriteError(message);
         }
 

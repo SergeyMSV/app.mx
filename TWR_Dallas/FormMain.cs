@@ -6,7 +6,7 @@ namespace SergeM
 {
     public partial class FormMain : Form
     {
-        UDPClientAsyncEndpointDallas? m_TWRClient;
+        UDPClientEpDallas? m_TWRClient;
         readonly string m_Text;
         uint m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
         int m_AutoGetValuePeriodCounter = 0;

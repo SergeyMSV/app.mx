@@ -3,14 +3,14 @@ using System.Text.Json.Nodes;
 
 namespace utils.twr
 {
-    public class UDPClientAsyncEndpointDallas : UDPClientAsync
+    public class UDPClientEpDallas : UDPClient
     {
         public event EventHandler<EventArgs>? Opened;
         public event EventHandler<EventArgs>? Closed;
         public event EventHandler<DallasSearchedEventArgs>? Searched;
         public event EventHandler<DallasReceivedEventArgs>? Received;
 
-        public UDPClientAsyncEndpointDallas(ushort udpPortLocal, IPEndPoint udpEndpointRemote, bool logEnabled)
+        public UDPClientEpDallas(ushort udpPortLocal, IPEndPoint udpEndpointRemote, bool logEnabled)
             : base(udpPortLocal, udpEndpointRemote, logEnabled, "dallas", 0)
         {
 

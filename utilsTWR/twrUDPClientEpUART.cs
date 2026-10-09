@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace utils.twr
 {
-    /*public class UDPClientAsyncEndpointUART : UDPClientAsync
+    /*public class UDPClientEpUART : UDPClientAsync
     {
         public event EventHandler<UARTReceivedEventArgs>? Received;
 
