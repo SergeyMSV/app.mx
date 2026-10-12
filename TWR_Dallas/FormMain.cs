@@ -8,7 +8,7 @@ namespace SergeM
         utils.twr.UDPClientEpDallas? m_TWRClient;
         readonly string m_Text;
         uint m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
-        int m_AutoGetValuePeriodCounter = 0;
+        uint m_AutoGetValuePeriodCounter = 0;
         System.Windows.Forms.Timer? m_AutoGetValueTimer;
         bool m_StateCloseUponDisconnect = false;
         bool m_StateReconnect = false;
@@ -278,9 +278,12 @@ namespace SergeM
                 {
                     if (!checkBoxAutoGetValue.Checked || m_StateSearch)// || !m_OperationInProgress) // !checkBoxAutoGetValue.Enabled)
                         return;
-                    if (++m_AutoGetValuePeriodCounter < m_AutoGetValuePeriod)
+                    if (m_AutoGetValuePeriodCounter > 0)
+                    {
+                        --m_AutoGetValuePeriodCounter;
                         return;
-                    m_AutoGetValuePeriodCounter = 0;
+                    }
+                    m_AutoGetValuePeriodCounter = m_AutoGetValuePeriod;
                     await GetValue();
                 }
                 catch (Exception ex)
