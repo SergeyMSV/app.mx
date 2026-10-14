@@ -3,37 +3,35 @@ using System.Text.Json.Nodes;
 
 namespace utils.twr
 {
-    /*public class UDPClientEpUART : UDPClientAsync
+    public class UDPClientEpUART : UDPClient
     {
+        public event EventHandler<EventArgs>? Opened;
+        public event EventHandler<EventArgs>? Closed;
         public event EventHandler<UARTReceivedEventArgs>? Received;
+        public event EventHandler<FailedEventArgs>? Failed;
 
-        public async Task<bool> Open(ushort udpPortLocal, IPEndPoint udpEndpointRemote, bool logEnabled, string uartID, UInt32 uartBR)
-            => await OpenInternal(udpPortLocal, udpEndpointRemote, logEnabled, uartID, uartBR);
-
-        public async Task<bool> Send(string msg)
+        public UDPClientEpUART(ushort udpPortLocal, IPEndPoint udpEndpointRemote, bool logEnabled, string uartID, UInt32 uartBR)
+            : base(udpPortLocal, udpEndpointRemote, logEnabled, uartID, uartBR)
         {
-            //if (!IsOpen)
-                return false;
-            //return await SendInternal(Cmds.MakeSend(m_TWREndpoint, msg));
+
+        }
+
+        protected override Task ErrorOccured(string msg)
+        {
+            Failed?.Invoke(this, new(msg));
+            return Task.CompletedTask;
         }
 
         protected override async Task ReceivedCmdOpen()
         {
-            //Task.Run(() =>
-            //{
-            //    while (true)
-            //    {
-            //        //lock (m_ReceiveCancellatonLock)
-            //       // {
-            //            //if (m_ReceiveCancellaton == null || m_ReceiveCancellaton.Token.IsCancellationRequested)
-            //            //    break;
-            //        //}
-            //        Thread.Sleep(200); // [#]
-            //       // SendInternal(Cmds.MakeReceive(m_TWREndpoint));
-            //    }
-            //    //m_WaitForReceivingStop.Set();
-            //    LogWriteTrace("Receiving thread closed.");
-            //});
+            await Send(Cmds.MakeDallasSearch(m_TWREndpoint));
+            Opened?.Invoke(this, new()); // [TBD] it shall be called upon successful search
+        }
+
+        protected override Task ReceivedCmdClose()
+        {
+            Closed?.Invoke(this, new());
+            return Task.CompletedTask;
         }
 
         protected override void ReceivedCmd(IPEndPoint ep, JsonNode rspJson)
@@ -41,16 +39,13 @@ namespace utils.twr
             try
             {
                 JsonNode NodeCmd = rspJson["cmd"] ?? "unknown";
+
                 switch (NodeCmd.ToString())
                 {
                     case "receive":
                         {
-                            //lock (m_ReceiveCancellatonLock)
-                           // {
-                                //if (m_ReceiveCancellaton == null || m_ReceiveCancellaton.Token.IsCancellationRequested)
-                                //    break;
-                            //}
-                            string Data = rspJson?["data"]?.ToString()! ?? "";
+                            string Data = rspJson["data"]?.ToString() ?? "";
+                            string Datafff = rspJson["datafff"]?.ToString() ?? ""; // [TBD] for test
                             if (Data.Length == 0)
                                 break;
                             Received?.Invoke(this, new(Data));
@@ -67,5 +62,5 @@ namespace utils.twr
                 LogWriteError(ex.Message);
             }
         }
-    }*/
+    }
 }
