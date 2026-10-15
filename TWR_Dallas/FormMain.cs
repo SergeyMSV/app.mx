@@ -9,16 +9,20 @@ namespace SergeM
         readonly string m_Text;
         uint m_AutoGetValuePeriod = Properties.Settings.Default.AutoGetValuePeriod;
         int m_AutoGetValuePeriodCounter = 0;
-        bool m_closingAfterDisconnect = false;
-        bool m_reconnecting = false;
         System.Windows.Forms.Timer? m_AutoGetValueTimer;
+        bool m_StateCloseUponDisconnect = false;
+        bool m_StateReconnect = false;
+        volatile bool m_StateSearch = false;
+        utils.MessageBox m_MessageBoxConnect = new(true);
+        utils.MessageBox m_MessageBoxSearch = new(true);
+        utils.MessageBox m_MessageBoxRequest = new(false);
 
         public FormMain()
         {
             InitializeComponent();
             m_Text = Text;
-            Cursor = Cursors.WaitCursor;
             SetStateNotConnected();
+            SetControlsState(false);
             InitializeTWRClient();
             _ = TWRClientOpen();
             AutoGetValue();
@@ -36,24 +40,32 @@ namespace SergeM
             m_TWRClient.Closed += OnClosed;
             m_TWRClient.Searched += OnSearched;
             m_TWRClient.Received += OnReceived;
+            m_TWRClient.Failed += OnFailed;
         }
 
         async Task<bool> TWRClientOpen()
         {
             if (m_TWRClient == null)
                 return false;
+            Cursor = Cursors.WaitCursor;
             return await m_TWRClient.Open();
         }
 
-        void OnOpened(object? sender, EventArgs e)
+        async void OnOpened(object? sender, EventArgs e)
         {
-            Cursor = Cursors.Default;
-            ControlsEnabled(true);
+            try
+            {
+                await Search();
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(ex.Message);
+            }
         }
 
         void OnClosed(object? sender, EventArgs e)
         {
-            ControlsEnabled(false);
+            SetControlsState(false);
         }
 
         void OnConnected(object? sender, utils.twr.ConnectedEventArgs e)
@@ -72,7 +84,8 @@ namespace SergeM
 
                 if (e.ROMs.Count == 0)
                 {
-                    MessageBox.Show("There are no devices connected to the bus.");
+                    m_MessageBoxSearch.ShowInform("There are no devices connected to the bus.");
+                    SetStateRequestComplete();
                     return;
                 }
 
@@ -80,27 +93,32 @@ namespace SergeM
                 {
                     ListViewItem item = new(rom.Value); // DisplayIndex = 0
                     item.SubItems.Add(rom.Key); // DisplayIndex = 1
-                    item.SubItems.Add("---"); // DisplayIndex = 2
+                    item.SubItems.Add(""); // DisplayIndex = 2
                     listViewBus.Items.Add(item);
                 }
 
-                if (!checkBoxAutoGetValue.Checked)
-                    ControlsEnabled(true);
+                SetStateRequestComplete();
+                m_StateSearch = false;
             }));
+        }
+
+        void ClearListViewItems()
+        {
+            foreach (var i in listViewBus.Items)
+            {
+                ((ListViewItem)i).SubItems[2].Text = "";
+            }
         }
 
         void OnReceived(object? sender, utils.twr.DallasReceivedEventArgs e)
         {
             BeginInvoke(new Action(() =>
             {
-                foreach (var i in listViewBus.Items)
-                {
-                    ((ListViewItem)i).SubItems[2].Text = "";
-                }
+                ClearListViewItems();
 
                 if (e.Values.Count == 0)
                 {
-                    MessageBox.Show("No measurements obtained.");
+                    SetStateRequestFailed("No measurements obtained.");
                     return;
                 }
 
@@ -109,35 +127,82 @@ namespace SergeM
                     foreach (var i in listViewBus.Items)
                     {
                         if (((ListViewItem)i).SubItems[1].Text == value.Key)
-                        {
-                            ((ListViewItem)i).SubItems[2].Text = value.Value != null ? value.Value.ToString() : "no measurement";
-                        }
+                            ((ListViewItem)i).SubItems[2].Text = value.Value.ToString();
                     }
                 }
 
-                if (!checkBoxAutoGetValue.Checked)
-                    ControlsEnabled(true);
+                SetStateRequestComplete();
             }));
         }
 
-        void ControlsEnabled(bool state)
+        void OnFailed(object? sender, utils.twr.FailedEventArgs e)
         {
-            buttonSearch.Enabled = state && !checkBoxAutoGetValue.Checked;
-            buttonGetValue.Enabled = state && !checkBoxAutoGetValue.Checked;
+            SetStateConnectionFailed(e.Msg);
+            ClearListViewItems();
+        }
+
+        void SetControlsState(bool reqState, bool errState)
+        {
+            bool twrOpen = m_TWRClient != null && m_TWRClient.IsOpen;
+            if (!twrOpen || errState)
+            {
+                buttonSearch.Enabled = false;
+                buttonGetValue.Enabled = false;
+                checkBoxAutoGetValue.Enabled = false;
+                return;
+            }
+
+            if (!checkBoxAutoGetValue.Checked)
+            {
+                checkBoxAutoGetValue.Enabled = reqState;
+            }
+            else if (reqState)
+            {
+                checkBoxAutoGetValue.Enabled = true;
+            }
+            bool en = reqState && !checkBoxAutoGetValue.Checked;
+            buttonSearch.Enabled = en;
+            buttonGetValue.Enabled = en;
+        }
+        void SetControlsStateError() => SetControlsState(false, true);
+        void SetControlsState(bool state)
+        {
+            SetControlsState(state, false);
         }
 
         void SetStateNotConnected()
         {
             listViewBus.Items.Clear();
             Text = m_Text + ": not connected";
-            ControlsEnabled(false);
+            SetControlsState(false);
+        }
+
+        void SetStateRequestComplete()
+        {
+            SetControlsState(true);
+            Cursor = Cursors.Default;
+            m_MessageBoxRequest.Clear();
+        }
+
+        void SetStateConnectionFailed(string errMsg)
+        {
+            SetControlsStateError();
+            Cursor = Cursors.Default;
+            m_MessageBoxConnect.ShowFailure(errMsg);
+        }
+
+        void SetStateRequestFailed(string errMsg)
+        {
+            Cursor = Cursors.Default;
+            m_MessageBoxRequest.ShowFailure(errMsg);
+            SetControlsState(true);
         }
 
         async Task Reconnect()
         {
-            if (m_reconnecting || m_closingAfterDisconnect)
+            if (m_StateReconnect || m_StateCloseUponDisconnect)
                 return;
-            m_reconnecting = true;
+            m_StateReconnect = true;
             try
             {
                 Cursor = Cursors.WaitCursor;
@@ -156,7 +221,28 @@ namespace SergeM
             }
             finally
             {
-                m_reconnecting = false;
+                m_StateReconnect = false;
+            }
+        }
+
+        async Task Search()
+        {
+            if (m_TWRClient == null)
+                return;
+            try
+            {
+                m_StateSearch = true;
+                Cursor = Cursors.WaitCursor;
+                SetControlsState(false);
+                listViewBus.Items.Clear();
+                await m_TWRClient.SendSearch();
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(ex.Message);
+                SetControlsState(true);
+                Cursor = Cursors.Default;
+                m_StateSearch = false;
             }
         }
 
@@ -164,13 +250,14 @@ namespace SergeM
         {
             if (m_TWRClient == null || !m_TWRClient.IsOpen)
                 return;
-            ControlsEnabled(false);
+            SetControlsState(false);
             List<string> IDs = new();
             foreach (var i in listViewBus.Items)
             {
                 if (((ListViewItem)i).SubItems[0].Text == "28") // DS18B20
                     IDs.Add(((ListViewItem)i).SubItems[1].Text);
             }
+
             try
             {
                 await m_TWRClient.SendGetThermo(IDs);
@@ -178,7 +265,7 @@ namespace SergeM
             catch (Exception ex)
             {
                 Log.WriteError(ex.Message);
-                ControlsEnabled(true);
+                SetControlsState(true);
             }
         }
 
@@ -189,7 +276,7 @@ namespace SergeM
             {
                 try
                 {
-                    if (!checkBoxAutoGetValue.Checked)
+                    if (!checkBoxAutoGetValue.Checked || m_StateSearch)// || !m_OperationInProgress) // !checkBoxAutoGetValue.Enabled)
                         return;
                     if (++m_AutoGetValuePeriodCounter < m_AutoGetValuePeriod)
                         return;
@@ -227,36 +314,20 @@ namespace SergeM
 
         async void buttonReconnect_Click(object sender, EventArgs e) => await Reconnect();
 
-        async void buttonSearch_Click(object sender, EventArgs e)
-        {
-            if (m_TWRClient == null)
-                return;
-            try
-            {
-                ControlsEnabled(false);
-                listViewBus.Items.Clear();
-                await m_TWRClient.SendSearch();
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError(ex.Message);
-                ControlsEnabled(true);
-            }
-        }
+        async void buttonSearch_Click(object sender, EventArgs e) => await Search();
 
-        async void buttonGetValue_Click(object sender, EventArgs e) => await GetValue();
+        async void buttonGetValue_Click(object sender, EventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+            m_MessageBoxRequest.Clear();
+            await GetValue();
+        }
 
         private void checkBoxAutoGetValue_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBoxAutoGetValue.Checked)
-            {
-                ControlsEnabled(false);
                 m_AutoGetValuePeriodCounter = 0;
-            }
-            else
-            {
-                ControlsEnabled(true);
-            }
+            SetControlsState(!checkBoxAutoGetValue.Checked);
         }
 
         void FormMain_KeyDown(object sender, KeyEventArgs e)
@@ -300,10 +371,10 @@ namespace SergeM
         protected override async void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            if (m_closingAfterDisconnect)
+            if (m_StateCloseUponDisconnect)
                 return;
 
-            m_closingAfterDisconnect = true;
+            m_StateCloseUponDisconnect = true;
             m_AutoGetValueTimer?.Stop();
             if (m_TWRClient != null && m_TWRClient.IsOpen)
             {

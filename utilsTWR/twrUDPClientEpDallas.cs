@@ -9,6 +9,7 @@ namespace utils.twr
         public event EventHandler<EventArgs>? Closed;
         public event EventHandler<DallasSearchedEventArgs>? Searched;
         public event EventHandler<DallasReceivedEventArgs>? Received;
+        public event EventHandler<FailedEventArgs>? Failed;
 
         public UDPClientEpDallas(ushort udpPortLocal, IPEndPoint udpEndpointRemote, bool logEnabled)
             : base(udpPortLocal, udpEndpointRemote, logEnabled, "dallas", 0)
@@ -16,24 +17,21 @@ namespace utils.twr
 
         }
 
-        public async Task<bool> SendSearch() => await Send(Cmds.MakeDallasSearch(m_TWREndpoint));
-
-        public async Task<bool> SendGetThermo(List<string> ids)
+        protected override Task ErrorOccured(string msg)
         {
-            if (!IsOpen)
-                return false;
-            return await Send(Cmds.MakeDallasGetThermo(m_TWREndpoint, ids));
+            Failed?.Invoke(this, new(msg));
+            return Task.CompletedTask;
         }
 
-        protected override async Task ReceivedCmdOpen()
+        protected override Task ReceivedCmdOpen()
         {
-            await Send(Cmds.MakeDallasSearch(m_TWREndpoint));
-            Opened?.Invoke(this, new()); // [TBD] it shall be called upon successful search
+            Opened?.Invoke(this, EventArgs.Empty);
+            return Task.CompletedTask;
         }
 
         protected override Task ReceivedCmdClose()
         {
-            Closed?.Invoke(this, new());
+            Closed?.Invoke(this, EventArgs.Empty);
             return Task.CompletedTask;
         }
 
@@ -88,6 +86,15 @@ namespace utils.twr
             {
                 LogWriteError(ex.Message);
             }
+        }
+
+        public async Task<bool> SendSearch() => await Send(Cmds.MakeDallasSearch(m_TWREndpoint));
+
+        public async Task<bool> SendGetThermo(List<string> ids)
+        {
+            if (!IsOpen)
+                return false;
+            return await Send(Cmds.MakeDallasGetThermo(m_TWREndpoint, ids));
         }
     }
 }
