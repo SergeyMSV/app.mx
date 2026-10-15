@@ -40,6 +40,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "System", "System\System.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MQTT", "MQTT\MQTT.vcxproj", "{6795550F-2F07-4F7B-ADD4-C2FC77CDF305}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT_Dashboard", "MQTT_Dashboard\MQTT_Dashboard.csproj", "{024FBA79-0162-4211-8DA8-403C55A6A0B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -278,6 +280,18 @@ Global
 		{6795550F-2F07-4F7B-ADD4-C2FC77CDF305}.Release|x64.Build.0 = Release|x64
 		{6795550F-2F07-4F7B-ADD4-C2FC77CDF305}.Release|x86.ActiveCfg = Release|Win32
 		{6795550F-2F07-4F7B-ADD4-C2FC77CDF305}.Release|x86.Build.0 = Release|Win32
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Debug|x64.Build.0 = Debug|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Debug|x86.Build.0 = Debug|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Release|x64.ActiveCfg = Release|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Release|x64.Build.0 = Release|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Release|x86.ActiveCfg = Release|Any CPU
+		{024FBA79-0162-4211-8DA8-403C55A6A0B8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
