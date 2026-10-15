@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // utilsPortSerial
-// 2021-11-02
+// 2021-11-02 - 2026-10-15
 // C++20
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -41,16 +41,15 @@ public:
 	tPortSerialAsync(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate, tCharSize charSize, tStopBits stopBits, tParity parity, tFlowControl flowControl)
 		: m_Port(ioc)
 	{
-		m_Port.open(id);
+		m_Port.open(id, m_ErrorCode);
+		if (!m_Port.is_open())
+			return;
 
-		if (m_Port.is_open())
-		{
-			m_Port.set_option(boost::asio::serial_port_base::baud_rate(baudRate));
-			m_Port.set_option(boost::asio::serial_port_base::character_size(charSize));
-			m_Port.set_option(boost::asio::serial_port_base::stop_bits(stopBits));
-			m_Port.set_option(boost::asio::serial_port_base::parity(parity));
-			m_Port.set_option(boost::asio::serial_port_base::flow_control(flowControl));
-		}
+		m_Port.set_option(boost::asio::serial_port_base::baud_rate(baudRate));
+		m_Port.set_option(boost::asio::serial_port_base::character_size(charSize));
+		m_Port.set_option(boost::asio::serial_port_base::stop_bits(stopBits));
+		m_Port.set_option(boost::asio::serial_port_base::parity(parity));
+		m_Port.set_option(boost::asio::serial_port_base::flow_control(flowControl));
 
 		Receive();
 	}
