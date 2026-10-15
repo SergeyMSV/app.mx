@@ -190,7 +190,7 @@ static void ThreadUART_JSON(const std::shared_ptr<tConfig>& config, tTWRServer& 
 					if (Baudrate)
 						PConf.BR = Baudrate;
 					PortPtr = std::make_unique<tPortHld>(PConf);
-					server.SendResponse(Pack.Endpoint, PTree, "ok");
+					server.SendResponse(Pack.Endpoint, PTree, (*PortPtr)().IsReady() ? "ok" : "er");
 					continue;
 				}
 				else if (Cmd == "close") // It's just a response, nothing more (for compatibility reasons).
