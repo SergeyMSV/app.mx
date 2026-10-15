@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 
 namespace utils.twr
 {
-    public abstract class UDPClient : IDisposable // [TBD] -> UDPClient - just for DALLAS because it requests data and doesn't receive everything
+    public abstract class UDPClient : IDisposable
     {
         public event EventHandler<ConnectedEventArgs>? Connected;
 
@@ -62,6 +62,11 @@ namespace utils.twr
             m_UDPClient?.Close();
         }
 
+        protected abstract Task ErrorOccured(string msg);
+        protected abstract Task ReceivedCmdOpen();
+        protected abstract Task ReceivedCmdClose();
+        protected abstract void ReceivedCmd(IPEndPoint ep, JsonNode rspJson);
+
         public async Task<bool> Open()
         {
             return await SendInternal(Cmds.MakeGetVersion());
@@ -71,11 +76,13 @@ namespace utils.twr
         {
             if (m_UDPClient == null)
                 return;
+            bool Error = false; // It should prevent showing similar error messages twice or more times.
             while (!ct.IsCancellationRequested)
             {
                 try
                 {
                     UdpReceiveResult Res = await m_UDPClient.ReceiveAsync(ct);
+                    Error = false;
                     if (!IsExpectedSender(Res.RemoteEndPoint))
                     {
                         LogWriteTrace("Ignored packet from " + Res.RemoteEndPoint);
@@ -95,6 +102,12 @@ namespace utils.twr
                 catch (Exception ex)
                 {
                     LogWriteError(ex.Message);
+                    if (!Error)
+                    {
+                        Error = true;
+                        await ErrorOccured(ex.Message);
+                    }
+
                     try
                     {
                         await Task.Delay(100, ct);
@@ -133,10 +146,6 @@ namespace utils.twr
             }
         }
 
-        protected abstract Task ReceivedCmdOpen();
-        protected abstract Task ReceivedCmdClose();
-        protected abstract void ReceivedCmd(IPEndPoint ep, JsonNode rspJson);
-
         async Task PacketDecoder(IPEndPoint ep, string rsp)
         {
             try
@@ -162,7 +171,10 @@ namespace utils.twr
                         {
                             IsOpen = Response == "ok";
                             if (!IsOpen)
+                            {
+                                await ErrorOccured("Port is not available.");
                                 break;
+                            }
                             await ReceivedCmdOpen();
                             break;
                         }

@@ -42,4 +42,13 @@ namespace utils.twr
             Data = data;
         }
     }
+
+    public class FailedEventArgs : EventArgs
+    {
+        public string Msg { get; }
+        public FailedEventArgs(string msg)
+        {
+            Msg = msg;
+        }
+    }
 }
