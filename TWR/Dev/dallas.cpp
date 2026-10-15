@@ -115,7 +115,7 @@ void ThreadDALLAS(const std::shared_ptr<tConfig>& config, tTWRServer& server)
 					if (PortPtr)
 						PortPtr.reset();
 					PortPtr = std::make_unique<tPortHld>(PortID, dallas::tDALLAS::tSpeed::Norm);
-					server.SendResponse(Pack.Endpoint, PTree, "ok");
+					server.SendResponse(Pack.Endpoint, PTree, (*PortPtr)().IsReady() ? "ok" : "er");
 					continue;
 				}
 				else if (Cmd == "close") // It's just a response, nothing more (for compatibility reasons).
