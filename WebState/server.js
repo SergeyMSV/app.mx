@@ -2,7 +2,7 @@
 
 'use strict';
 
-const version = '0.2.3';
+const version = '0.2.4';
 
 const np_fs = require('fs');
 const np_express = require('express');
@@ -28,10 +28,10 @@ app.get('/', (req, res) => {
         data.host.utc = sc_utils.DateToString(new Date);
         data.host.uptime = sc_utils.GetUptime();
         data.host.loadavg = sc_utils.GetLoadAvgShort();
-        data.host.color = 'green'; // [TBD] it is to be more useful
+        data.host.color = 'green';
         data.hwmon = sc_page_hwmon.GetPageData();
         data.gnss = sc_page_gnss.GetPageData();
-        data.update_period = 500; // ms
+        data.update_period = 500; // [#] ms
         res.status(200).json(data);
         return;
        }
