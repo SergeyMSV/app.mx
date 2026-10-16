@@ -25,7 +25,7 @@ function update() {
                         SetElemText('host_utc', data[key]['utc'] ?? '');
                         SetElemText('host_uptime', data[key]['uptime'] ?? '');
                         SetElemText('host_loadavg', data[key]['loadavg'] ?? '');
-                        SetElemBgColor('host_color', data[key]['color'] ?? 'red');
+                        SetElemBgColor('host_color', data[key]['color'] ?? 'gray');
                         break;
                     case 'hwmon':
                         for (const hwmon_type in data[key]) { // type = input, color
@@ -65,6 +65,7 @@ function update() {
             if (g_update_period > 0)
                 setTimeout(() => {
                     try {
+                        SetElemBgColor('host_color', 'red');
                         // Uncaught(in promise) DOMException: play() failed because the user didn't interact with the document first.
                         audio_blip_no_answer.play();
                     } catch { }
