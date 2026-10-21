@@ -4,10 +4,10 @@
     {
       "type": "shell",
       "label": "Build_for_ARM",
-      "command": "/usr/bin/arm-linux-gnueabihf-g++-14",
+      "command": "/usr/bin/arm-linux-gnueabihf-g++",
       "args": [
         "-std=c++26",
-        "-g",
+        "-static",
         "-Wall",
         "-Wno-nonnull",
         "-I/usr/local/boost_1_92_0_arm",
@@ -29,8 +29,7 @@
         "${workspaceFolder}/../LIB.Utils/utilsTime.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsVersion.cpp",
         "-o",
-        "${workspaceFolder}/mxmqtt",
-        "-lpthread"
+        "${workspaceFolder}/mxmqtt"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -46,7 +45,7 @@
     {
       "type": "shell",
       "label": "Build_for_PC",
-      "command": "/usr/bin/g++-14",
+      "command": "/usr/bin/g++",
       "args": [
         "-fdiagnostics-color=always",
         "-std=c++26",
@@ -72,8 +71,7 @@
         "${workspaceFolder}/../LIB.Utils/utilsTime.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsVersion.cpp",
         "-o",
-        "${workspaceFolder}/mxmqtt_dbg",
-        "-lpthread"
+        "${workspaceFolder}/mxmqtt_dbg"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
