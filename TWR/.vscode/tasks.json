@@ -3,18 +3,16 @@
   "tasks": [
     {
       "type": "shell",
-      "label": "C/C++: cpp build active file ARM",
-      "command": "/usr/bin/arm-linux-gnueabihf-g++-10",
+      "label": "Build_for_ARM",
+      "command": "/usr/bin/arm-linux-gnueabihf-g++",
       "args": [
-        "-std=c++2a",
-        "-g",
+        "-std=c++26",
+        "-static",
         "-Wall",
+        "-I/usr/local/boost_1_92_0_arm",
         "-I${workspaceFolder}",
-        "-I${workspaceFolder}/Dev",
         "-I${workspaceFolder}/../LIB.Share",
         "-I${workspaceFolder}/../LIB.Utils",
-        "-I/usr/local/boost_1_77_0_ARM",
-        "-L/usr/arm-linux-gnueabihf/lib",
         "${workspaceFolder}/main.cpp",
         "${workspaceFolder}/dev/client.cpp",
         "${workspaceFolder}/dev/config.cpp",
@@ -33,8 +31,7 @@
         "${workspaceFolder}/../LIB.Utils/utilsPortSerial.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsVersion.cpp",
         "-o",
-        "${workspaceFolder}/mxtwr",
-        "-lpthread"
+        "${workspaceFolder}/mxtwr"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -48,19 +45,18 @@
       }
     },
     {
-      "type": "cppbuild",
-      "label": "C/C++: g++ build active file",
-      "command": "/usr/bin/g++-11",
+      "type": "shell",
+      "label": "Build_for_PC",
+      "command": "/usr/bin/g++",
       "args": [
         "-fdiagnostics-color=always",
-        "-std=c++2a",
+        "-std=c++26",
         "-g",
         "-Wall",
+        "-I/usr/local/boost_1_92_0",
         "-I${workspaceFolder}",
-        "-I${workspaceFolder}/Dev",
         "-I${workspaceFolder}/../LIB.Share",
         "-I${workspaceFolder}/../LIB.Utils",
-        "-I/usr/local/boost_1_77_0",
         "${workspaceFolder}/main.cpp",
         "${workspaceFolder}/dev/client.cpp",
         "${workspaceFolder}/dev/config.cpp",
@@ -79,8 +75,7 @@
         "${workspaceFolder}/../LIB.Utils/utilsPortSerial.cpp",
         "${workspaceFolder}/../LIB.Utils/utilsVersion.cpp",
         "-o",
-        "${workspaceFolder}/mxtwr_dbg",
-        "-lpthread"
+        "${workspaceFolder}/mxtwr_dbg"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
