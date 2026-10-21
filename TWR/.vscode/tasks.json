@@ -47,7 +47,7 @@
     {
       "type": "shell",
       "label": "Build_for_PC",
-      "command": "/usr/bin/g++",
+      "command": "/usr/bin/g++-14",
       "args": [
         "-fdiagnostics-color=always",
         "-std=c++26",
