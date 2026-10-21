@@ -2,7 +2,6 @@
 #include <devConfig.h>
 
 #include <string>
-#include <vector>
 
 #ifdef MXTWR_CLIENT
 #include "sharePort.h"

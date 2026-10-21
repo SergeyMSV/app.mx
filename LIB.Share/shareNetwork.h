@@ -1,6 +1,9 @@
 #pragma once
 
 #include <array>
+
+#include <cstdint>
+
 #include <boost/bind/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
