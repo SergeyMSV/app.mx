@@ -71,5 +71,8 @@
     <ClInclude Include="dev\rtc.h">
       <Filter>dev</Filter>
     </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsBase.h">
+      <Filter>LIB.Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
