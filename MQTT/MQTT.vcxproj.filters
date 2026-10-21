@@ -38,9 +38,7 @@
     <ClCompile Include="dev\connection.cpp">
       <Filter>dev</Filter>
     </ClCompile>
-    <ClCompile Include="dev\hwmon.cpp">
-      <Filter>dev</Filter>
-    </ClCompile>
+    <ClCompile Include="..\LIB.Utils\utilsLinux.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LIB.Utils">
@@ -101,12 +99,10 @@
     <ClInclude Include="dev\config.h">
       <Filter>dev</Filter>
     </ClInclude>
-    <ClInclude Include="dev\hwmon.h">
-      <Filter>dev</Filter>
-    </ClInclude>
     <ClInclude Include="dev\connection.h">
       <Filter>dev</Filter>
     </ClInclude>
+    <ClInclude Include="..\LIB.Utils\utilsLinux.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat">
