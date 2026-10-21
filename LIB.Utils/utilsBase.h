@@ -7,6 +7,8 @@
 
 #include <libConfig.h>
 
+#include <cstdint>
+
 #include <cassert>
 #include <cstring>
 
