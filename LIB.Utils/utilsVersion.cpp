@@ -1,5 +1,7 @@
 #include "utilsVersion.h"
 
+#include <algorithm>
+
 namespace utils
 {
 
