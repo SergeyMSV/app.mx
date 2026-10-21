@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include <cstdint>
+
 #ifdef MXTWR_CLIENT
 #include "sharePort.h"
 #include <boost/asio.hpp>
