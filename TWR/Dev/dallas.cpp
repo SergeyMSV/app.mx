@@ -35,21 +35,21 @@ dallas::tID ToDallasID(std::string& keyIDStr)
 //	std::stringstream SStr;
 //	std::for_each(std::begin(rom.Value), std::end(rom.Value), [&SStr](std::uint8_t val) { SStr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val); });
 //	return SStr.str();
-//};
+//}
 
 std::string ToString(const dallas::tFamilyCode& val)
 {
 	std::stringstream SStr;
 	SStr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val);
 	return SStr.str();
-};
+}
 
 std::string ToString(const dallas::tID& id)
 {
 	std::stringstream SStr;
 	std::for_each(std::rbegin(id.Value), std::rend(id.Value), [&SStr](std::uint8_t val) { SStr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val); });
 	return SStr.str();
-};
+}
 
 //std::string ToString(dallas::tCodeError codeError)
 //{

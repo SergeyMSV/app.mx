@@ -6,7 +6,7 @@ namespace dev
 {
 namespace settings
 {
-	constexpr char Version[] = "TWR.0.5.1";
+	constexpr char Version[] = "TWR.0.5.2";
 
 namespace network_udp
 {
