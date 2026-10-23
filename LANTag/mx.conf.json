@@ -2,6 +2,6 @@
   "pid": "win",
   "uid": "100",
   "network": {
-    "lantag_port": "58100"
+    "mxlantag_port": "58100"
   }
 }

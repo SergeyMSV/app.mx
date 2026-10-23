@@ -1,8 +1,10 @@
 #pragma once
 
-#include <shareConfig.h>
-
 #include <string>
+
+#include <utilsPath.h>
+
+#include <shareConfig.h>
 
 namespace dev
 {
@@ -14,7 +16,7 @@ class tConfig
 	share::config::port::tUDP_Config m_UDPPort;
 
 public:
-	explicit tConfig(const std::string& fileNameMX);
+	explicit tConfig(const std::filesystem::path& a_path);
 
 	std::string GetPlatformID() const { return m_Platform.ID; }
 	std::string GetUID() const { return m_UID.ID; }
