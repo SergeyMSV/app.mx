@@ -1,0 +1,23 @@
+{
+  "pid": "win",
+  "uid": "100",
+  "port": {
+    "uart_dallas": {
+      "id_win": "COM4",
+      "id_opio": "/dev/ttyS3",
+      "br": 115200
+    }
+  },
+  "sensor": {
+    "DS18B20_C844": "cpu",
+    "DS18B20_1001": "cpu",
+    "DS18B20_6239": "cha",
+    "DS18B20_0000": "out",
+    "DS18B20_0001": "out",
+    "DS18B20_0002": "out",
+    "DS18B20_2426": "test",
+    "DS18B20_C63E": "test",
+    "DS18B20_8747": "test",
+    "DS18B20_0416": "test"
+  }
+}
