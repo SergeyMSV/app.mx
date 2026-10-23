@@ -144,6 +144,9 @@
     <ClInclude Include="dev\port_spi.h">
       <Filter>dev</Filter>
     </ClInclude>
+    <ClInclude Include="..\LIB.Share\sharePortHolder.h">
+      <Filter>LIB.Share</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat">
