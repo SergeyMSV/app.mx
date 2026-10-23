@@ -14,7 +14,7 @@ class tConfig
 	share::config::port::tUDP_Config m_UDPPort;
 
 public:
-	explicit tConfig(const std::string& fileNameMX);
+	tConfig();
 
 	std::string GetPlatformID() const { return m_Platform.ID; }
 	std::string GetUID() const { return m_UID.ID; }

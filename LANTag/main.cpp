@@ -3,7 +3,6 @@
 #include "dev/server.h"
 
 #include <utilsExits.h>
-#include <utilsPath.h>
 
 #include <iostream>
 #include <memory>
@@ -13,12 +12,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		const std::filesystem::path Path(argv[0]);
-		const std::string AppName = utils::path::GetAppNameMain(Path);
-		//const std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
-		const std::string PathFileMX = utils::path::GetPathConfigExc("mx").string();
-
-		std::shared_ptr<dev::tConfig> DsConfig = std::make_shared<dev::tConfig>(PathFileMX);
+		std::shared_ptr<dev::tConfig> DsConfig = std::make_shared<dev::tConfig>();
 		
 		boost::asio::io_context ioc;
 
