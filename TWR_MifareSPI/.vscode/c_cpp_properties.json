@@ -3,16 +3,16 @@
     {
       "name": "Linux",
       "includePath": [
+        "/usr/local/boost_1_92_0/**",
         "${workspaceFolder}/**",
         "${workspaceFolder}/../LIB.MFRC522v2/**",
         "${workspaceFolder}/../LIB.Share/**",
-        "${workspaceFolder}/../LIB.Utils/**",
-        "/usr/local/boost_1_77_0/**"
+        "${workspaceFolder}/../LIB.Utils/**"
       ],
       "defines": [],
-      "compilerPath": "/usr/bin/gcc-11",
-      "cStandard": "c11",
-      "cppStandard": "c++20",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "c23",
+      "cppStandard": "c++26",
       "intelliSenseMode": "gcc-x64"
     }
   ],

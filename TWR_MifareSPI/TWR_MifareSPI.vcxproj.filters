@@ -36,7 +36,7 @@
     <ClCompile Include="..\LIB.MFRC522v2\Arduino.cpp">
       <Filter>LIB.MFRC522v2</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\config.cpp">
+    <ClCompile Include="dev\config.cpp">
       <Filter>dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Share\sharePortSPI.cpp">
@@ -48,10 +48,10 @@
     <ClCompile Include="..\LIB.Share\sharePortGPIO.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\mfrc522.cpp">
+    <ClCompile Include="dev\mfrc522.cpp">
       <Filter>dev</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\dataset.cpp">
+    <ClCompile Include="dev\dataset.cpp">
       <Filter>dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsMIFARE.cpp">
@@ -115,7 +115,7 @@
     <ClInclude Include="..\LIB.MFRC522v2\Arduino.h">
       <Filter>LIB.MFRC522v2</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\config.h">
+    <ClInclude Include="dev\config.h">
       <Filter>dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Share\sharePortSPI.h">
@@ -141,13 +141,13 @@
     <ClInclude Include="..\LIB.Share\sharePortGPIO.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\mfrc522.h">
+    <ClInclude Include="dev\mfrc522.h">
       <Filter>dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Share\sharePipe.h">
       <Filter>LIB.Share</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\dataset.h">
+    <ClInclude Include="dev\dataset.h">
       <Filter>dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsMIFARE.h">

@@ -169,9 +169,9 @@
     <ClCompile Include="..\LIB.Utils\utilsMIFARE.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsVersion.cpp" />
-    <ClCompile Include="Dev\dataset.cpp" />
-    <ClCompile Include="Dev\config.cpp" />
-    <ClCompile Include="Dev\mfrc522.cpp" />
+    <ClCompile Include="dev\dataset.cpp" />
+    <ClCompile Include="dev\config.cpp" />
+    <ClCompile Include="dev\mfrc522.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -208,9 +208,9 @@
     <ClInclude Include="..\LIB.Utils\utilsPath.h" />
     <ClInclude Include="..\LIB.Utils\utilsVersion.h" />
     <ClInclude Include="devConfig.h" />
-    <ClInclude Include="Dev\dataset.h" />
-    <ClInclude Include="Dev\config.h" />
-    <ClInclude Include="Dev\mfrc522.h" />
+    <ClInclude Include="dev\dataset.h" />
+    <ClInclude Include="dev\config.h" />
+    <ClInclude Include="dev\mfrc522.h" />
     <ClInclude Include="libConfig.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
