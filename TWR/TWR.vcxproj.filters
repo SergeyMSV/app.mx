@@ -149,7 +149,6 @@
     <None Include="..\LIB.Utils\!Refresh.bat">
       <Filter>LIB.Utils</Filter>
     </None>
-    <None Include="mxtwr.conf.json" />
     <None Include=".vscode\c_cpp_properties.json">
       <Filter>.vscode</Filter>
     </None>

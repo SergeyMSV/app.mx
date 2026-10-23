@@ -15,7 +15,7 @@ class tConfig
 	share::config::port::tUART_Config m_UART[4];
 
 public:
-	tConfig(const std::string& fileNameConfig, const std::string& fileNameMX);
+	tConfig();
 
 	share::config::port::tUDP_Config GetUDPPort() const { return m_UDPPort; }
 	share::config::port::tSPI_Config GetSPI0_CS0() const { return m_SPI0_CS0; }

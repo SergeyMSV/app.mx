@@ -4,15 +4,9 @@
 #include "dev/port_spi.h"
 #include "dev/port_uart.h"
 
-
-#include <utilsBase.h>
 #include <utilsException.h>
 #include <utilsExits.h>
-#include <utilsPath.h>
 
-#include <sharePortSPI.h>
-
-#include <array>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -21,12 +15,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		const std::filesystem::path Path(argv[0]);
-		const std::string AppName = utils::path::GetAppNameMain(Path);
-		const std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
-		const std::string PathFileMX = utils::path::GetPathConfigExc("mx").string();
-
-		std::shared_ptr<dev::tConfig> DsConfig = std::make_shared<dev::tConfig>(PathFileConfig, PathFileMX);
+		std::shared_ptr<dev::tConfig> DsConfig = std::make_shared<dev::tConfig>();
 		if (DsConfig->GetUDPPort().IsWrong())
 			THROW_RUNTIME_ERROR("IP-port is not valid");
 

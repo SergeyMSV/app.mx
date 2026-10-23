@@ -4,10 +4,36 @@
     "lantag_port": "58188",
     "twr_port": "58200"
   },
-  "spi": {
-    "twr": {
-      "id": "spi0_cs0",
-      "reset": "spi0_cs0_reset"
+  "port": {
+    "spi": {
+      "mode": "0",
+      "bits": "8",
+      "frequency_hz": "4000000",
+      "delay_us": "0",
+      "twr": {
+        "id": "spi0_cs0",
+        "reset": "spi0_cs0_reset"
+      }
+    },
+    "uart_dallas": {
+      "id_win": "COM4",
+      "id_opio": "/dev/ttyS3",
+      "br": 115200
+    },
+    "uart_1": {
+      "id_win": "COM4",
+      "id_opio": "/dev/ttyS1",
+      "br": 9600
+    },
+    "uart_2": {
+      "id_win": "COM1",
+      "id_opio": "/dev/ttyS2",
+      "br": 9600
+    },
+    "uart_3": {
+      "id_win": "COM4",
+      "id_opio": "/dev/ttyS3",
+      "br": 9600
     }
   }
 }
