@@ -5,23 +5,24 @@
 namespace dev
 {
 
-tConfig::tConfig(const std::string& fileNameConfig, const std::string& fileNameMX)
+tConfig::tConfig(const std::filesystem::path& a_path)
 {
-	boost::property_tree::ptree PTreeMX;
-	boost::property_tree::json_parser::read_json(fileNameMX, PTreeMX);
-	m_Platform = share::config::tPlatform(PTreeMX);
-	m_UDPPort = share::config::port::tUDP_Config("network.twr_port", PTreeMX);
-	const std::string SPI0_CS0_ID = PTreeMX.get<std::string>("spi.twr.id", "");
-	m_SPI0_CS0_RST = share::config::port::tGPIO_Config("spi.twr.reset", PTreeMX);
+	const std::string appName = utils::path::GetAppNameMain(a_path);
+	const std::string mxConfPath = utils::path::GetPathConfigExc("mx").string();
 
-	boost::property_tree::ptree PTreeConfig;
-	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
-	m_SPI0_CS0 = share::config::port::tSPI_Config(SPI0_CS0_ID, "spi", PTreeConfig);
-	m_Dallas = share::config::port::tUART_Config("uart_dallas", m_Platform.ID, PTreeConfig);
-	m_UART[0] = share::config::port::tUART_Config("uart_0", m_Platform.ID, PTreeConfig);
-	m_UART[1] = share::config::port::tUART_Config("uart_1", m_Platform.ID, PTreeConfig);
-	m_UART[2] = share::config::port::tUART_Config("uart_2", m_Platform.ID, PTreeConfig);
-	m_UART[3] = share::config::port::tUART_Config("uart_3", m_Platform.ID, PTreeConfig);
+	boost::property_tree::ptree mxPTree;
+	boost::property_tree::json_parser::read_json(mxConfPath, mxPTree);
+
+	m_Platform = share::config::tPlatform(mxPTree);
+	m_UDPPort = share::config::port::tUDP_Config("network." + appName + "_port", mxPTree);
+	const std::string SPI0_CS0_ID = mxPTree.get<std::string>("port.spi." + appName + ".id", "");
+	m_SPI0_CS0_RST = share::config::port::tGPIO_Config("port.spi." + appName + ".reset", mxPTree);
+	m_SPI0_CS0 = share::config::port::tSPI_Config(SPI0_CS0_ID, "port.spi", mxPTree);
+	m_Dallas = share::config::port::tUART_Config("port.uart_" + appName + "_dallas", m_Platform.ID, mxPTree);
+	m_UART[0] = share::config::port::tUART_Config("port.uart_" + appName + "_0", m_Platform.ID, mxPTree);
+	m_UART[1] = share::config::port::tUART_Config("port.uart_" + appName + "_1", m_Platform.ID, mxPTree);
+	m_UART[2] = share::config::port::tUART_Config("port.uart_" + appName + "_2", m_Platform.ID, mxPTree);
+	m_UART[3] = share::config::port::tUART_Config("port.uart_" + appName + "_3", m_Platform.ID, mxPTree);
 }
 
 }
