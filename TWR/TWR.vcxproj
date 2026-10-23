@@ -181,6 +181,7 @@
     <ClInclude Include="..\LIB.Share\shareConfig.h" />
     <ClInclude Include="..\LIB.Share\shareNetwork.h" />
     <ClInclude Include="..\LIB.Share\sharePortGPIO.h" />
+    <ClInclude Include="..\LIB.Share\sharePortHolder.h" />
     <ClInclude Include="..\LIB.Share\sharePortSPI.h" />
     <ClInclude Include="..\LIB.Utils\utilsBase.h" />
     <ClInclude Include="..\LIB.Utils\utilsCRC.h" />

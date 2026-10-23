@@ -11,6 +11,8 @@
 
 #include <utilsPortSerial.h>
 
+#include <sharePortHolder.h>
+
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 
