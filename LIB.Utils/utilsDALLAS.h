@@ -38,6 +38,10 @@ struct tID
 	std::uint8_t Value[6]{};
 
 	bool operator == (const tID&) const = default;
+	bool operator < (const tID& id) const
+	{
+		return std::memcmp(this->Value, id.Value, sizeof(this->Value)) < 0;
+	}
 };
 
 union tROM
@@ -52,6 +56,7 @@ union tROM
 };
 
 bool operator == (const tROM& a, const tROM& b);
+bool operator < (const tROM& a, const tROM& b);
 
 tROM MakeROM(tFamilyCode familyCode, tID id);
 

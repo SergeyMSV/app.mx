@@ -24,6 +24,17 @@ bool operator == (const tROM& a, const tROM& b)
 	return !memcmp(a.Value, b.Value, sizeof(a.Value));
 }
 
+bool operator < (const tROM& a, const tROM& b)
+{
+	if (a.Field.FamilyCode != b.Field.FamilyCode)
+		return a.Field.FamilyCode < b.Field.FamilyCode;
+
+	if (a.Field.ID != b.Field.ID)
+		return a.Field.ID < b.Field.ID;
+
+	return a.Field.CRC < b.Field.CRC;
+}
+
 double ParseTemperature(const std::vector<std::uint8_t>& scratchPad)
 {
 	if (scratchPad.size() != 9) // [TBD] check 9 bytes and CRC
