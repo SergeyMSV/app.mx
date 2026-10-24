@@ -39,21 +39,21 @@ tUpdateServer::tUpdateServer(const boost::property_tree::ptree& pTree)
 	TargetList = pTree.get<std::string>("server.target_list");
 }
 
-tOutFile::tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree)
+tOutFile::tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree, const std::string& prefix)
 {
 	std::filesystem::path PathRaw = pTree.get<std::string>(baseName + ".path");
 	Path = utils::path::GetPathNormal(PathRaw).string();
-	Prefix = pTree.get<std::string>(baseName + ".prefix");
+	Prefix = prefix;
 	QtyMax = pTree.get<uint8_t>(baseName + ".qtyMax", 0);
 }
 
 bool tOutFile::IsWrong() const
 {
-	return Path.empty() || Prefix.empty();
+	return Path.empty();
 }
 
-tOutFileCap::tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree)
-	:tOutFile(baseName, pTree)
+tOutFileCap::tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree, const std::string& prefix)
+	:tOutFile(baseName, pTree, prefix)
 {
 	Capacity = pTree.get<uint32_t>(baseName + ".capacity");
 }
@@ -79,6 +79,8 @@ namespace port
 tUART_Config::tUART_Config(const std::string& baseName, const std::string& platformID, const boost::property_tree::ptree& pTree)
 {
 	ID = pTree.get<std::string>(baseName + ".id" + GetPostfix(platformID), "");
+	if (ID.empty())
+		ID = pTree.get<std::string>(baseName + ".id", "");
 	BR = pTree.get<uint32_t>(baseName + ".br", 0);
 }
 

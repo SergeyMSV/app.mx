@@ -81,4 +81,26 @@ void RemoveFilesOutdated(const share::config::tOutFile& conf, const std::string&
 	utils::file::RemoveFilesOutdated(conf.Path, prefixTemp + conf.Prefix, 0);
 }
 
+bool SaveOutFile(const share::config::tOutFile& a_conf, const std::string& a_data)
+{
+	const std::string dtStr = utils::time::tDateTime::Now().ToStringPath();
+
+	const std::filesystem::path path = a_conf.Path;
+	const std::string filename = a_conf.Prefix + "_" + dtStr + ".json";
+	const std::string filenameTemp = '_' + filename + ".tmp";
+
+	std::filesystem::path filepathTemp = path / filenameTemp;
+	std::fstream File = std::fstream(filepathTemp, std::ios::out);
+	if (!File.good())
+		return false;
+	File << a_data;
+	File.close();
+
+	std::filesystem::path filepath = path / filename;
+	std::error_code ec;
+	std::filesystem::rename(filepathTemp, filepath, ec);
+	share::RemoveFilesOutdated(a_conf);
+	return true;
+}
+
 }
