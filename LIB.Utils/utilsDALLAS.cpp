@@ -120,17 +120,16 @@ std::vector<tROM> tDALLAS::Search()
 	return Search(tFamilyCode::None);
 }
 
-std::vector<tDsDS18B20> tDALLAS::GetDsDS18B20(const std::vector<tROM>& devices)
+std::vector<tDsDS18B20> tDALLAS::GetDsDS18B20Internal(const std::vector<tROM>& a_roms)
 {
-	std::vector<tROM> ThermoROMs;
-	for (auto& i : devices)
-	{
-		if (i.Field.FamilyCode == tFamilyCode::DS18B20)
-			ThermoROMs.push_back(i);
-	}
-
-	if (ThermoROMs.empty())
+	if (a_roms.empty())
 		return {};
+
+	for (auto& i : a_roms)
+	{
+		if (i.Field.FamilyCode != tFamilyCode::DS18B20)
+			return {};
+	}
 
 	if (Reset() != tStatus::Success)
 		return {};
@@ -138,7 +137,7 @@ std::vector<tDsDS18B20> tDALLAS::GetDsDS18B20(const std::vector<tROM>& devices)
 	Transaction({ Cmd_SkipROM }, 0);
 	Transaction({ Cmd_ConvertT }, 0);
 
-	if (ThermoROMs.size() == 1) // [TBD] It's also not parasite-powered.
+	if (a_roms.size() == 1) // [TBD] It's also not parasite-powered.
 	{
 		for (int i = 0; i < 100; ++i)
 		{
@@ -154,14 +153,14 @@ std::vector<tDsDS18B20> tDALLAS::GetDsDS18B20(const std::vector<tROM>& devices)
 	}
 
 	std::vector<tDsDS18B20> ThermalSens;
-	for (auto& i : ThermoROMs)
+	for (auto& i : a_roms)
 	{
 		if (Reset() != tStatus::Success)
 			break;
 
 		std::vector<std::uint8_t> CmdMatchROM;
 		CmdMatchROM = { Cmd_MatchROM };
-		CmdMatchROM.insert(CmdMatchROM.end(), static_cast<std::uint8_t*>(i.Value), static_cast<std::uint8_t*>(i.Value) + sizeof(i.Value));
+		CmdMatchROM.insert(CmdMatchROM.end(), static_cast<const std::uint8_t*>(i.Value), static_cast<const std::uint8_t*>(i.Value) + sizeof(i.Value));
 		Transaction(CmdMatchROM, 0);
 		std::vector<std::uint8_t> Rsp = Transaction({ Cmd_ReadScratchpad }, 9); // Reads the entire scratchpad including the CRC byte (DS18B20 transmits up to 9 data bytes to master)
 		if (Rsp.size() != 9)

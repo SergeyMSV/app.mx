@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <set>
 #include <sstream>
 #include <string>
 
@@ -39,21 +40,21 @@ dallas::tID ToDallasID(std::string& keyIDStr)
 //	std::stringstream SStr;
 //	std::for_each(std::begin(rom.Value), std::end(rom.Value), [&SStr](std::uint8_t val) { SStr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val); });
 //	return SStr.str();
-//};
+//}
 
 std::string ToString(const dallas::tFamilyCode& val)
 {
 	std::stringstream SStr;
 	SStr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val);
 	return SStr.str();
-};
+}
 
 std::string ToString(const dallas::tID& id)
 {
 	std::stringstream SStr;
 	std::for_each(std::rbegin(id.Value), std::rend(id.Value), [&SStr](std::uint8_t val) { SStr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val); });
 	return SStr.str();
-};
+}
 
 //std::string ToString(dallas::tCodeError codeError)
 //{
@@ -91,10 +92,73 @@ void ThreadDALLAS(const tConfig& a_config)
 		if (!portPtr().IsReady())
 			return; // [TBD] throw an exception --- or wait for a minute...
 
-		std::vector<dallas::tROM> FoundROMs = portPtr().Search(dallas::tFamilyCode::DS18B20); // search every minute, disappeared sensors should be left on the list
+		std::set<dallas::tROM> roms;
 
 		while (true)
 		{
+			{
+				std::vector<dallas::tROM> romsFound = portPtr().Search(dallas::tFamilyCode::DS18B20);
+				for (auto& rom : romsFound)
+				{
+					roms.insert(rom);
+				}
+			}
+
+			for (int i = 0; i < 60; ++i) // for 1 minute
+			{
+				if (!roms.empty())
+				{
+					std::vector<dallas::tDsDS18B20> temps = portPtr().GetDsDS18B20(roms);
+					if (!temps.empty())
+					{
+						for (auto& temp : temps)
+							std::cout << ToString(temp.ROM.Field.FamilyCode) << ' ' << ToString(temp.ROM.Field.ID) << ' ' << temp.Temperature << '\n';
+						//"no measurements"
+					}
+					std::cout << "-----------------------\n";
+				}
+
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+
+				//for (auto& msg : PTree.get_child("ids"))
+				//{
+				//	std::string IDStr = msg.second.get_value<std::string>();
+				//	dallas::tID ID = ToDallasID(IDStr);
+				//	dallas::tROM ROM = MakeROM(dallas::tFamilyCode::DS18B20, ID);
+				//	ROMs.push_back(ROM);
+				//}
+				//
+				//if (ROMs.empty())
+				//{
+				//	server.SendResponse(Pack.Endpoint, PTree, "no id");
+				//	continue;
+				//}
+
+				//std::vector<dallas::tDsDS18B20> Thermo = portPtr().GetDsDS18B20(ROMs);
+				//if (Thermo.empty())
+				//{
+				//	server.SendResponse(Pack.Endpoint, PTree, "no measurements");
+				//	continue;
+				//}
+				//
+				//boost::property_tree::ptree PTreeChildren;
+				//for (const auto& i : Thermo)
+				//{
+				//	boost::property_tree::ptree PTreeChild;
+				//	PTreeChild.put("id", ToString(i.ROM.Field.ID));
+				//	PTreeChild.put("temperature", i.Temperature);
+				//	PTreeChildren.push_back(std::make_pair("", PTreeChild));
+				//}
+				//PTree.add_child("measurements", PTreeChildren);
+				//server.SendResponse(Pack.Endpoint, PTree, "ok");
+
+
+
+			}
+
+			//std::vector<dallas::tROM> romsNew = portPtr().Search(dallas::tFamilyCode::DS18B20);
+
+
 			//if (QueueIn.empty())
 			//{
 			//	std::this_thread::sleep_for(std::chrono::milliseconds(!PortPtr ? 100 : 1));
