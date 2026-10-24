@@ -104,7 +104,7 @@ std::string tDataSetGNSS::ToString(std::time_t time) const
 	return {};
 }
 
-void tDataSetGNSS::ToFile(const share::config::tOutFile& configOut) const
+void tDataSetGNSS::ToFile(const share::config::tOutFile& configOut) const // [TBD] use share::SaveOutFile instead of it
 {
 	const std::string DTStr = utils::time::tDateTime::Now().ToStringPath();
 
