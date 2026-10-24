@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "/usr/local/boost_1_92_0/**",
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/../LIB.Share/**",
+        "${workspaceFolder}/../LIB.Utils/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "c23",
+      "cppStandard": "c++26",
+      "intelliSenseMode": "gcc-x64"
+    }
+  ],
+  "version": 4
+}

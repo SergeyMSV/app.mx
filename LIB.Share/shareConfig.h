@@ -64,7 +64,7 @@ struct tOutFile
 	std::uint8_t QtyMax = 0;
 
 	tOutFile() = default;
-	tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree);
+	tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree, const std::string& prefix);
 
 	bool IsWrong() const;
 };
@@ -74,7 +74,7 @@ struct tOutFileCap : public tOutFile
 	std::uint32_t Capacity = 0;
 
 	tOutFileCap() = default;
-	tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree);
+	tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree, const std::string& prefix);
 
 	bool IsWrong() const;
 };
