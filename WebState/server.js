@@ -2,7 +2,7 @@
 
 'use strict';
 
-const version = '0.2.4';
+const version = '0.2.5';
 
 const np_fs = require('fs');
 const np_express = require('express');

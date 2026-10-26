@@ -1,12 +1,17 @@
 'use strict';
 
-//const sc_status = require('./status.js');
+const sc_config = require('./config.js'); // for mxdssens
 const sc_utils = require('./utils.js');
 
 exports.GetPage = function () {
     let str = '';
     for (const i of g_hwmon)
         str += `<tr><td id="color${i.id ?? ''}"></td><td>${i.name ?? ''}</td><td id="input${i.id ?? ''}"></td></tr>`; // '...-input' contains Temperature and Humidity at the same time.
+    const mxdssens = GetMxDSSens();
+    if (mxdssens.sens === undefined)
+        return str;
+    for (const i of mxdssens.sens)
+        str += `<tr><td id="color${i.id ?? ''}"></td><td>${i.name ?? ''} ${i.label ?? ''}</td><td id="input${i.id ?? ''}"></td></tr>`; // '...-input' contains Temperature and Humidity at the same time.
     return str;
 }
 
@@ -30,6 +35,17 @@ exports.GetPageData = function () {
         }
         data['color'][i.id] = 'green'; // [TBD] it depends on both things: temperature and humidity
     }
+
+    const mxdssens = GetMxDSSens();
+    if (mxdssens.sens === undefined)
+        return data;
+    for (let i of mxdssens.sens) {
+        if (Object.hasOwn(i, 'temp1_input')) {
+            data['input'][i.id] = ReadTemperature(i['temp1_input']);
+        }
+        data['color'][i.id] = 'green'; // [TBD] it depends on both things: temperature and humidity
+    }
+
     return data;
 }
 
@@ -65,14 +81,24 @@ let g_hwmon = (() => {
     return [];
 })();
 
+function FormatTemperatureStr(a_temp) {
+    if (isNaN(a_temp))
+        return 'n/a';
+    let val = (a_temp).toFixed(2);
+    val = val.padStart(6, ' ');
+    return 'T:' + val + '\xB0C'; // 0xB0 - Celsius degree sign.
+}
+
+function ReadTemperature(a_str) {
+    return FormatTemperatureStr(parseFloat(a_str));
+}
+
 function GetTemperature(a_path, a_div) {
     try {
         const str = sc_utils.ReadFile(a_path, '');
         if (isNaN(parseInt(str)))
             return 'n/a';
-        let val = (parseInt(str) / a_div).toFixed(2);
-        val = val.padStart(6, ' '); 
-        return 'T:' + val + '\xB0C'; // 0xB0 - Celsius degree sign.
+        return FormatTemperatureStr(parseInt(str) / a_div);
     }
     catch {
         return 'err';
@@ -132,3 +158,40 @@ function GetThermalStatus(a_value) {
     return st;
 }
 */
+
+function GetMxDSSens() {
+
+    const configOut = sc_config.GetConfig().mx.out;
+
+    let files = [];
+    try {
+        const filesAll = sc_utils.ReadDir(configOut.path);
+        for (const i of filesAll) {
+            if (i.includes("mxdssens", 0)) {
+                files.push(i);
+            }
+        }
+    } catch { }
+
+    let data = {};
+
+    if (!files.length)
+        return data;
+    files.sort();
+    const fileLatest = files[files.length - 1];
+
+    const fileNameParsed = sc_utils.ParseFileName(fileLatest);
+    if (fileNameParsed === undefined)
+        return data;
+
+    const filePath = configOut.path + '/' + fileLatest;
+    try {
+        data.sens = sc_utils.ReadFileJSON(filePath);
+    } catch (err) {
+        data = {};
+    }
+
+    data.utc_file = fileNameParsed.dateTime;
+
+    return data;
+}
