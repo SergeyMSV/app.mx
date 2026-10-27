@@ -129,12 +129,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		const std::filesystem::path Path(argv[0]);
-		const std::string AppName = utils::path::GetAppNameMain(Path);
-		std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
-		std::string PathFileMX = utils::path::GetPathConfigExc("mx").string();
-
-		dev::tConfig DsConfig(PathFileConfig, PathFileMX);
+		dev::tConfig DsConfig(argv[0]);
 
 		dev::tDataSet DataSet;
 
