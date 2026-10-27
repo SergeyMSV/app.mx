@@ -161,7 +161,7 @@ function GetThermalStatus(a_value) {
 
 function GetMxDSSens() {
 
-    const configOut = sc_config.GetConfig().mx.out;
+    const configOut = sc_config.GetConfig().out;
 
     let files = [];
     try {
