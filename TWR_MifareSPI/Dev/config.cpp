@@ -5,18 +5,21 @@
 namespace dev
 {
 
-tConfig::tConfig(const std::string& fileNameConfig, const std::string& fileNameMX)
+tConfig::tConfig(const std::filesystem::path& a_path)
 {
-	boost::property_tree::ptree PTreeMX;
-	boost::property_tree::json_parser::read_json(fileNameMX, PTreeMX);
-	m_Pipe = share::config::tPipe("mifare", PTreeMX);
-	const std::string SPI_ID = PTreeMX.get<std::string>("spi_mifare.id", "");
-	m_SPI_RST = share::config::port::tGPIO_Config("spi_mifare.reset", PTreeMX);
+	const std::string appName = utils::path::GetAppNameMain(a_path);
+	const std::string mxConfPath = utils::path::GetPathConfigExc("mx").string();
 
-	boost::property_tree::ptree PTreeConfig;
-	boost::property_tree::json_parser::read_json(fileNameConfig, PTreeConfig);
-	m_SPI = share::config::port::tSPI_Config(SPI_ID, "spi_mifare", PTreeConfig);
-	m_Log = share::config::tOutFileCap("log_read", PTreeConfig);
+	boost::property_tree::ptree mxPTree;
+	boost::property_tree::json_parser::read_json(mxConfPath, mxPTree);
+
+	m_Pipe = share::config::tPipe(appName, mxPTree);
+
+	const std::string SPI_ID = mxPTree.get<std::string>("port.spi." + appName + ".id", "");
+	m_SPI_RST = share::config::port::tGPIO_Config("port.spi." + appName + ".reset", mxPTree);
+	m_SPI = share::config::port::tSPI_Config(SPI_ID, "port.spi", mxPTree);
+
+	m_Log = share::config::tOutFileCap("log", mxPTree, appName);
 }
 
 }

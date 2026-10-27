@@ -1,7 +1,33 @@
 {
   "pid": "win",
+  "out": {
+    "path": "/tmpram",
+    "qtyMax": 2
+  },
+  "log": {
+    "path": "/tmpram",
+    "capacity": 102400,
+    "qtyMax": 2
+  },
+  "port": {
+    "spi": {
+      "mode": "0",
+      "bits": "8",
+      "frequency_hz": "4000000",
+      "delay_us": "0",
+      "mxmifare": {
+        "id": "spi0_cs0",
+        "reset": "spi0_cs0_reset"
+      },
+      "mxtwr": {
+        "id": "spi0_cs0",
+        "reset": "spi0_cs0_reset"
+      }
+    }
+  },
+
   "pipe": {
-    "mifare": "\\\\.\\pipe\\mxmifare_pipe",
+    "mxmifare": "\\\\.\\pipe\\mxmifare_pipe",
     "1 mifare": "/tmp/mxmifare_pipe",
     "2 mifare": "/tmpram/mxmifare_pipe",
     "3 mifare": "/tmpram/mxmifare_pipe"
