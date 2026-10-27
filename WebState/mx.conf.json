@@ -4,5 +4,10 @@
   "out": {
     "path": "/tmpram",
     "qtyMax": 2
+  },
+  "cpu_thermal": {
+    "div_win": 1000,
+    "div_vsom": 2000,
+    "div_opio": 1000
   }
 }

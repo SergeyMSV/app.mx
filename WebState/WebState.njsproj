@@ -48,7 +48,6 @@
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="server.conf.json" />
     <Content Include="status.js">
       <SubType>Code</SubType>
     </Content>
