@@ -160,38 +160,20 @@ function GetThermalStatus(a_value) {
 */
 
 function GetMxDSSens() {
-
     const configOut = sc_config.GetConfig().out;
-
-    let files = [];
-    try {
-        const filesAll = sc_utils.ReadDir(configOut.path);
-        for (const i of filesAll) {
-            if (i.includes("mxdssens", 0)) {
-                files.push(i);
-            }
-        }
-    } catch { }
-
-    let data = {};
-
-    if (!files.length)
-        return data;
-    files.sort();
-    const fileLatest = files[files.length - 1];
-
+    const fileLatest = sc_utils.GetOutFile(configOut.path, "mxdssens");
+    if (fileLatest === undefined || !fileLatest.length)
+        return {};
     const fileNameParsed = sc_utils.ParseFileName(fileLatest);
     if (fileNameParsed === undefined)
-        return data;
-
+        return {};
+    let data = {};
     const filePath = configOut.path + '/' + fileLatest;
     try {
         data.sens = sc_utils.ReadFileJSON(filePath);
     } catch (err) {
         data = {};
     }
-
     data.utc_file = fileNameParsed.dateTime;
-
     return data;
 }

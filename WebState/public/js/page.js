@@ -46,7 +46,19 @@ function update() {
                         }
                         break;
                     case 'gnss':
+                    case 'gnss1':
+                    case 'gnss2':
                         {
+                            console.log(data);
+                            for (const type in data[key]) { // type = input, color
+                                for (const id in data[key][type]) { // id = gnss_utc, gnss_gps, ...
+                                    switch (type) {
+                                        case 'input': SetElemText(type + id, data[key][type][id]); break;
+                                        case 'color': SetElemBgColor(type + id, data[key][type][id]); break;
+                                    }
+                                }
+                            }
+                            //console.log(key);
                             SetElemText('gnss_status_text', data[key]['status']?.['text']);
                             SetElemClass('gnss_status_text', data[key]['status']?.['class'])
                             SetElemBgColor('gnss_status_color', data[key]['status']?.['color']);

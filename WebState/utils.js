@@ -70,6 +70,25 @@ exports.ReadDir = function (a_path) {
     return [];
 }
 
+exports.GetOutFile = function (a_path, a_prefix) {
+    let files = [];
+    try {
+        const filesAll = np_fs.readdirSync(GetRealPath(a_path));
+        for (const i of filesAll) {
+            if (i.includes(a_prefix, 0)) {
+                files.push(i);
+            }
+        }
+    }
+    catch (err) {
+        console.error(err);
+    }
+    if (!files.length)
+        return {};
+    files.sort();
+    return files[files.length - 1];
+}
+
 exports.ReadFile = function (a_path, a_default) {
     try {
         return np_fs.readFileSync(GetRealPath(a_path), 'utf-8');
