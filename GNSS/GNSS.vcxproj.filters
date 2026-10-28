@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Dev">
-      <UniqueIdentifier>{59634b88-191d-4c3f-b606-d7533dbde411}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LIB.Share">
       <UniqueIdentifier>{6733c7c4-0969-4945-a479-9adc5c1b5df9}</UniqueIdentifier>
     </Filter>
@@ -14,23 +11,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="dev">
+      <UniqueIdentifier>{59634b88-191d-4c3f-b606-d7533dbde411}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Dev\devLog.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
     <ClCompile Include="..\Lib.Utils\utilsLog.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsPacketNMEAType.cpp">
       <Filter>LIB.Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devDataSetGNSS.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devDataSetConfig.cpp">
-      <Filter>Dev</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsPath.cpp">
       <Filter>LIB.Utils</Filter>
@@ -59,29 +50,35 @@
     <ClCompile Include="..\LIB.Utils\utilsPortSerial.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Dev\devStateInit.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devStateReceive.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devStateInitMTK.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
-    <ClCompile Include="Dev\devStateInitSiRF.cpp">
-      <Filter>Dev</Filter>
-    </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsString.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsTime.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
+    <ClCompile Include="dev\config.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
+    <ClCompile Include="dev\devDataSetGNSS.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
+    <ClCompile Include="dev\devLog.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
+    <ClCompile Include="dev\devStateInit.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
+    <ClCompile Include="dev\devStateInitMTK.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
+    <ClCompile Include="dev\devStateInitSiRF.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
+    <ClCompile Include="dev\devStateReceive.cpp">
+      <Filter>dev</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dev\devLog.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
     <ClInclude Include="devConfig.h" />
     <ClInclude Include="libConfig.h" />
     <ClInclude Include="..\Lib.Utils\utilsLog.h">
@@ -101,12 +98,6 @@
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsPacketNMEAType.h">
       <Filter>LIB.Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Dev\devDataSetGNSS.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
-    <ClInclude Include="Dev\devDataSetConfig.h">
-      <Filter>Dev</Filter>
     </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsPath.h">
       <Filter>LIB.Utils</Filter>
@@ -144,15 +135,6 @@
     <ClInclude Include="..\LIB.Utils\utilsPacketNMEAPayloadPSRF.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\devDataSetHW.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
-    <ClInclude Include="Dev\devStateInit.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
-    <ClInclude Include="Dev\devPortUART.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsPacketNMEAPayloadPMTK.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
@@ -165,21 +147,33 @@
     <ClInclude Include="..\LIB.Utils\utilsString.h">
       <Filter>LIB.Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Dev\devState.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
-    <ClInclude Include="devStatePolicy.h">
-      <Filter>Dev</Filter>
-    </ClInclude>
     <ClInclude Include="..\LIB.Utils\utilsTime.h">
       <Filter>LIB.Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\config.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\devDataSetGNSS.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\devDataSetHW.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\devLog.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\devPortUART.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\devState.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\devStateInit.h">
+      <Filter>dev</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="mxgnss.conf.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LIB.Utils\!Refresh.bat">

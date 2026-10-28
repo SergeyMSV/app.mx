@@ -13,7 +13,7 @@ namespace state
 
 std::uint32_t SelectBR(tPortUART& port);
 
-std::optional<std::pair<tDataSetHW, tStatus>> TryMTK(tPortUART& port, const tDataSetConfig& dsConfig)
+std::optional<std::pair<tDataSetHW, tStatus>> TryMTK(tPortUART& port, const tConfig& dsConfig)
 {
 	using namespace utils::packet::nmea;
 	using namespace utils::packet::nmea::mtk;

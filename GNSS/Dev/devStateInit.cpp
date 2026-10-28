@@ -5,8 +5,8 @@ namespace dev
 namespace state
 {
 
-std::optional<std::pair<tDataSetHW, tStatus>> TryMTK(tPortUART& port, const tDataSetConfig& dsConfig);
-std::optional<std::pair<tDataSetHW, tStatus>> TrySiRF(tPortUART& port, const tDataSetConfig& dsConfig);
+std::optional<std::pair<tDataSetHW, tStatus>> TryMTK(tPortUART& port, const tConfig& dsConfig);
+std::optional<std::pair<tDataSetHW, tStatus>> TrySiRF(tPortUART& port, const tConfig& dsConfig);
 
 std::uint32_t SelectBR(tPortUART& port)
 {
@@ -24,7 +24,7 @@ std::uint32_t SelectBR(tPortUART& port)
 	return 0;
 }
 
-std::pair<tDataSetHW, tStatus> Init(tPortUART& port, const tDataSetConfig& dsConfig)
+std::pair<tDataSetHW, tStatus> Init(tPortUART& port, const tConfig& dsConfig)
 {
 	SelectBR(port);
 

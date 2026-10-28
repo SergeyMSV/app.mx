@@ -2,6 +2,8 @@
 
 #include <devConfig.h>
 
+#include <utilsPath.h>
+
 #include <shareConfig.h>
 
 #include <string>
@@ -11,16 +13,15 @@
 namespace dev
 {
 
-class tDataSetConfig
+class tConfig
 {
 	share::config::tPlatform m_Platform;
-	share::config::tOutFile m_OutFile;
 	share::config::port::tUART_Config m_UART;
+	share::config::tOutFile m_OutFile;
 	share::config::tOutFileCap m_Log;
 
 public:
-	tDataSetConfig() = default;
-	tDataSetConfig(const std::string& fileNameConfig, const std::string& fileNamePrivate);
+	explicit tConfig(const std::filesystem::path& a_path);
 
 	share::config::tOutFile GetOutGNSS() const { return m_OutFile; }
 	share::config::port::tUART_Config GetUART() const { return  m_UART; }

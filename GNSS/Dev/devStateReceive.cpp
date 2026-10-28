@@ -153,7 +153,7 @@ public:
 };
 
 template <typename TContentSet>
-tStatus ReceiveInternal(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetHW& dsHW)
+tStatus ReceiveInternal(tPortUART& port, const tConfig& dsConfig, const tDataSetHW& dsHW)
 {
 	TContentSet ContentSet;
 	std::vector<std::uint8_t> DataRaw;
@@ -188,7 +188,7 @@ tStatus ReceiveInternal(tPortUART& port, const tDataSetConfig& dsConfig, const t
 	return tStatus::Unknown; // [TBD] check it - Actially it shouldn't be here.
 }
 
-tStatus Receive(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetHW& dsHW)
+tStatus Receive(tPortUART& port, const tConfig& dsConfig, const tDataSetHW& dsHW)
 {
 	if (dsHW.Chip == "MTK")
 	{

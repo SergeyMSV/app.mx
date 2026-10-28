@@ -2,7 +2,7 @@
 
 #include <devConfig.h>
 
-#include "devDataSetConfig.h"
+#include "dev/config.h"
 #include "devDataSetHW.h"
 #include "devPortUART.h"
 
@@ -25,8 +25,8 @@ enum class tStatus
 	Unknown = 0xFF,
 };
 
-std::pair<tDataSetHW, tStatus> Init(tPortUART& port, const tDataSetConfig& dsConfig);
-tStatus Receive(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetHW& dsHW);
+std::pair<tDataSetHW, tStatus> Init(tPortUART& port, const tConfig& dsConfig);
+tStatus Receive(tPortUART& port, const tConfig& dsConfig, const tDataSetHW& dsHW);
 
 }
 }

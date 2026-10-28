@@ -67,7 +67,7 @@ static bool ReceiveAnyNMEA(tPortUART& port)
 }
 
 template<typename TPolicy>
-bool SetSerialPortBR(tPortUART& port, const tDataSetConfig& dsConfig)
+bool SetSerialPortBR(tPortUART& port, const tConfig& dsConfig)
 {
 	if (port.GetBaudRate() == dsConfig.GetUART().BR)
 		return true;

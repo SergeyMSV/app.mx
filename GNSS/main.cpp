@@ -1,7 +1,7 @@
 #include <devConfig.h>
 
-#include <devDataSetConfig.h>
-#include <devState.h>
+#include "dev/config.h"
+#include "dev/devState.h"
 
 //#include <utilsException.h>
 #include <utilsExits.h>
@@ -16,15 +16,10 @@
 
 int main(int argc, char* argv[])
 {
-	const std::filesystem::path Path(argv[0]);
-	const std::string AppName = utils::path::GetAppNameMain(Path);
-	const std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
-	const std::string PathFileMX = utils::path::GetPathConfigExc("mx").string();
-
-	dev::tDataSetConfig DsConfig = dev::tDataSetConfig(PathFileConfig, PathFileMX);
+	dev::tConfig DsConfig = dev::tConfig(argv[0]);
 	if (DsConfig.GetUART().IsWrong())
 		return static_cast<int>(utils::exit_code::EX_CONFIG);
-	//std::shared_ptr<dev::tDataSetConfig> DsConfig = std::make_shared<dev::tDataSetConfig>(PathFileConfig, PathFileMX);
+	//std::shared_ptr<dev::tConfig> DsConfig = std::make_shared<dev::tConfig>(PathFileConfig, PathFileMX);
 	//if (DsConfig->GetUART().IsWrong())
 	//	return static_cast<int>(utils::exit_code::EX_CONFIG);
 		//THROW_RUNTIME_ERROR("UART is not valid.");

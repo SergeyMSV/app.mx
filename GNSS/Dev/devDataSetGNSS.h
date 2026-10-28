@@ -1,7 +1,7 @@
 #pragma once
 #include <devConfig.h>
 
-#include "devDataSetConfig.h"
+#include "dev/config.h"
 
 #include <utilsPacketNMEAType.h>
 
