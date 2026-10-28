@@ -2,6 +2,7 @@
 
 const g_update_period_min = 10; // ms
 let g_update_period = 0; // ms
+let g_hwmonQty = -1;
 
 const audio_blip_no_answer = new Audio('sound/no_answer_peep.mp3');
 
@@ -28,11 +29,18 @@ function update() {
                         SetElemBgColor('host_color', data[key]['color'] ?? 'gray');
                         break;
                     case 'hwmon':
-                        for (const hwmon_type in data[key]) { // type = input, color
-                            for (const hwmon_id in data[key][hwmon_type]) { // id = hwmon0, hwmon1, ...
-                                switch (hwmon_type) {
-                                    case 'input': SetElemText(hwmon_type + hwmon_id, data[key][hwmon_type][hwmon_id]); break;
-                                    case 'color': SetElemBgColor(hwmon_type + hwmon_id, data[key][hwmon_type][hwmon_id]); break;
+                        const hwmonQty = Object.keys(data[key]['input']).length;
+                        if (g_hwmonQty === -1) {
+                            g_hwmonQty = hwmonQty;
+                        }
+                        else if (g_hwmonQty != hwmonQty) {
+                            window.location.reload();
+                        }
+                        for (const type in data[key]) { // type = input, color
+                            for (const id in data[key][type]) { // id = hwmon0, hwmon1, ...
+                                switch (type) {
+                                    case 'input': SetElemText(type + id, data[key][type][id]); break;
+                                    case 'color': SetElemBgColor(type + id, data[key][type][id]); break;
                                 }
                             }
                         }
