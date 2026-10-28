@@ -35,12 +35,12 @@ function update() {
                         }
                         else if (g_hwmonQty != hwmonQty) {
                             window.location.reload();
-                        }                        
-                        for (const hwmon_type in data[key]) { // type = input, color
-                            for (const hwmon_id in data[key][hwmon_type]) { // id = hwmon0, hwmon1, ...
-                                switch (hwmon_type) {
-                                    case 'input': SetElemText(hwmon_type + hwmon_id, data[key][hwmon_type][hwmon_id]); break;
-                                    case 'color': SetElemBgColor(hwmon_type + hwmon_id, data[key][hwmon_type][hwmon_id]); break;
+                        }
+                        for (const type in data[key]) { // type = input, color
+                            for (const id in data[key][type]) { // id = hwmon0, hwmon1, ...
+                                switch (type) {
+                                    case 'input': SetElemText(type + id, data[key][type][id]); break;
+                                    case 'color': SetElemBgColor(type + id, data[key][type][id]); break;
                                 }
                             }
                         }
