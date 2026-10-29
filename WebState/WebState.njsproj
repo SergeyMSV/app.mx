@@ -34,7 +34,7 @@
     <Content Include="mx.conf.json" />
     <Content Include="mxgnss.conf.json" />
     <Content Include="package-lock.json" />
-    <Content Include="page_gnss_state.js" />
+    <Content Include="page_gnssmon.js" />
     <Content Include="page_hwmon.js" />
     <Content Include="public\css\content.css" />
     <Content Include="public\favicon.ico" />
@@ -49,12 +49,13 @@
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="status.js">
+    <Content Include="utils_status.js">
       <SubType>Code</SubType>
     </Content>
     <Content Include="utils.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="utils_gnss.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />

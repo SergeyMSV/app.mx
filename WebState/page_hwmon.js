@@ -124,20 +124,20 @@ function GetThermal(a_filePath, a_thermalDiv) { // DEPRECATED
     try {
         const tempStr = sc_utils.ReadFile(a_filePath, '');
         if (isNaN(parseInt(tempStr)))
-            return sc_status.CPU_Thermal.NoData;
+            return sc_utils_status.CPU_Thermal.NoData;
         const temp = (parseInt(tempStr) / a_thermalDiv).toFixed(2);
         return GetThermalStatus(temp);
     }
     catch {
-        return sc_status.CPU_Thermal.NotSupported;
+        return sc_utils_status.CPU_Thermal.NotSupported;
     }
 }
 
-let g_cpu_thermal_status = sc_status.CPU_Thermal.None
+let g_cpu_thermal_status = sc_utils_status.CPU_Thermal.None
 function GetThermalStatus(a_value) {
 
     function CheckTemp(val, min, max) {
-        const hysteresis = g_cpu_thermal_status != sc_status.CPU_Thermal.None ? 1 : 0;
+        const hysteresis = g_cpu_thermal_status != sc_utils_status.CPU_Thermal.None ? 1 : 0;
         return val >= min + hysteresis && val <= max - hysteresis; // hysteresis
     }
 
@@ -148,7 +148,7 @@ function GetThermalStatus(a_value) {
         return true;
     }
 
-    for (const i of sc_status.CPU_Thermal_Ranges) {
+    for (const i of sc_utils_status.CPU_Thermal_Ranges) {
         if (TryStatus(a_value, i.t_min, i.t_max, i.status))
             break;
     }

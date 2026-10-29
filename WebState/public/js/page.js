@@ -3,6 +3,7 @@
 const g_update_period_min = 10; // ms
 let g_update_period = 0; // ms
 let g_hwmonQty = -1;
+let g_gnssQty = -1;
 
 const audio_blip_no_answer = new Audio('sound/no_answer_peep.mp3');
 
@@ -45,32 +46,23 @@ function update() {
                             }
                         }
                         break;
-                    case 'gnss':
-                    case 'gnss1':
-                    case 'gnss2':
-                        {
-                            console.log(data);
-                            for (const type in data[key]) { // type = input, color
-                                for (const id in data[key][type]) { // id = gnss_utc, gnss_gps, ...
+                    case 'gnssmon':
+                        const gnssQty = Object.keys(data[key]).length;
+                        if (g_gnssQty === -1) {
+                            g_gnssQty = gnssQty;
+                        }
+                        else if (g_gnssQty != gnssQty) {
+                            window.location.reload();
+                        }
+                        for (const gnss in data[key]) { // gnss, gnss1, gnss2
+                            for (const type in data[key][gnss]) { // type = input, color
+                                for (const id in data[key][gnss][type]) { // id = gnss_utc, gnss_gps, ...
                                     switch (type) {
-                                        case 'input': SetElemText(type + id, data[key][type][id]); break;
-                                        case 'color': SetElemBgColor(type + id, data[key][type][id]); break;
+                                        case 'input': SetElemText(type + id, data[key][gnss][type][id]); break;
+                                        case 'color': SetElemBgColor(type + id, data[key][gnss][type][id]); break;
                                     }
                                 }
                             }
-                            //console.log(key);
-                            SetElemText('gnss_status_text', data[key]['status']?.['text']);
-                            SetElemClass('gnss_status_text', data[key]['status']?.['class'])
-                            SetElemBgColor('gnss_status_color', data[key]['status']?.['color']);
-                            SetElemText('gnss_utc_file_text', data[key]['utc_file']);
-                            SetElemText('gnss_mode_text', data[key]['mode']);
-                            SetElemText('gnss_utc_text', data[key]['utc']);
-                            SetElemText('gnss_sats_gps', data[key]['sats']?.['gps']?.['text']);
-                            SetElemClass('gnss_sats_gps', data[key]['sats']?.['gps']?.['class'])
-                            SetElemText('gnss_sats_glo', data[key]['sats']?.['glo']?.['text']);
-                            SetElemClass('gnss_sats_glo', data[key]['sats']?.['glo']?.['class'])
-                            SetElemText('gnss_location_text', data[key]['location']);
-                            SetElemText('gnss_speed_text', data[key]['speed']);
                         }
                     default:
                         //console.log(key);

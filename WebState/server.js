@@ -2,7 +2,7 @@
 
 'use strict';
 
-const version = '0.2.6';
+const version = '0.2.7';
 
 const np_fs = require('fs');
 const np_express = require('express');
@@ -14,7 +14,7 @@ app.use(np_favicon(__dirname + '/public/favicon.ico'));
 const sc_config = require('./config.js');
 const sc_page_hwmon = require('./page_hwmon.js');
 //const sc_page_gnss = require('./page_gnss.js');
-const sc_page_gnss_state = require('./page_gnss_state.js');
+const sc_page_gnssmon = require('./page_gnssmon.js');
 const sc_utils = require('./utils.js');
 
 app.get('/', (req, res) => {
@@ -31,9 +31,7 @@ app.get('/', (req, res) => {
         data.host.loadavg = sc_utils.GetLoadAvgShort();
         data.host.color = 'green';
         data.hwmon = sc_page_hwmon.GetPageData();
-        data.gnss = sc_page_gnss_state.GetPageData(null);
-        data.gnss1 = sc_page_gnss_state.GetPageData("1");
-        data.gnss2 = sc_page_gnss_state.GetPageData("2");
+        data.gnssmon = sc_page_gnssmon.GetPageData();
         data.update_period = 500; // [#] ms
         res.status(200).json(data);
         return;
@@ -62,9 +60,7 @@ app.get('/', (req, res) => {
 <tr><td></td><td> uptime</td><td id="host_uptime"></td></tr>
 <tr><td></td><td> load avg.</td><td id="host_loadavg"></td></tr>
 ${sc_page_hwmon.GetPage()}
-${sc_page_gnss_state.GetPage(null)}
-${sc_page_gnss_state.GetPage("1") }
-${sc_page_gnss_state.GetPage("2") }
+${sc_page_gnssmon.GetPage()}
 </table>
 </body>
 </html>`;

@@ -71,6 +71,7 @@ exports.ReadDir = function (a_path) {
 }
 
 exports.GetOutFile = function (a_path, a_prefix) {
+    a_prefix += '_';
     let files = [];
     try {
         const filesAll = np_fs.readdirSync(GetRealPath(a_path));

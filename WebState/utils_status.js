@@ -41,7 +41,7 @@ const CPU_Thermal_RangesInit = (() => {
     }
 })();
 
-exports.GNSS = {
+exports.GNSS = { // DEPRECATED, use exports.GetStatus = function (a_gnss, a_utcCapture)
     None: { text: '', color: 'gray' },
     NotSupported: { text: 'not supported', color: 'gray' },
     NoData: { text: 'no data', color: 'orange' },

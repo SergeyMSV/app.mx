@@ -1,15 +1,34 @@
 'use strict';
 
 const sc_config = require('./config.js');
-//const sc_status = require('./status.js');
+//const sc_utils_status = require('./status.js');
 const sc_utils = require('./utils.js')
+const sc_utils_gnss = require('./utils_gnss.js')
 
-//const g_confMXGNSS = sc_config.GetConfigMXGNSS();
-//const g_isSupportedMXGNSS = g_confMXGNSS !== undefined;
+exports.GetPage = function () {
+    return MakePart(null) + MakePart("1") + MakePart("2");
+}
 
-exports.GetPage = function (a_id) {
+exports.GetPageData = function () {
+    let gnssmon = {};
+    let data = MakePageData(null);
+    if (data !== null)
+        gnssmon.gnss = data;
+    data = MakePageData("1");
+    if (data !== null)
+        gnssmon.gnss1 = data;
+    data = MakePageData("2");
+    if (data !== null)
+        gnssmon.gnss2 = data;
+    return gnssmon;
+}
+
+function MakePart(a_id) {
+    const data = MakePageData(a_id);
+    if (data === null)
+        return "";
     const idStr = "gnss" + (a_id ?? "");
-    const str = `<tr><td id="color${idStr}" bgcolor="white"></td><td>GNSS</td><td id="input${idStr}_mode"></td></tr>`;
+    const str = `<tr><td id="color${idStr}" bgcolor="white"></td><td>GNSS ${a_id ?? ""}</td><td id="input${idStr}_mode"></td></tr>`;
     return str + `
 <tr><td></td><td> UTC</td><td id="input${idStr}_utc"></td></tr>
 <tr><td></td><td> GPS</td><td id="input${idStr}_gps"></td></tr>
@@ -17,32 +36,36 @@ exports.GetPage = function (a_id) {
 `;
 }
 
-exports.GetPageData = function (a_id) {
+function MakePageData(a_id) {
     const idStr = "gnss" + (a_id ?? "");
     const appName = "mx" + idStr;
     const configOut = sc_config.GetConfig().out;
     const fileLatest = sc_utils.GetOutFile(configOut.path, appName);
     if (fileLatest === undefined || !fileLatest.length)
-        return {};
+        return null;
     const fileNameParsed = sc_utils.ParseFileName(fileLatest);
     if (fileNameParsed === undefined)
-        return {};
+        return null;
     let data = {};
     const filePath = configOut.path + '/' + fileLatest;
     try {
         const gnss = sc_utils.ReadFileJSON(filePath);
         data.input = {};
-        data.input[idStr + "_mode"] = gnss.mode.toLowerCase();
+        data.input[idStr + "_mode"] = sc_utils_gnss.GetPosSpdShort(gnss);//gnss.mode.toLowerCase();
         data.input[idStr + "_utc"] = gnss.utc;
-        data.input[idStr + "_gps"] = "08 -- 01 23 54 77 45 68"; // [TBD]
-        data.input[idStr + "_glo"] = "04 -- 12 34 56 78"; // [TBD]
+        data.input[idStr + "_gps"] = sc_utils_gnss.GetSatsStrGPS(gnss);
+        data.input[idStr + "_glo"] = sc_utils_gnss.GetSatsStrGLO(gnss);
+
+        data.test = sc_utils_gnss.GetStatus(gnss, fileNameParsed.utc); // [TBD][TEST]
+
         data.color = {}
-        data.color[idStr] = gnss.valid === "A" ? "green" : "yellow"; // [TBD] - spoofing should be taken into consideration
+        data.color[idStr] = sc_utils_gnss.GetColor(gnss)
     } catch (err) {
         data = {};
         data.color = {}
         data.color[idStr] = "red";
     }
+
     /*
     const filePath = g_confMXGNSS.out.path + '/' + fileLast;
     try {
@@ -60,24 +83,24 @@ exports.GetPageData = function (a_id) {
         data.utc = sc_utils.DateToString(new Date(utcGNSS));
 
         if (Math.abs(utcNow - utcFile) > g_confMXGNSS.NaviValidityPeriod) { // The file is outdated, the containing data is not interesting.
-            data.status = Object.assign({}, sc_status.GNSS.NoData); // copying the object
+            data.status = Object.assign({}, sc_utils_status.GNSS.NoData); // copying the object
             data.status.class = 'text_red';
         }
         // The file is not outdated but UTC in the containing data is not correct (e.g. GPS spoofing).
         //else if (Math.abs(utcNow - utcGNSS) > g_confMXGNSS.NaviValidityPeriod) {
-        //    data.status = Object.assign({}, sc_status.GNSS.NoData); // copying the object --- ???
+        //    data.status = Object.assign({}, sc_utils_status.GNSS.NoData); // copying the object --- ???
         //}
         else if (Math.abs(utcFile - utcGNSS) > 1000) { // if the difference between utcFile and utcGNSS is more then 1 s - it doesn't seem to be all right.
-            data.status = Object.assign({}, sc_status.GNSS.TimeError); // copying the object
+            data.status = Object.assign({}, sc_utils_status.GNSS.TimeError); // copying the object
             data.status.text += ': ' + sc_utils.PeriodToString(utcGNSS - utcFile);
             data.status.class = 'text_orange';
         }
         else {
-            data.status = Object.assign({}, gnssData.valid == 'A' ? sc_status.GNSS.Valid : sc_status.GNSS.Invalid); // copying the object
+            data.status = Object.assign({}, gnssData.valid == 'A' ? sc_utils_status.GNSS.Valid : sc_utils_status.GNSS.Invalid); // copying the object
         }
     } catch (err) {
         data = {};
-        data.status = sc_status.GNSS.FormatError;
+        data.status = sc_utils_status.GNSS.FormatError;
     }
     */
     data.utc_file = fileNameParsed.dateTime;
@@ -95,6 +118,9 @@ exports.GetPageData = function (a_id) {
 //    return Date.UTC('20' + utcDate[2], utcDate[1] - 1, utcDate[0], utcTime[0], utcTime[1], utcTime[2], utcTime[3]);
 //}
 
+
+
+/*
 function GetSatStatus(a_gnssData) {
 
     function GetSatQty(gnssData, min, max) {
@@ -144,3 +170,4 @@ function GetSatStatus(a_gnssData) {
 
     return sats;
 }
+*/
