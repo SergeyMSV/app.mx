@@ -9,35 +9,34 @@
 
 #include <iostream>
 #include <memory>
-#include <string>
 
 int main(int argc, char* argv[])
 {
 	try
 	{
-		std::shared_ptr<dev::tConfig> DsConfig = std::make_shared<dev::tConfig>(argv[0]);
-		if (DsConfig->GetUDPPort().IsWrong())
+		std::shared_ptr<dev::tConfig> config = std::make_shared<dev::tConfig>(argv[0]);
+		if (config->GetUDPPort().IsWrong())
 			THROW_RUNTIME_ERROR("IP-port is not valid");
 
 		boost::asio::io_context ioc;
-		dev::tTWRServer Server(ioc, DsConfig->GetUDPPort().Value);
-		std::thread Thread_ioc([&]() { ioc.run(); });
+		dev::tTWRServer server(ioc, config->GetUDPPort().Value);
+		std::thread iocThread([&]() { ioc.run(); });
 
 		// [!] Interfaces which are not needed for TWR are free when their configs are commented.
 
 		// Each port must be in its own separate thread.
 #ifdef UDP_SERVER_TEST
-		std::thread Thread_DEMO([&DsConfig, &Server]() { dev::ThreadPortDEMO(DsConfig, Server); });
+		std::thread demoThread([&config, &server]() { dev::ThreadPortDEMO(config, server); });
 #endif // UDP_SERVER_TEST
-		std::thread Thread_SPI0_CS0([&DsConfig, &Server]() { dev::ThreadPortSPI0_CS0(DsConfig, Server); });
-		std::thread Thread_DALLAS([&DsConfig, &Server]() { dev::ThreadDALLAS(DsConfig, Server); });
-		std::thread Thread_UART0([&DsConfig, &Server]() { dev::ThreadUART0_JSON(DsConfig, Server); });
-		std::thread Thread_UART1([&DsConfig, &Server]() { dev::ThreadUART1_JSON(DsConfig, Server); });
-		std::thread Thread_UART2([&DsConfig, &Server]() { dev::ThreadUART2_JSON(DsConfig, Server); });
-		std::thread Thread_UART3([&DsConfig, &Server]() { dev::ThreadUART3_JSON(DsConfig, Server); });
+		std::thread spi0cs0Thread([&config, &server]() { dev::ThreadPortSPI0_CS0(config, server); });
+		std::thread dallasThread([&config, &server]() { dev::ThreadDALLAS(config, server); });
+		std::thread uart0Thread([&config, &server]() { dev::ThreadUART0_JSON(config, server); });
+		std::thread uart1Thread([&config, &server]() { dev::ThreadUART1_JSON(config, server); });
+		std::thread uart2Thread([&config, &server]() { dev::ThreadUART2_JSON(config, server); });
+		std::thread uart3Thread([&config, &server]() { dev::ThreadUART3_JSON(config, server); });
 
 #ifdef UDP_SERVER_TEST
-		dev::UDP_ClientTest(DsConfig->GetUDPPort().Value);
+		dev::UDP_ClientTest(config->GetUDPPort().Value);
 #else // UDP_SERVER_TEST
 		while (true) // [TBD] It must be stopped if the application is being terminated.
 		{
@@ -46,25 +45,25 @@ int main(int argc, char* argv[])
 		}
 #endif // UDP_SERVER_TEST
 
-		DsConfig.reset(); // All threads will notice it and stop. In other words it stops all the threads.
+		config.reset(); // All threads will notice it and stop. In other words it stops all the threads.
 
 		ioc.stop();
-		Thread_ioc.join();
+		iocThread.join();
 #ifdef UDP_SERVER_TEST
-		Thread_DEMO.join();
+		demoThread.join();
 #endif // UDP_SERVER_TEST
-		Thread_SPI0_CS0.join();
-		Thread_DALLAS.join();
-		Thread_UART0.join();
-		Thread_UART1.join();
-		Thread_UART2.join();
-		Thread_UART3.join();
+		spi0cs0Thread.join();
+		dallasThread.join();
+		uart0Thread.join();
+		uart1Thread.join();
+		uart2Thread.join();
+		uart3Thread.join();
 	}
 	catch (const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
-		return static_cast<int>(utils::exit_code::EX_IOERR);
+		return utils::exit_code::EX_IOERR;
 	}
 
-	return static_cast<int>(utils::exit_code::EX_OK);
+	return utils::exit_code::EX_OK;
 }
