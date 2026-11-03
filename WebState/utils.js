@@ -70,13 +70,13 @@ exports.ReadDir = function (a_path) {
     return [];
 }
 
-exports.GetOutFile = function (a_path, a_prefix) {
+function GetFile(a_path, a_prefix, a_extension) {
     a_prefix += '_';
     let files = [];
     try {
         const filesAll = np_fs.readdirSync(GetRealPath(a_path));
         for (const i of filesAll) {
-            if (i.includes(a_prefix, 0)) {
+            if (i.startsWith(a_prefix) && i.endsWith(a_extension)) {
                 files.push(i);
             }
         }
@@ -88,6 +88,14 @@ exports.GetOutFile = function (a_path, a_prefix) {
         return {};
     files.sort();
     return files[files.length - 1];
+}
+
+exports.GetOutFile = function (a_path, a_prefix) {
+    return GetFile(a_path, a_prefix, '.json');
+}
+
+exports.GetLogFile = function (a_path, a_prefix) {
+    return GetFile(a_path, a_prefix, '.log');
 }
 
 exports.ReadFile = function (a_path, a_default) {

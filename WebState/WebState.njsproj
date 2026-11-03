@@ -32,7 +32,6 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="mx.conf.json" />
-    <Content Include="mxgnss.conf.json" />
     <Content Include="package-lock.json" />
     <Content Include="page_gnssmon.js" />
     <Content Include="page_hwmon.js" />
