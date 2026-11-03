@@ -1,33 +1,23 @@
 #include <devConfig.h>
 
-#include <devDataSetConfig.h>
-#include <devState.h>
+#include "dev/config.h"
+#include "dev/state.h"
 
-//#include <utilsException.h>
 #include <utilsExits.h>
-#include <utilsPath.h>
 
 #include <shareUtilsFile.h>
 
 #include <thread>
-#include <iostream> // [TEST]
+#include <iostream>
 
 #include <boost/asio.hpp>
 
 int main(int argc, char* argv[])
 {
-	const std::filesystem::path Path(argv[0]);
-	const std::string AppName = utils::path::GetAppNameMain(Path);
-	const std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
-	const std::string PathFileMX = utils::path::GetPathConfigExc("mx").string();
-
-	dev::tDataSetConfig DsConfig = dev::tDataSetConfig(PathFileConfig, PathFileMX);
+	dev::tConfig DsConfig = dev::tConfig(argv[0]);
+	share::RemoveFilesOutdated(DsConfig.GetOutFile());
 	if (DsConfig.GetUART().IsWrong())
 		return static_cast<int>(utils::exit_code::EX_CONFIG);
-	//std::shared_ptr<dev::tDataSetConfig> DsConfig = std::make_shared<dev::tDataSetConfig>(PathFileConfig, PathFileMX);
-	//if (DsConfig->GetUART().IsWrong())
-	//	return static_cast<int>(utils::exit_code::EX_CONFIG);
-		//THROW_RUNTIME_ERROR("UART is not valid.");
 
 	int ExitCode = utils::exit_code::EX_OK;
 
@@ -37,10 +27,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		share::tLogFileLine LogFile(DsConfig.GetLog());
-		LogFile.Write("Start");
-
-		share::RemoveFilesOutdated(DsConfig.GetOutGNSS());
-		share::RemoveFilesOutdated(DsConfig.GetOutGNSS(), dev::settings::FileNameTempPrefix);
+		LogFile.WriteLine("Start");
 
 		const share::config::port::tUART_Config UARTConfig = DsConfig.GetUART();
 		dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
@@ -49,21 +36,17 @@ int main(int argc, char* argv[])
 
 		auto [DsHW, Status] = dev::state::Init(Port, DsConfig);
 
-		std::cout << DsHW.ToString() << '\n'; // [TBD] write into log
+		LogFile.WriteLine(DsHW.ToString());
+
+		if (Status == dev::state::tStatus::None)
+			Status = dev::state::Receive(Port, DsConfig, DsHW);
+
 
 		if (Status != dev::state::tStatus::None)
 		{
-			// [TBD] Handle the error!
+			std::cerr << dev::state::ToString(Status) << '\n';
+			ExitCode = utils::exit_code::EX_IOERR;
 		}
-
-		Status = dev::state::Receive(Port, DsConfig, DsHW);
-		if (Status != dev::state::tStatus::None)
-		{
-			// [TBD] Handle the error!
-		}
-
-		// [TBD] Error Handling or exit
-
 	}
 	//catch(...){}
 	catch (std::exception& e)

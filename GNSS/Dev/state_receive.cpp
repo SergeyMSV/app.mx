@@ -1,10 +1,14 @@
-#include "devDataSetGNSS.h"
-#include "devState.h"
-#include "devStatePolicy.h"
+#include "dataset_gnss.h"
+#include "state.h"
+#include "state_policy.h"
+
+#include <shareUtilsFile.h>
 
 #include <optional>
 
-#include <iostream> // [TEST]
+#ifdef GNSS_TEST
+#include <iostream>
+#endif // GNSS_TEST
 
 namespace dev
 {
@@ -41,6 +45,7 @@ public:
 			{
 				//std::cout << " " << MsgOpt->GetID();
 				this->m_DataSetGNSS.Altitude = MsgOpt->Altitude.GetValue();
+				this->m_DataSetGNSS.HDOP = MsgOpt->HDOP.GetValue();
 				return this->CheckOrder(TPolicy::NumGGA);
 			}
 		}
@@ -49,7 +54,9 @@ public:
 			std::optional<typename TPolicy::tContentGLL> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentGLL>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
+#ifdef GNSS_TEST
 				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				//...
 				return this->CheckOrder(TPolicy::NumGLL);
 			}
@@ -59,7 +66,9 @@ public:
 			std::optional<typename TPolicy::tContentGSA> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentGSA>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
+#ifdef GNSS_TEST
 				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				//...
 				return this->CheckOrder(TPolicy::NumGSA);
 			}
@@ -93,7 +102,9 @@ public:
 			std::optional<typename TPolicy::tContentVTG> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentVTG>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
+#ifdef GNSS_TEST
 				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				//...
 				return this->CheckOrder(TPolicy::NumVTG);
 			}
@@ -118,6 +129,7 @@ public:
 			return false;
 		}
 
+#ifdef GNSS_TEST
 		for (auto& item : PacketFoundPayload)
 			//for (auto& item : packet.GetPayloadValue())
 		{
@@ -125,6 +137,7 @@ public:
 			std::cout << " " << item;
 		}
 		std::cout << '\n';
+#endif // GNSS_TEST
 		return false;
 	}
 
@@ -153,13 +166,13 @@ public:
 };
 
 template <typename TContentSet>
-tStatus ReceiveInternal(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetHW& dsHW)
+tStatus ReceiveInternal(tPortUART& a_port, const tConfig& a_config, const tDataSetHW& a_dsHW)
 {
 	TContentSet ContentSet;
 	std::vector<std::uint8_t> DataRaw;
 	while (true)
 	{
-		const std::vector<std::uint8_t> Data = port.GetReceived();
+		const std::vector<std::uint8_t> Data = a_port.GetReceived();
 		if (Data.empty())
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -176,10 +189,12 @@ tStatus ReceiveInternal(tPortUART& port, const tDataSetConfig& dsConfig, const t
 				std::optional<tDataSetGNSS> DataSetGNSSOpt = ContentSet.GetDataSetGNSS();
 				if (DataSetGNSSOpt.has_value())
 				{
-					DataSetGNSSOpt->ReceiverModel = dsHW.Model;
-
-					//DataSetGNSSOpt->ToFile(dsConfig.GetOutGNSS()); // [TBD] - block it for windows
+					DataSetGNSSOpt->ReceiverModel = a_dsHW.Model;
+#ifdef GNSS_TEST
 					std::cout << " -> " << DataSetGNSSOpt->ToString() << '\n';
+#else // GNSS_TEST
+					share::SaveOutFile(a_config.GetOutFile(), DataSetGNSSOpt->ToJSON());
+#endif // GNSS_TEST
 				}
 				ContentSet = {};
 			}
@@ -188,7 +203,7 @@ tStatus ReceiveInternal(tPortUART& port, const tDataSetConfig& dsConfig, const t
 	return tStatus::Unknown; // [TBD] check it - Actially it shouldn't be here.
 }
 
-tStatus Receive(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetHW& dsHW)
+tStatus Receive(tPortUART& port, const tConfig& dsConfig, const tDataSetHW& dsHW)
 {
 	if (dsHW.Chip == "MTK")
 	{
@@ -215,6 +230,22 @@ tStatus Receive(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetH
 	// [TBD] generic
 
 	return tStatus::ReceiveNotSupportedChip;
+}
+
+std::string ToString(tStatus a_status)
+{
+	switch (a_status)
+	{
+	case tStatus::None: return "";
+	case tStatus::InitSetBaudrate: return "init.: the baudrate is not appropriate";
+	case tStatus::InitNotSupported: return "init.: the equipment is not supported";
+	case tStatus::InitNotResponded: return "init.: the equipment does not respond";
+	case tStatus::ReceiveNotSupportedChip: return "recv.: the chip is not supported";
+	case tStatus::ReceiveNotSupportedModel: return "recv.: the equipment model is not supported";
+	case tStatus::Unknown:
+	default:
+		return "an unknown error has occurred";
+	}
 }
 
 }

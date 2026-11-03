@@ -6,13 +6,16 @@
 
 #include <filesystem>
 #include <fstream>
+#ifdef GNSS_TEST
+#include <iostream>
+#endif // GNSS_TEST
 
 namespace share
 {
 
 tLogFileLine::tLogFileLine(const share::config::tOutFileCap& conf)
 {
-	auto LogList = GetFilePaths(conf);
+	auto LogList = utils::file::GetFilesLatest(conf.Path, conf.Prefix, ".log", conf.QtyMax);
 	m_FilePath = LogList.empty() ? "" : LogList.back();
 
 	std::fstream File;
@@ -36,11 +39,11 @@ tLogFileLine::tLogFileLine(const share::config::tOutFileCap& conf)
 	}
 
 	if (File.good())
-		File << DTStr;
+		File << DTStr << " ";
 
 	File.close();
 
-	share::RemoveFilesOutdated(conf);
+	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, ".log", conf.QtyMax);
 }
 
 tLogFileLine::~tLogFileLine()
@@ -53,6 +56,11 @@ void tLogFileLine::Write(const std::string& msg)
 	WriteData(" " + msg + ';');
 }
 
+void tLogFileLine::WriteLine(const std::string& msg)
+{
+	WriteData(msg + '\n');
+}
+
 void tLogFileLine::WriteData(const std::string& msg)
 {
 	std::lock_guard<std::mutex> Lock(m_FileMtx);
@@ -60,21 +68,17 @@ void tLogFileLine::WriteData(const std::string& msg)
 	if (File.good())
 		File << msg;
 	File.close();
+#ifdef GNSS_TEST
+	std::cout << msg;
+#endif // GNSS_TEST
 }
-
-std::deque<std::string> GetFilePaths(const share::config::tOutFile& conf)
-{
-	return utils::file::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
-}
-
-constexpr char kFileTempPrefix = '_';
 
 void RemoveFilesOutdated(const share::config::tOutFile& conf)
 {
 	if (conf.IsWrong())
 		return;
-	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
-	utils::file::RemoveFilesOutdated(conf.Path, kFileTempPrefix + conf.Prefix, 0); // It removes temp-files.
+	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, ".json", conf.QtyMax);
+	utils::file::RemoveFilesOutdated(conf.Path, "_" + conf.Prefix, ".tmp", 0); // It removes temp-files.
 }
 
 bool SaveOutFile(const share::config::tOutFile& a_conf, const std::string& a_data)
@@ -83,7 +87,7 @@ bool SaveOutFile(const share::config::tOutFile& a_conf, const std::string& a_dat
 
 	const std::filesystem::path path = a_conf.Path;
 	const std::string filename = a_conf.Prefix + dtStr + ".json";
-	const std::string filenameTemp = kFileTempPrefix + filename + ".tmp";
+	const std::string filenameTemp = "_" + filename + ".tmp";
 
 	std::filesystem::path filepathTemp = path / filenameTemp;
 	std::fstream File = std::fstream(filepathTemp, std::ios::out);

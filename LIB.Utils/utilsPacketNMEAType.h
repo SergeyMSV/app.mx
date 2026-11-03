@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // utilsPacketNMEAType
-// 2020-01-27, 2026-01-17 refact.
-// C++17
+// 2020-01-27 - 2026-11-03
+// C++20
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -762,7 +762,7 @@ public:
 
 	bool IsEmpty() const { return m_Day.IsEmpty() || m_Month.IsEmpty() || m_Year.IsEmpty(); }
 
-	std::time_t GetValue() const;
+	std::time_t GetValue() const; // [*] It's not a good practice to use tDate::GetValue(), get date and time from ZDA if it's possible.
 
 	std::uint8_t GetYear() const { return static_cast<std::uint8_t>(m_Day.GetValue()); }
 	std::uint8_t GetMonth() const { return static_cast<std::uint8_t>(m_Month.GetValue()); }

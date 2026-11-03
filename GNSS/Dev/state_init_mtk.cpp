@@ -1,6 +1,5 @@
-#include "devStateInit.h"
-
-#include "devStatePolicy.h"
+#include "state_init.h"
+#include "state_policy.h"
 
 #include <utilsPacketNMEAPayload.h>
 #include <utilsPacketNMEAPayloadPMTK.h>
@@ -13,7 +12,7 @@ namespace state
 
 std::uint32_t SelectBR(tPortUART& port);
 
-std::optional<std::pair<tDataSetHW, tStatus>> TryMTK(tPortUART& port, const tDataSetConfig& dsConfig)
+std::optional<std::pair<tDataSetHW, tStatus>> TryMTK(tPortUART& port, const tConfig& dsConfig)
 {
 	using namespace utils::packet::nmea;
 	using namespace utils::packet::nmea::mtk;

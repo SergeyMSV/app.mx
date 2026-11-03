@@ -1,8 +1,8 @@
 #pragma once
+#include <devConfig.h>
 
 #include "shareConfig.h"
 
-#include <deque>
 #include <mutex>
 #include <string>
 
@@ -22,12 +22,12 @@ public:
 	~tLogFileLine();
 	
 	void Write(const std::string& msg);
+	void WriteLine(const std::string& msg);
 
 private:
 	void WriteData(const std::string& msg);
 };
 
-std::deque<std::string> GetFilePaths(const share::config::tOutFile& conf);
 void RemoveFilesOutdated(const share::config::tOutFile& conf);
 
 bool SaveOutFile(const share::config::tOutFile& a_conf, const std::string& a_data);

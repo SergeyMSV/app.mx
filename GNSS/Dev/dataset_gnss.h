@@ -1,7 +1,7 @@
 #pragma once
 #include <devConfig.h>
 
-#include "devDataSetConfig.h"
+#include "dev/config.h"
 
 #include <utilsPacketNMEAType.h>
 
@@ -33,6 +33,7 @@ struct tDataSetGNSS
 	std::optional<double> Altitude;
 	std::optional<double> Speed;
 	std::optional<double> Course;
+	std::optional<double> HDOP;
 	std::string Mode;
 
 	struct tSatellite
@@ -52,7 +53,7 @@ struct tDataSetGNSS
 	std::string ToString() const;
 	std::string ToJSON() const;
 
-	void ToFile(const share::config::tOutFile& configOut) const;
+	//void ToFile(const share::config::tOutFile& configOut) const;
 
 private:
 	std::string ToString(tDateTime time) const;

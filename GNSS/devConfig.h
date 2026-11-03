@@ -1,13 +1,16 @@
 #pragma once
 
+#ifdef _WIN32
+#define GNSS_TEST
+#define _WIN32_WINNT 0x0601
+#endif // _WIN32
+
 #include <cstdlib>
 
 #define MXTWR_CLIENT
 
 #if defined(MXTWR_CLIENT)
-#include <cstdint>
 #include <sharePort.h>
-//#include <utilsPacketTWR.h>
 #define MXTWR_PORT 58200
 #define MXTWR_EP_UART share::port::tTWREndpoint::UART1
 #endif
@@ -16,8 +19,6 @@ namespace dev
 {
 namespace settings
 {
-	constexpr char FileNameTempPrefix[] = "_"; // [DEPRECATED] 2026-10-25
-
 	//constexpr std::string_view Host{ "127.0.0.1" };
 	//constexpr char Host[] = "127.0.0.1";
 	constexpr char Host[] = "192.168.10.162";
@@ -34,11 +35,6 @@ namespace port_uart
 }
 }
 
-#ifdef _WIN32
-#define _WIN32_WINNT 0x0601
-#endif // _WIN32
-
-#include <utilsPacket.h>
 #include <utilsPacketNMEA.h>
 
 using tPacketNMEA = utils::packet::nmea::tPacketNMEA_Common_CRC;
