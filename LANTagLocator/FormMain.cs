@@ -48,7 +48,7 @@ namespace LANTagLocator
         {
             try
             {
-                ArrayList AddrsLocal = utils.Network.GetLocalIPAddresses(Properties.Settings.Default.Network);
+                List<IPAddress> AddrsLocal = utils.Network.GetLocalIPAddresses(Properties.Settings.Default.Network);
                 if (AddrsLocal.Count != 1) // In this case only one is allowed.
                 {
                     foreach (IPAddress ip in AddrsLocal) // Look for in all available networks.
@@ -214,8 +214,12 @@ namespace LANTagLocator
                 TimeSpan TimePeriodExpiration = Properties.Settings.Default.TimePeriod + new TimeSpan(0, 0, 1);
                 for (int i = 0; i < listViewTags.Items.Count; ++i) // Remove expired items.
                 {
-                    if (DateTime.Now - (DateTime)listViewTags.Items[i].Tag > TimePeriodExpiration)
-                        listViewTags.Items.RemoveAt(i--);
+                    var tag = listViewTags.Items[i].Tag;
+                    if (tag != null && tag is DateTime captureTime)
+                    {
+                        if (DateTime.Now - captureTime > TimePeriodExpiration)
+                            listViewTags.Items.RemoveAt(i--);
+                    }
                 }
             }
             catch (Exception ex)
