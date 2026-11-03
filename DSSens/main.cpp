@@ -1,6 +1,8 @@
 #include "dev/config.h"
 #include "dev/dallas.h"
 
+#include <shareUtilsFile.h>
+
 #include <utilsExits.h>
 
 #include <iostream>
@@ -10,6 +12,8 @@ int main(int argc, char* argv[])
 	try
 	{
 		const dev::tConfig DsConfig(argv[0]);
+		share::RemoveFilesOutdated(DsConfig.GetOutFile());
+
 		dev::ThreadDALLAS(DsConfig);
 	}
 	catch (std::exception& e)

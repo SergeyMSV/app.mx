@@ -39,11 +39,11 @@ tUpdateServer::tUpdateServer(const boost::property_tree::ptree& pTree)
 	TargetList = pTree.get<std::string>("server.target_list");
 }
 
-tOutFile::tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree, const std::string& prefix)
+tOutFile::tOutFile(const std::string& baseName, const boost::property_tree::ptree& pTree, const std::string& appName)
 {
 	std::filesystem::path PathRaw = pTree.get<std::string>(baseName + ".path");
 	Path = utils::path::GetPathNormal(PathRaw).string();
-	Prefix = prefix;
+	Prefix = appName + '_';
 	QtyMax = pTree.get<uint8_t>(baseName + ".qtyMax", 0);
 }
 
@@ -52,8 +52,8 @@ bool tOutFile::IsWrong() const
 	return Path.empty();
 }
 
-tOutFileCap::tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree, const std::string& prefix)
-	:tOutFile(baseName, pTree, prefix)
+tOutFileCap::tOutFileCap(const std::string& baseName, const boost::property_tree::ptree& pTree, const std::string& appName)
+	:tOutFile(baseName, pTree, appName)
 {
 	Capacity = pTree.get<uint32_t>(baseName + ".capacity");
 }

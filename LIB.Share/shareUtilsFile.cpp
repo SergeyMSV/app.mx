@@ -67,18 +67,14 @@ std::deque<std::string> GetFilePaths(const share::config::tOutFile& conf)
 	return utils::file::GetFilesLatest(conf.Path, conf.Prefix, conf.QtyMax);
 }
 
+constexpr char kFileTempPrefix = '_';
+
 void RemoveFilesOutdated(const share::config::tOutFile& conf)
 {
 	if (conf.IsWrong())
 		return;
 	utils::file::RemoveFilesOutdated(conf.Path, conf.Prefix, conf.QtyMax);
-}
-
-void RemoveFilesOutdated(const share::config::tOutFile& conf, const std::string& prefixTemp)
-{
-	if (conf.IsWrong() || prefixTemp.empty())
-		return;
-	utils::file::RemoveFilesOutdated(conf.Path, prefixTemp + conf.Prefix, 0);
+	utils::file::RemoveFilesOutdated(conf.Path, kFileTempPrefix + conf.Prefix, 0); // It removes temp-files.
 }
 
 bool SaveOutFile(const share::config::tOutFile& a_conf, const std::string& a_data)
@@ -86,8 +82,8 @@ bool SaveOutFile(const share::config::tOutFile& a_conf, const std::string& a_dat
 	const std::string dtStr = utils::time::tDateTime::Now().ToStringPath();
 
 	const std::filesystem::path path = a_conf.Path;
-	const std::string filename = a_conf.Prefix + "_" + dtStr + ".json";
-	const std::string filenameTemp = '_' + filename + ".tmp";
+	const std::string filename = a_conf.Prefix + dtStr + ".json";
+	const std::string filenameTemp = kFileTempPrefix + filename + ".tmp";
 
 	std::filesystem::path filepathTemp = path / filenameTemp;
 	std::fstream File = std::fstream(filepathTemp, std::ios::out);
