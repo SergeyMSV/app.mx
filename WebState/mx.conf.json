@@ -9,5 +9,27 @@
     "div_win": 1000,
     "div_vsom": 2000,
     "div_opio": 1000
+  },
+  "log": {
+    "path": "/tmpram",
+    "capacity": 102400,
+    "qtyMax": 2
+  },
+  "port": {
+    "uart_mxgnss": {
+      "id_win": "COM1",
+      "id_opio": "/dev/ttyS1",
+      "br": 9600
+    },
+    "uart_mxgnss1": {
+      "id_win": "COM1",
+      "id_opio": "/dev/ttyS1",
+      "br": 9600
+    },
+    "uart_mxgnss2": {
+      "id_win": "COM4",
+      "id_opio": "/dev/ttyS2",
+      "br": 9600
+    }
   }
 }
