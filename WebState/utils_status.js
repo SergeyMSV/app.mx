@@ -7,6 +7,7 @@
 // yellow           - worse
 // orange           - more worse
 // red              - the worst condition
+// magenta          - something that is wrong and strange
 
 const CPU_Thermal = {
     None: { text: '', color: 'gray' },
@@ -41,7 +42,7 @@ const CPU_Thermal_RangesInit = (() => {
     }
 })();
 
-exports.GNSS = {
+exports.GNSS = { // DEPRECATED, use exports.GetStatus = function (a_gnss, a_utcCapture)
     None: { text: '', color: 'gray' },
     NotSupported: { text: 'not supported', color: 'gray' },
     NoData: { text: 'no data', color: 'orange' },

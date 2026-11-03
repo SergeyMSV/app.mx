@@ -13,7 +13,7 @@ exports.DateToString = function (a_date) {
 
 exports.PeriodToString = function (a_period) { // period is in ms
     const per = ParsePeriod(a_period);
-    const str = (per.negative ? '- ' : '') + per.days + ' days ' + // format: "85 days 05:10:18"
+    const str = (per.negative ? '- ' : '') + per.days + 'd ' + // format: "85d 05:10:18"
         per.hours.toString(10).padStart(2, '0') + ':' + // ECMAScript 2017
         per.minutes.toString(10).padStart(2, '0') + ':' +
         per.seconds.toString(10).padStart(2, '0');// + '.' +
@@ -68,6 +68,26 @@ exports.ReadDir = function (a_path) {
         console.error(err);
     }
     return [];
+}
+
+exports.GetOutFile = function (a_path, a_prefix) {
+    a_prefix += '_';
+    let files = [];
+    try {
+        const filesAll = np_fs.readdirSync(GetRealPath(a_path));
+        for (const i of filesAll) {
+            if (i.includes(a_prefix, 0)) {
+                files.push(i);
+            }
+        }
+    }
+    catch (err) {
+        console.error(err);
+    }
+    if (!files.length)
+        return {};
+    files.sort();
+    return files[files.length - 1];
 }
 
 exports.ReadFile = function (a_path, a_default) {
