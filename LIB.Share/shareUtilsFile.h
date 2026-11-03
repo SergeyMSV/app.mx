@@ -29,7 +29,6 @@ private:
 
 std::deque<std::string> GetFilePaths(const share::config::tOutFile& conf);
 void RemoveFilesOutdated(const share::config::tOutFile& conf);
-void RemoveFilesOutdated(const share::config::tOutFile& conf, const std::string& prefixTemp);
 
 bool SaveOutFile(const share::config::tOutFile& a_conf, const std::string& a_data);
 
