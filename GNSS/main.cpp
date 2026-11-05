@@ -22,42 +22,47 @@ int main(int argc, char* argv[])
 	int ExitCode = utils::exit_code::EX_OK;
 
 	boost::asio::io_context ioc;
-	std::thread Thread_ioc;
+	std::thread iocThread;
 
-	try
+	share::tLogFileLine LogFile(DsConfig.GetLog());
+	LogFile.WriteLine("Start");
+
+	while (true)
 	{
-		share::tLogFileLine LogFile(DsConfig.GetLog());
-		LogFile.WriteLine("Start");
-
-		const share::config::port::tUART_Config UARTConfig = DsConfig.GetUART();
-		dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
-
-		Thread_ioc = std::thread([&ioc]() { ioc.run(); });
-
-		auto [DsHW, Status] = dev::state::Init(Port, DsConfig);
-
-		LogFile.WriteLine(DsHW.ToString());
-
-		if (Status == dev::state::tStatus::None)
-			Status = dev::state::Receive(Port, DsConfig, DsHW);
-
-
-		if (Status != dev::state::tStatus::None)
+		try
 		{
-			std::cerr << dev::state::ToString(Status) << '\n';
-			ExitCode = utils::exit_code::EX_IOERR;
+			const share::config::port::tUART_Config UARTConfig = DsConfig.GetUART();
+			dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
+
+			iocThread = std::thread([&ioc]() { ioc.run(); });
+
+			auto [DsHW, Status] = dev::state::Init(Port, DsConfig);
+			if (Status != dev::state::tStatus::None)
+			{
+				LogFile.WriteLine(dev::state::ToString(Status));
+				std::this_thread::sleep_for(std::chrono::seconds(10)); // [#]
+				continue;
+			}
+			LogFile.WriteLine(DsHW.ToString());
+			Status = dev::state::Receive(Port, DsConfig, DsHW, LogFile);
+			if (Status != dev::state::tStatus::None)
+			{
+				LogFile.WriteLine(dev::state::ToString(Status));
+				std::this_thread::sleep_for(std::chrono::seconds(10)); // [#]
+				continue;
+			}
 		}
-	}
-	//catch(...){}
-	catch (std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-		ExitCode = utils::exit_code::EX_IOERR; // [TBD] check it
+		catch (std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+			ExitCode = utils::exit_code::EX_IOERR;
+			break;
+		}
 	}
 
 	ioc.stop();
-	if (Thread_ioc.joinable())
-		Thread_ioc.join();
+	if (iocThread.joinable())
+		iocThread.join();
 
 	return ExitCode;
 }

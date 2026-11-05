@@ -6,9 +6,9 @@
 
 #include <filesystem>
 #include <fstream>
-#ifdef GNSS_TEST
+#ifdef LIB_SHARE_LOG_COUT
 #include <iostream>
-#endif // GNSS_TEST
+#endif // LIB_SHARE_LOG_COUT
 
 namespace share
 {
@@ -27,19 +27,19 @@ tLogFileLine::tLogFileLine(const share::config::tOutFileCap& conf)
 			File = std::fstream(m_FilePath, std::ios::app);
 	}
 
-	const std::string DTStr = utils::time::tDateTime::Now().ToStringPath();
+	const utils::time::tDateTime timeNow = utils::time::tDateTime::Now();
 
 	if (!File.is_open())
 	{
 		std::string Path = conf.Path + "/";
-		std::string FileName = conf.Prefix + DTStr + ".log";
+		std::string FileName = conf.Prefix + timeNow.ToStringPath() + ".log";
 
 		m_FilePath = Path + FileName;
 		File = std::fstream(m_FilePath, std::ios::out);
 	}
 
 	if (File.good())
-		File << DTStr << " ";
+		File << timeNow.ToString() << " ";
 
 	File.close();
 
@@ -51,26 +51,26 @@ tLogFileLine::~tLogFileLine()
 	WriteData("\n");
 }
 	
-void tLogFileLine::Write(const std::string& msg)
+void tLogFileLine::Write(const std::string& msg) const
 {
 	WriteData(" " + msg + ';');
 }
 
-void tLogFileLine::WriteLine(const std::string& msg)
+void tLogFileLine::WriteLine(const std::string& msg) const
 {
 	WriteData(msg + '\n');
 }
 
-void tLogFileLine::WriteData(const std::string& msg)
+void tLogFileLine::WriteData(const std::string& msg) const
 {
 	std::lock_guard<std::mutex> Lock(m_FileMtx);
 	std::fstream File = std::fstream(m_FilePath, std::ios::app);
 	if (File.good())
 		File << msg;
 	File.close();
-#ifdef GNSS_TEST
+#ifdef LIB_SHARE_LOG_COUT
 	std::cout << msg;
-#endif // GNSS_TEST
+#endif // LIB_SHARE_LOG_COUT
 }
 
 void RemoveFilesOutdated(const share::config::tOutFile& conf)

@@ -1,5 +1,4 @@
 #pragma once
-#include <devConfig.h>
 
 #include "shareConfig.h"
 
@@ -12,7 +11,7 @@ namespace share
 class tLogFileLine
 {
 	std::string m_FilePath;
-	std::mutex m_FileMtx;
+	mutable std::mutex m_FileMtx;
 
 public:
 	tLogFileLine() = delete;
@@ -21,11 +20,11 @@ public:
 	tLogFileLine(const tLogFileLine&&) = delete;
 	~tLogFileLine();
 	
-	void Write(const std::string& msg);
-	void WriteLine(const std::string& msg);
+	void Write(const std::string& msg) const;
+	void WriteLine(const std::string& msg) const;
 
 private:
-	void WriteData(const std::string& msg);
+	void WriteData(const std::string& msg) const;
 };
 
 void RemoveFilesOutdated(const share::config::tOutFile& conf);

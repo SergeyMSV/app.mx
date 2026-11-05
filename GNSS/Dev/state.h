@@ -6,6 +6,8 @@
 #include "dataset_hw.h"
 #include "port_uart.h"
 
+#include <shareUtilsFile.h>
+
 namespace dev
 {
 namespace state
@@ -26,7 +28,7 @@ enum class tStatus
 };
 
 std::pair<tDataSetHW, tStatus> Init(tPortUART& port, const tConfig& dsConfig);
-tStatus Receive(tPortUART& port, const tConfig& dsConfig, const tDataSetHW& dsHW);
+tStatus Receive(tPortUART& a_port, const tConfig& a_dsConfig, const tDataSetHW& a_dsHW, const share::tLogFileLine& a_log);
 
 std::string ToString(tStatus a_status);
 

@@ -24,7 +24,7 @@ class tContentSet
 	tDataSetGNSS m_DataSetGNSS{};
 
 public:
-	bool operator()(const tPacketNMEA& packet)
+	bool operator()(const tPacketNMEA& packet, const share::tLogFileLine& a_log)
 	{
 		{
 			std::optional<typename TPolicy::tContentGSV> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentGSV>(packet.GetPayloadValue());
@@ -129,13 +129,16 @@ public:
 			return false;
 		}
 
-#ifdef GNSS_TEST
+		std::string msgFaulty = "Faulty:";
 		for (auto& item : PacketFoundPayload)
-			//for (auto& item : packet.GetPayloadValue())
 		{
-			//utils::packet::nmea::generic::tContentGSV GSV(item);
+			msgFaulty += " " + item;
+#ifdef GNSS_TEST
 			std::cout << " " << item;
+#endif // GNSS_TEST
 		}
+		a_log.WriteLine(msgFaulty);
+#ifdef GNSS_TEST
 		std::cout << '\n';
 #endif // GNSS_TEST
 		return false;
@@ -166,12 +169,13 @@ public:
 };
 
 template <typename TContentSet>
-tStatus ReceiveInternal(tPortUART& a_port, const tConfig& a_config, const tDataSetHW& a_dsHW)
+tStatus ReceiveInternal(tPortUART& a_port, const tConfig& a_config, const tDataSetHW& a_dsHW, const share::tLogFileLine& a_log)
 {
-	TContentSet ContentSet;
+	//TContentSet ContentSet;
 	std::vector<std::uint8_t> DataRaw;
 	while (true)
 	{
+		TContentSet ContentSet;
 		const std::vector<std::uint8_t> Data = a_port.GetReceived();
 		if (Data.empty())
 		{
@@ -184,7 +188,7 @@ tStatus ReceiveInternal(tPortUART& a_port, const tConfig& a_config, const tDataS
 			std::optional<tPacketNMEA> PacketFoundOpt = tPacketNMEA::Find(DataRaw);
 			if (!PacketFoundOpt.has_value())
 				break;
-			if (ContentSet(*PacketFoundOpt))
+			if (ContentSet(*PacketFoundOpt, a_log))
 			{
 				std::optional<tDataSetGNSS> DataSetGNSSOpt = ContentSet.GetDataSetGNSS();
 				if (DataSetGNSSOpt.has_value())
@@ -203,25 +207,25 @@ tStatus ReceiveInternal(tPortUART& a_port, const tConfig& a_config, const tDataS
 	return tStatus::Unknown; // [TBD] check it - Actially it shouldn't be here.
 }
 
-tStatus Receive(tPortUART& port, const tConfig& dsConfig, const tDataSetHW& dsHW)
+tStatus Receive(tPortUART& a_port, const tConfig& a_dsConfig, const tDataSetHW& a_dsHW, const share::tLogFileLine& a_log)
 {
-	if (dsHW.Chip == "MTK")
+	if (a_dsHW.Chip == "MTK")
 	{
-		switch (dsHW.ModelID)
+		switch (a_dsHW.ModelID)
 		{
-		case tReceiverModel::MTK_SC872_A: return ReceiveInternal<tContentSet<tPolicyMTK_SC872_A>>(port, dsConfig, dsHW);
-		case tReceiverModel::MTK_EB_800A: return ReceiveInternal<tContentSet<tPolicyMTK_EB_800A>>(port, dsConfig, dsHW);
+		case tReceiverModel::MTK_SC872_A: return ReceiveInternal<tContentSet<tPolicyMTK_SC872_A>>(a_port, a_dsConfig, a_dsHW, a_log);
+		case tReceiverModel::MTK_EB_800A: return ReceiveInternal<tContentSet<tPolicyMTK_EB_800A>>(a_port, a_dsConfig, a_dsHW, a_log);
 		default: break;
 		}
 		return tStatus::ReceiveNotSupportedModel;
 	}
 
-	if (dsHW.Chip == "SiRF")
+	if (a_dsHW.Chip == "SiRF")
 	{
-		switch (dsHW.ModelID)
+		switch (a_dsHW.ModelID)
 		{
-		case tReceiverModel::SiRF_GSU_7x: return ReceiveInternal<tContentSet<tPolicySiRF_GSU_7x>>(port, dsConfig, dsHW);
-		case tReceiverModel::SiRF_LR9548S: return ReceiveInternal<tContentSet<tPolicySiRF_LR9548S>>(port, dsConfig, dsHW);
+		case tReceiverModel::SiRF_GSU_7x: return ReceiveInternal<tContentSet<tPolicySiRF_GSU_7x>>(a_port, a_dsConfig, a_dsHW, a_log);
+		case tReceiverModel::SiRF_LR9548S: return ReceiveInternal<tContentSet<tPolicySiRF_LR9548S>>(a_port, a_dsConfig, a_dsHW, a_log);
 		default: break;
 		}
 		return tStatus::ReceiveNotSupportedModel;

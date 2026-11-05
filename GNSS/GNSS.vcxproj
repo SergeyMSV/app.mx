@@ -188,7 +188,6 @@
   <ItemGroup>
     <ClCompile Include="..\LIB.Share\shareConfig.cpp" />
     <ClCompile Include="..\LIB.Share\sharePort.cpp" />
-    <ClCompile Include="..\LIB.Share\sharePortUART.cpp" />
     <ClCompile Include="..\LIB.Share\shareUtilsFile.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsException.cpp" />
     <ClCompile Include="..\LIB.Utils\utilsFile.cpp" />

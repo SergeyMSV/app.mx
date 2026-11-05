@@ -2,6 +2,7 @@
 
 #ifdef _WIN32
 #define GNSS_TEST
+#define LIB_SHARE_LOG_COUT
 #define _WIN32_WINNT 0x0601
 #endif // _WIN32
 

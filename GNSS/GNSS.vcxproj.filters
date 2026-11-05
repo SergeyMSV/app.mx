@@ -44,9 +44,6 @@
     <ClCompile Include="..\LIB.Share\sharePort.cpp">
       <Filter>LIB.Share</Filter>
     </ClCompile>
-    <ClCompile Include="..\LIB.Share\sharePortUART.cpp">
-      <Filter>LIB.Share</Filter>
-    </ClCompile>
     <ClCompile Include="..\LIB.Utils\utilsPortSerial.cpp">
       <Filter>LIB.Utils</Filter>
     </ClCompile>
