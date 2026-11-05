@@ -1,110 +1,139 @@
 {
- "utc": "15.03.23 21.21.02.000",
- "valid": "A",
- "mode_indicator": "Autonomous",
- "latitude": 12.567890,
- "longitude": 34.098765,
- "altitude": 0.000000,
- "speed": 0.32,
- "course": 300.69,
- "satellite": [
-  {
-   "id": 1,
-   "elevation": 10,
-   "azimuth": 100,
-   "snr": 38
-  },
-  {
-   "id": 21,
-   "elevation": 11,
-   "azimuth": 101,
-   "snr": 18
-  },
-  {
-   "id": 17,
-   "elevation": 12,
-   "azimuth": 102,
-   "snr": 21
-  },
-  {
-   "id": 19,
-   "elevation": 13,
-   "azimuth": 103,
-   "snr": 0
-  },
-  {
-   "id": 12,
-   "elevation": 14,
-   "azimuth": 104,
-   "snr": 0
-  },
-  {
-   "id": 45,
-   "elevation": 0,
-   "azimuth": 0,
-   "snr": 0
-  },
-  {
-   "id": 66,
-   "elevation": 20,
-   "azimuth": 200,
-   "snr": 41
-  },
-  {
-   "id": 81,
-   "elevation": 21,
-   "azimuth": 202,
-   "snr": 48
-  },
-  {
-   "id": 82,
-   "elevation": 22,
-   "azimuth": 203,
-   "snr": 23
-  },
-  {
-   "id": 65,
-   "elevation": 23,
-   "azimuth": 204,
-   "snr": 0
-  },
-  {
-   "id": 67,
-   "elevation": 24,
-   "azimuth": 204,
-   "snr": 37
-  },
-  {
-   "id": 74,
-   "elevation": 25,
-   "azimuth": 205,
-   "snr": 17
-  },
-  {
-   "id": 75,
-   "elevation": 26,
-   "azimuth": 206,
-   "snr": 27
-  },
-  {
-   "id": 88,
-   "elevation": 27,
-   "azimuth": 207,
-   "snr": 16
-  },
-  {
-   "id": 83,
-   "elevation": 28,
-   "azimuth": 208,
-   "snr": 0
-  },
-  {
-   "id": 73,
-   "elevation": 29,
-   "azimuth": 209,
-   "snr": 0
-  }
- ],
- "jamming": [
- ]
+  "utc": "2023-03-16 21:21:02.000",
+  "valid": "A",
+  "mode": "Autonomous",
+  "lat": 12.345678,
+  "lon": 98.765432,
+  "msl": 150.432,
+  "spd": 1.40,
+  "crs": 123.11,
+  "sats": [
+    {
+      "id": 1,
+      "elv": 23,
+      "azm": 111,
+      "snr": 67
+    },
+    {
+      "id": 2,
+      "elv": 34,
+      "azm": 222,
+      "snr": 78
+    },
+    {
+      "id": 3,
+      "elv": 45,
+      "azm": 67,
+      "snr": 89
+    },
+    {
+      "id": 10,
+      "elv": 12,
+      "azm": 345,
+      "snr": 67
+    },
+    {
+      "id": 11,
+      "elv": 23,
+      "azm": 45,
+      "snr": 67
+    },
+    {
+      "id": 12,
+      "elv": 34,
+      "azm": 56,
+      "snr": 78
+    },
+    {
+      "id": 13,
+      "elv": 45,
+      "azm": 67,
+      "snr": 89
+    },
+    {
+      "id": 20,
+      "elv": 12,
+      "azm": 345,
+      "snr": 67
+    },
+    {
+      "id": 21,
+      "elv": 23,
+      "azm": 45,
+      "snr": 67
+    },
+    {
+      "id": 22,
+      "elv": 34,
+      "azm": 56,
+      "snr": 0
+    },
+    {
+      "id": 23,
+      "elv": 5,
+      "azm": 67,
+      "snr": 8
+    },
+    {
+      "id": 30,
+      "elv": 1,
+      "azm": 234,
+      "snr": 5
+    },
+    {
+      "id": 31,
+      "elv": 2,
+      "azm": 345,
+      "snr": 0
+    },
+    {
+      "id": 65,
+      "elv": 78,
+      "azm": 90,
+      "snr": 0
+    },
+    {
+      "id": 66,
+      "elv": 7,
+      "azm": 89,
+      "snr": 0
+    },
+    {
+      "id": 67,
+      "elv": 89,
+      "azm": 123,
+      "snr": 45
+    },
+    {
+      "id": 70,
+      "elv": 12,
+      "azm": 345,
+      "snr": 6
+    },
+    {
+      "id": 71,
+      "elv": 23,
+      "azm": 45,
+      "snr": 0
+    },
+    {
+      "id": 72,
+      "elv": 34,
+      "azm": 56,
+      "snr": 0
+    },
+    {
+      "id": 73,
+      "elv": 23,
+      "azm": 45,
+      "snr": 0
+    },
+    {
+      "id": 96,
+      "elv": 7,
+      "azm": 89,
+      "snr": 0
+    }
+  ],
+  "model": "Phoenix-1"
 }
