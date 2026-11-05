@@ -59,15 +59,23 @@ exports.GetSatsStrWAA = function (a_gnss) {
 }
 
 exports.GetPosSpdShort = function (a_gnss) {
-    return a_gnss.lat.toFixed(4).toString(10).padStart(7, ' ') + " " + a_gnss.lon.toFixed(4).toString(10).padStart(8, ' ') + " " +
-        a_gnss.spd.toFixed(0).toString(10).padStart(3, ' ');
+    try {
+        return a_gnss.lat.toFixed(4).toString(10).padStart(7, ' ') + " " + a_gnss.lon.toFixed(4).toString(10).padStart(8, ' ') + " " +
+            a_gnss.spd.toFixed(0).toString(10).padStart(3, ' ');
+    }
+    catch { }
+    return "";
 }
 
 exports.GetQuality = function (a_gnss) {
     let hdop = a_gnss.hdop;
     if (hdop > 99.9)
         hdop = 99.9;
-    return hdop.toFixed(1).toString(10).padStart(4, '0');
+    try {
+        return hdop.toFixed(1).toString(10).padStart(4, '0');
+    }
+    catch { }
+    return "";
 }
 
 function RetrieveUTC(a_gnssUTC) {
