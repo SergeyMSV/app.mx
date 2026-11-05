@@ -124,20 +124,20 @@ function GetThermal(a_filePath, a_thermalDiv) { // DEPRECATED
     try {
         const tempStr = sc_utils.ReadFile(a_filePath, '');
         if (isNaN(parseInt(tempStr)))
-            return sc_status.CPU_Thermal.NoData;
+            return sc_utils_status.CPU_Thermal.NoData;
         const temp = (parseInt(tempStr) / a_thermalDiv).toFixed(2);
         return GetThermalStatus(temp);
     }
     catch {
-        return sc_status.CPU_Thermal.NotSupported;
+        return sc_utils_status.CPU_Thermal.NotSupported;
     }
 }
 
-let g_cpu_thermal_status = sc_status.CPU_Thermal.None
+let g_cpu_thermal_status = sc_utils_status.CPU_Thermal.None
 function GetThermalStatus(a_value) {
 
     function CheckTemp(val, min, max) {
-        const hysteresis = g_cpu_thermal_status != sc_status.CPU_Thermal.None ? 1 : 0;
+        const hysteresis = g_cpu_thermal_status != sc_utils_status.CPU_Thermal.None ? 1 : 0;
         return val >= min + hysteresis && val <= max - hysteresis; // hysteresis
     }
 
@@ -148,7 +148,7 @@ function GetThermalStatus(a_value) {
         return true;
     }
 
-    for (const i of sc_status.CPU_Thermal_Ranges) {
+    for (const i of sc_utils_status.CPU_Thermal_Ranges) {
         if (TryStatus(a_value, i.t_min, i.t_max, i.status))
             break;
     }
@@ -160,38 +160,20 @@ function GetThermalStatus(a_value) {
 */
 
 function GetMxDSSens() {
-
     const configOut = sc_config.GetConfig().out;
-
-    let files = [];
-    try {
-        const filesAll = sc_utils.ReadDir(configOut.path);
-        for (const i of filesAll) {
-            if (i.includes("mxdssens", 0)) {
-                files.push(i);
-            }
-        }
-    } catch { }
-
-    let data = {};
-
-    if (!files.length)
-        return data;
-    files.sort();
-    const fileLatest = files[files.length - 1];
-
+    const fileLatest = sc_utils.GetOutFile(configOut.path, "mxdssens");
+    if (fileLatest === undefined || !fileLatest.length)
+        return {};
     const fileNameParsed = sc_utils.ParseFileName(fileLatest);
     if (fileNameParsed === undefined)
-        return data;
-
+        return {};
+    let data = {};
     const filePath = configOut.path + '/' + fileLatest;
     try {
         data.sens = sc_utils.ReadFileJSON(filePath);
     } catch (err) {
         data = {};
     }
-
     data.utc_file = fileNameParsed.dateTime;
-
     return data;
 }
