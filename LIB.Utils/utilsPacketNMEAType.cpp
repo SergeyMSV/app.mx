@@ -2,6 +2,8 @@
 
 #include <chrono>
 
+#include <cmath>
+
 namespace utils
 {
 namespace packet

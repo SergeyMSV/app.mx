@@ -129,7 +129,7 @@ public:
 			return false;
 		}
 
-		std::string msgFaulty = "Faulty:";
+		std::string msgFaulty = "ER:";
 		for (auto& item : PacketFoundPayload)
 		{
 			msgFaulty += " " + item;
