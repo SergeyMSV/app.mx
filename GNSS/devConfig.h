@@ -13,7 +13,7 @@
 #if defined(MXTWR_CLIENT)
 #include <sharePort.h>
 #define MXTWR_PORT 58200
-#define MXTWR_EP_UART share::port::tTWREndpoint::UART1
+#define MXTWR_EP_UART share::port::tTWREndpoint::UART2
 
 namespace dev
 {
