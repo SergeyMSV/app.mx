@@ -132,9 +132,9 @@ public:
 		std::string msgFaulty = "ER:";
 		for (auto& item : PacketFoundPayload)
 		{
-			msgFaulty += " " + item;
+			msgFaulty += "," + item;
 #ifdef GNSS_TEST
-			std::cout << " " << item;
+			std::cout << "," << item;
 #endif // GNSS_TEST
 		}
 		a_log.WriteLine(msgFaulty);

@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 	int ExitCode = utils::exit_code::EX_OK;
 
 	boost::asio::io_context ioc;
-	std::thread iocThread;
+	std::thread iocThread = std::thread([&ioc]() { ioc.run(); });
 
 	share::tLogFileLine LogFile(DsConfig.GetLog());
 	LogFile.WriteLine("Start");
@@ -33,8 +33,6 @@ int main(int argc, char* argv[])
 		{
 			const share::config::port::tUART_Config UARTConfig = DsConfig.GetUART();
 			dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
-
-			iocThread = std::thread([&ioc]() { ioc.run(); });
 
 			auto [DsHW, Status] = dev::state::Init(Port, DsConfig);
 			if (Status != dev::state::tStatus::None)

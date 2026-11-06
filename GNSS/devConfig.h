@@ -8,13 +8,12 @@
 
 #include <cstdlib>
 
-#define MXTWR_CLIENT
+//#define MXTWR_CLIENT
 
 #if defined(MXTWR_CLIENT)
 #include <sharePort.h>
 #define MXTWR_PORT 58200
 #define MXTWR_EP_UART share::port::tTWREndpoint::UART1
-#endif
 
 namespace dev
 {
@@ -28,7 +27,13 @@ namespace network_udp
 {
 	constexpr std::size_t PacketSizeMax = 4096; // [TBD] it shall be equal to 1024
 }
+}
+#endif // MXTWR_CLIENT
 
+namespace dev
+{
+namespace settings
+{
 namespace port_uart
 {
 	constexpr std::size_t ReceiveBufferSize = 1024;
