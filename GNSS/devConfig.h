@@ -8,20 +8,20 @@
 
 #include <cstdlib>
 
-//#define MXTWR_CLIENT
+#define MXTWR_CLIENT
 
 #if defined(MXTWR_CLIENT)
 #include <sharePort.h>
 #define MXTWR_PORT 58200
-#define MXTWR_EP_UART share::port::tTWREndpoint::UART2
+#define MXTWR_EP_UART share::port::tTWREndpoint::UART1
 
 namespace dev
 {
 namespace settings
 {
 	//constexpr std::string_view Host{ "127.0.0.1" };
-	//constexpr char Host[] = "127.0.0.1";
-	constexpr char Host[] = "192.168.10.162";
+	constexpr char Host[] = "127.0.0.1";
+	//constexpr char Host[] = "192.168.10.162";
 
 namespace network_udp
 {
