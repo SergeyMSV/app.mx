@@ -11,7 +11,7 @@
   },
   "port": {
     "uart_mxgnss": {
-      "id_win": "COM4",
+      "id_win": "COM1",
       "id_opio": "/dev/ttyS1",
       "br": 9600
     },

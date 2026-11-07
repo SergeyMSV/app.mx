@@ -8,7 +8,7 @@
 
 #include <cstdlib>
 
-#define MXTWR_CLIENT
+//#define MXTWR_CLIENT
 
 #if defined(MXTWR_CLIENT)
 #include <sharePort.h>
