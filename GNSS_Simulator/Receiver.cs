@@ -31,6 +31,7 @@
                 case "GSU-7x": return new ReceiverPolicySiRF_GSU_7x();
                 case "SC872-A": return new ReceiverPolicyMTK_SC872_A();
                 case "LR9548S": return new ReceiverPolicySiRF_LR9548S();
+                case "DUPER": return new ReceiverPolicyDUPER();
             }
             return new ReceiverPolicySiRF_LR9548S(); // [TBD] replace with generic one
         }

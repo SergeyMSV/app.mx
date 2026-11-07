@@ -94,7 +94,7 @@
             // 
             comboBoxReceiverModel.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxReceiverModel.FormattingEnabled = true;
-            comboBoxReceiverModel.Items.AddRange(new object[] { "EB-800A", "GSU-7x", "LR9548S", "SC872-A" });
+            comboBoxReceiverModel.Items.AddRange(new object[] { "EB-800A", "GSU-7x", "LR9548S", "SC872-A", "DUPER" });
             comboBoxReceiverModel.Location = new Point(150, 70);
             comboBoxReceiverModel.Name = "comboBoxReceiverModel";
             comboBoxReceiverModel.Size = new Size(100, 23);
