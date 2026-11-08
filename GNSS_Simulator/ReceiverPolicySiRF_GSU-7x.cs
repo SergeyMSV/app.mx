@@ -2,13 +2,7 @@
 {
     internal class ReceiverPolicySiRF_GSU_7x : IReceiverPolicy
     {
-        bool m_MsgGGA_Enabled = true;
-        bool m_MsgGLL_Enabled = true;
-        bool m_MsgGSA_Enabled = true;
-        bool m_MsgGSV_Enabled = true;
-        bool m_MsgRMC_Enabled = true;
-        bool m_MsgVTG_Enabled = true;
-        bool m_MsgZDA_Enabled = true;
+        MsgsEnable m_MsgsEnabled = new();
 
         //public event EventHandler<NaviEventArgs>? NaviChanged;
         public event EventHandler<PortBaudrateEventArgs>? PortBaudrateChanged;
@@ -31,25 +25,26 @@
         public List<string> MakeOutMsgSetNavi()
         {
             DateTime TimeNow = DateTime.UtcNow;
+            string timeNowStr = TimeNow.ToString("HHmmss") + ".000";
             List<string> Strs = new();
-            if (m_MsgGGA_Enabled)
-                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGGA," + TimeNow.ToString("HHmmss") + ".000,1122.3344,N,12233.4455,E,1,12,00.7,00639.3,M,0014.3,M,000.0,0000"));
-            if (m_MsgGLL_Enabled)
-                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGLL,3600.0000,N,13600.0000,E,000124.168,V"));
-            if (m_MsgGSA_Enabled)
+            if (m_MsgsEnabled.GGA.IsReady())
+                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGGA," + timeNowStr + ",1122.3344,N,12233.4455,E,1,12,00.7,00639.3,M,0014.3,M,000.0,0000"));
+            if (m_MsgsEnabled.GLL.IsReady())
+                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGLL,3600.0000,N,13600.0000,E,"+ timeNowStr + ",V")); // [!] lat & lon are different
+            if (m_MsgsEnabled.GSA.IsReady())
                 Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSA,A,3,07,10,13,21,16,09,17,14,08,23,09,15,01.3,00.7,01.0"));
-            if (m_MsgGSV_Enabled)
+            if (m_MsgsEnabled.GSV.IsReady())
             {
                 Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,1,12,01,01,001,01,02,02,002,,03,03,003,,04,04,004,"));
                 Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,2,12,05,05,005,05,06,06,006,,07,07,007,,08,08,008,08"));
                 Strs.Add(utils.ProtocolNMEA.MakeMsg("GPGSV,3,3,12,09,09,009,09,10,10,010,,12,12,012,,13,13,013,13"));
             }
-            if (m_MsgRMC_Enabled)
-                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPRMC," + TimeNow.ToString("HHmmss") + ".000,V,1122.3344,N,12233.4455,E,9999.99,999.99," + TimeNow.ToString("yyMMdd") + ",,"));
-            if (m_MsgVTG_Enabled)
+            if (m_MsgsEnabled.RMC.IsReady())
+                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPRMC," + timeNowStr + ",V,1122.3344,N,12233.4455,E,9999.99,999.99," + TimeNow.ToString("yyMMdd") + ",,"));
+            if (m_MsgsEnabled.VTG.IsReady())
                 Strs.Add(utils.ProtocolNMEA.MakeMsg("GPVTG,999.99,T,,M,9999.99,N,9999.99,K"));
-            if (m_MsgZDA_Enabled)
-                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPZDA," + TimeNow.ToString("HHmmss") + ".000," + TimeNow.ToString("dd") + "," + TimeNow.ToString("MM") + "," + TimeNow.ToString("yyyy") + ",,"));
+            if (m_MsgsEnabled.ZDA.IsReady())
+                Strs.Add(utils.ProtocolNMEA.MakeMsg("GPZDA," + timeNowStr + "," + TimeNow.ToString("dd") + "," + TimeNow.ToString("MM") + "," + TimeNow.ToString("yyyy") + ",,"));
             return Strs;
         }
 
@@ -88,21 +83,26 @@
             {
                 switch (Payload[1])
                 {
-                    case "00": m_MsgGGA_Enabled = Payload[3] == "00" ? false : true; break;
-                    case "01": m_MsgGLL_Enabled = Payload[3] == "00" ? false : true; break;
-                    case "02": m_MsgGSA_Enabled = Payload[3] == "00" ? false : true; break;
-                    case "03": m_MsgGSV_Enabled = Payload[3] == "00" ? false : true; break;
-                    case "04": m_MsgRMC_Enabled = Payload[3] == "00" ? false : true; break;
-                    case "05": m_MsgVTG_Enabled = Payload[3] == "00" ? false : true; break;
-                    case "08": m_MsgZDA_Enabled = Payload[3] == "00" ? false : true; break;
+                    case "00": m_MsgsEnabled.GGA.SetFrequency(Payload[3]); break;
+                    case "01": m_MsgsEnabled.GLL.SetFrequency(Payload[3]); break;
+                    case "02": m_MsgsEnabled.GSA.SetFrequency(Payload[3]); break;
+                    case "03": m_MsgsEnabled.GSV.SetFrequency(Payload[3]); break;
+                    case "04": m_MsgsEnabled.RMC.SetFrequency(Payload[3]); break;
+                    case "05": m_MsgsEnabled.VTG.SetFrequency(Payload[3]); break;
+                    case "08": m_MsgsEnabled.ZDA.SetFrequency(Payload[3]); break;
                     default:
                         throw new Exception("PSRF103, received message is not acceptable: " + msg);
                 }
-                List<string> Strs = new();
-                Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC("PSRFTXT,NMEA: ID 103 Ack Input"));
-                return Strs;
+                return MakeOutMsgNoCRC("PSRFTXT,NMEA: ID 103 Ack Input");
             }
             return new();
+        }
+
+        List<string> MakeOutMsgNoCRC(string msg)
+        {
+            List<string> Strs = new();
+            Strs.Add(utils.ProtocolNMEA.MakeMsgNoCRC(msg));
+            return Strs;
         }
     }
 }

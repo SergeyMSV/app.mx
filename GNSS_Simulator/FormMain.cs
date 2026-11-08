@@ -4,11 +4,16 @@ namespace SergeM
     {
         Receiver m_Receiver;
 
+        string m_CaptionText;
+
         public FormMain()
         {
             InitializeComponent();
             InitializeFormSizes();
             InitializeSendRadioButtons();
+
+            m_CaptionText = Text;
+            Text = m_CaptionText + ": " + Properties.Settings.Default.ReceiverModel;
 
             buttonStopReceive.Tag = buttonStopReceive.ForeColor;
 
@@ -79,7 +84,10 @@ namespace SergeM
             FormSettings FormSettings = new FormSettings();
             FormSettings.ShowDialog();
             if (FormSettings.IsPortSettingsChanged && m_Receiver.IsStarted)
+            {
+                Text = m_CaptionText + ": " + Properties.Settings.Default.ReceiverModel;
                 Restart();
+            }
         }
 
         private void buttonSend_Click(object sender, EventArgs e)
