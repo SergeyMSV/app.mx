@@ -12,13 +12,13 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		std::shared_ptr<dev::tConfig> DsConfig = std::make_shared<dev::tConfig>(argv[0]);
+		std::shared_ptr<dev::tConfig> config = std::make_shared<dev::tConfig>(argv[0]);
 		
 		boost::asio::io_context ioc;
 
-		dev::tLANTagServer Server(ioc, DsConfig->GetPortUDP().Value, DsConfig);
+		dev::tLANTagServer Server(ioc, config->GetPortUDP().Value, config);
 
-		std::thread Thread_ioc([&]() { ioc.run(); });
+		std::thread iocThread([&]() { ioc.run(); });
 
 		//DsConfig.reset();
 
@@ -29,13 +29,13 @@ int main(int argc, char* argv[])
 		}
 
 		ioc.stop();
-		Thread_ioc.join();
+		iocThread.join();
 	}
 	catch (std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
-		return static_cast<int>(utils::exit_code::EX_IOERR);
+		return utils::exit_code::EX_IOERR;
 	}
 
-	return static_cast<int>(utils::exit_code::EX_OK);
+	return utils::exit_code::EX_OK;
 }
