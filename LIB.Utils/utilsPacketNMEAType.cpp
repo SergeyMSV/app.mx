@@ -1,5 +1,9 @@
 #include "utilsPacketNMEAType.h"
 
+#include <chrono>
+
+#include <cmath>
+
 namespace utils
 {
 namespace packet
@@ -162,17 +166,18 @@ tDate::tDate(std::time_t value)
 	m_Day = tValue(DateTime.tm_mday);
 }
 
-std::time_t tDate::GetValue() const
+std::time_t tDate::GetValue() const // [*] It's not a good practice to use tDate::GetValue(), get date and time from ZDA if it's possible.
 {
 	if (IsEmpty())
 		return {};
-	tm DateTime{};
-	DateTime.tm_year = m_Year.GetValue();
-	if (DateTime.tm_year < 90) // since 1990
-		DateTime.tm_year += 100; // tm_year is from 1900
-	DateTime.tm_mon = m_Month.GetValue() - 1;
-	DateTime.tm_mday = m_Day.GetValue();
-	return mktime(&DateTime);
+	int year = m_Year.GetValue();
+	// a year from a receiver can be 00 - 99, therefore:
+	// 1. more than 80 (MTK EB-800A invalid data), that means that full year is more than 1980
+	// 2. less that 80, that means that full year is less than 2080
+	year += year < 80 ? 2000 : 1900; // tm_year is from 1900
+	std::chrono::year_month_day date(std::chrono::year(year), std::chrono::month(m_Month.GetValue()), std::chrono::day(m_Day.GetValue()));
+	auto dateTime = std::chrono::sys_days(date);
+	return std::chrono::system_clock::to_time_t(dateTime);
 }
 
 std::string tDate::ToString() const

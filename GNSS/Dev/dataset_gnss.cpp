@@ -1,4 +1,4 @@
-#include "devDataSetGNSS.h"
+#include "dataset_gnss.h"
 
 #include <utilsTime.h>
 
@@ -34,37 +34,43 @@ std::string tDataSetGNSS::ToJSON() const
 	if (Latitude.has_value() && Longitude.has_value())
 	{
 		SStr.precision(6);
-		SStr << ",\n \"lat\": " << *Latitude; // latitude
-		SStr << ",\n \"lon\": " << *Longitude; // longitude
+		SStr << ",\n \"lat\": " << *Latitude;
+		SStr << ",\n \"lon\": " << *Longitude;
 	}
 	if (Altitude.has_value())
 	{
 		SStr.precision(3);
-		SStr << ",\n \"msl\": " << *Altitude; // altitude (msl)
+		SStr << ",\n \"msl\": " << *Altitude;
 	}
 	SStr.precision(2);
 	if (Speed.has_value())
-		SStr << ",\n \"spd\": " << *Speed; // speed
+		SStr << ",\n \"spd\": " << *Speed;
 	if (Course.has_value())
-		SStr << ",\n \"crs\": " << *Course; // course
+		SStr << ",\n \"crs\": " << *Course;
+	if (HDOP.has_value())
+	{
+		SStr.precision(1);
+		SStr << ",\n \"hdop\": " << *HDOP;
+	}
 
+	SStr << ",\n \"sats\": [";
 	if (!Satellites.empty())
 	{
-		SStr << ",\n \"sats\": [\n"; // satellites
+		SStr << "\n";
 		for (std::size_t i = 0; i < Satellites.size(); ++i)
 		{
-			SStr << "  {";
-			SStr << "   \"id\": " << static_cast<int>(Satellites[i].ID) << ",";
-			SStr << "   \"elv\": " << static_cast<int>(Satellites[i].Elevation) << ","; // elevation
-			SStr << "   \"azm\": " << static_cast<int>(Satellites[i].Azimuth) << ","; // azimuth
-			SStr << "   \"snr\": " << static_cast<int>(Satellites[i].SNR);
+			SStr << "{";
+			SStr << " \"id\": " << static_cast<int>(Satellites[i].ID) << ",";
+			SStr << " \"elv\": " << static_cast<int>(Satellites[i].Elevation) << ",";
+			SStr << " \"azm\": " << static_cast<int>(Satellites[i].Azimuth) << ",";
+			SStr << " \"snr\": " << static_cast<int>(Satellites[i].SNR);
 			SStr << " }";
 			if (i < Satellites.size() - 1)
 				SStr << ",";
 			SStr << "\n";
 		}
-		SStr << " ]";
 	}
+	SStr << " ]";
 
 	/*SStr << ",\n \"jamming\": [\n";
 	SStr.precision(6); // for jamming frequency
@@ -104,25 +110,25 @@ std::string tDataSetGNSS::ToString(std::time_t time) const
 	return {};
 }
 
-void tDataSetGNSS::ToFile(const share::config::tOutFile& configOut) const // [TBD] use share::SaveOutFile instead of it
-{
-	const std::string DTStr = utils::time::tDateTime::Now().ToStringPath();
-
-	const std::filesystem::path Path = configOut.Path;
-	const std::string FileName = configOut.Prefix + DTStr + ".json";
-	const std::string TempFileName = settings::FileNameTempPrefix + FileName + ".tmp";
-
-	std::filesystem::path TempFilePath = Path / TempFileName;
-	std::fstream File = std::fstream(TempFilePath, std::ios::out);
-	if (!File.good())
-		return; // [TBD] may be an exception should be throwned
-	File << ToJSON();
-	File.close();
-
-	std::filesystem::path FilePath = Path / FileName;
-	std::error_code ec;
-	std::filesystem::rename(TempFilePath, FilePath, ec);
-	share::RemoveFilesOutdated(configOut);
-}
+//void tDataSetGNSS::ToFile(const share::config::tOutFile& configOut) const // [TBD] use share::SaveOutFile instead of it
+//{
+//	const std::string DTStr = utils::time::tDateTime::Now().ToStringPath();
+//
+//	const std::filesystem::path Path = configOut.Path;
+//	const std::string FileName = configOut.Prefix + DTStr + ".json";
+//	const std::string TempFileName = settings::FileNameTempPrefix + FileName + ".tmp";
+//
+//	std::filesystem::path TempFilePath = Path / TempFileName;
+//	std::fstream File = std::fstream(TempFilePath, std::ios::out);
+//	if (!File.good())
+//		return; // [TBD] may be an exception should be throwned
+//	File << ToJSON();
+//	File.close();
+//
+//	std::filesystem::path FilePath = Path / FileName;
+//	std::error_code ec;
+//	std::filesystem::rename(TempFilePath, FilePath, ec);
+//	share::RemoveFilesOutdated(configOut);
+//}
 
 }

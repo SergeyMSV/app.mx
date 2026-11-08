@@ -9,6 +9,7 @@
 
 #include "utilsBase.h"
 #include "utilsCRC.h"
+#include "utilsPacket.h"
 
 #include <iomanip>
 #include <optional>

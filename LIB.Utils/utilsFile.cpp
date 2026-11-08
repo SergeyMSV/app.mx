@@ -1,11 +1,12 @@
 #include "utilsFile.h"
 
+#include <algorithm>
 #include <filesystem>
 
 namespace utils
 {
-	namespace file
-	{
+namespace file
+{
 
 std::optional<std::string> ReplaceFileNamePrefix(const std::string& path, const std::string& from, const std::string& to)
 {
@@ -20,8 +21,11 @@ std::optional<std::string> ReplaceFileNamePrefix(const std::string& path, const 
 	return PathRes.replace(Pos, from.length(), to);
 }
 
-std::deque<std::string> GetFilesLatest(const std::string& path, const std::string& prefix, std::size_t qtyFilesLatest)
+std::deque<std::string> GetFilesLatest(const std::string& path, const std::string& prefix, std::string extension, std::size_t qtyFilesLatest)
 {
+	if (!extension.empty() && extension[0] != '.')
+		extension.insert(extension.begin(), '.');
+
 	std::deque<std::string> List;
 
 	std::error_code ErrCode;
@@ -30,12 +34,12 @@ std::deque<std::string> GetFilesLatest(const std::string& path, const std::strin
 	{
 		if (ErrCode != std::error_code())
 			break;
-
-		std::string ListFileName = i.path().filename().string();
-		std::size_t PrefPos = ListFileName.find(prefix);
+		std::filesystem::path Filename = i.path().filename();
+		if (!extension.empty() && Filename.extension().string() != extension)
+			continue;
+		std::size_t PrefPos = Filename.string().find(prefix);
 		if (PrefPos != 0)
 			continue;
-
 		List.push_back(i.path().string());
 	}
 
@@ -52,9 +56,9 @@ std::deque<std::string> GetFilesLatest(const std::string& path, const std::strin
 	return List;
 }
 
-void RemoveFilesOutdated(const std::string& path, const std::string& prefix, std::size_t qtyFilesLatest)
+void RemoveFilesOutdated(const std::string& path, const std::string& prefix, std::string extension, std::size_t qtyFilesLatest)
 {
-	std::deque<std::string> List = GetFilesLatest(path, prefix, 0);
+	std::deque<std::string> List = GetFilesLatest(path, prefix, extension, {});
 
 	while (List.size() > qtyFilesLatest)
 	{
@@ -66,7 +70,7 @@ void RemoveFilesOutdated(const std::string& path, const std::string& prefix, std
 
 void RemoveFilesWithPrefix(const std::string& path, const std::string& prefix)
 {
-	std::deque<std::string> List = GetFilesLatest(path, prefix, 0);
+	std::deque<std::string> List = GetFilesLatest(path, prefix, {}, {});
 
 	while (!List.empty())
 	{
@@ -76,5 +80,5 @@ void RemoveFilesWithPrefix(const std::string& path, const std::string& prefix)
 	}
 }
 
-	}
+}
 }

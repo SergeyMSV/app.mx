@@ -1,80 +1,89 @@
 #include <devConfig.h>
 
-#include <devDataSetConfig.h>
-#include <devState.h>
+#include "dev/config.h"
+#include "dev/state.h"
 
-//#include <utilsException.h>
 #include <utilsExits.h>
-#include <utilsPath.h>
 
 #include <shareUtilsFile.h>
 
 #include <thread>
-#include <iostream> // [TEST]
+#include <iostream>
 
 #include <boost/asio.hpp>
 
 int main(int argc, char* argv[])
 {
-	const std::filesystem::path Path(argv[0]);
-	const std::string AppName = utils::path::GetAppNameMain(Path);
-	const std::string PathFileConfig = utils::path::GetPathConfigExc(AppName).string();
-	const std::string PathFileMX = utils::path::GetPathConfigExc("mx").string();
-
-	dev::tDataSetConfig DsConfig = dev::tDataSetConfig(PathFileConfig, PathFileMX);
-	if (DsConfig.GetUART().IsWrong())
-		return static_cast<int>(utils::exit_code::EX_CONFIG);
-	//std::shared_ptr<dev::tDataSetConfig> DsConfig = std::make_shared<dev::tDataSetConfig>(PathFileConfig, PathFileMX);
-	//if (DsConfig->GetUART().IsWrong())
-	//	return static_cast<int>(utils::exit_code::EX_CONFIG);
-		//THROW_RUNTIME_ERROR("UART is not valid.");
-
-	int ExitCode = utils::exit_code::EX_OK;
+	dev::tConfig config = dev::tConfig(argv[0]);
+	share::RemoveFilesOutdated(config.GetOutFile());
+	if (config.GetUART().IsWrong())
+		return utils::exit_code::EX_CONFIG;
 
 	boost::asio::io_context ioc;
-	std::thread Thread_ioc;
+	std::thread iocThread;
 
-	try
-	{
-		share::tLogFileLine LogFile(DsConfig.GetLog());
-		LogFile.Write("Start");
+	const share::config::tOutFileCap logConfig = config.GetLog();
+	tLog log(logConfig.Path, logConfig.QtyMax, logConfig.Prefix, logConfig.Capacity);
+	log.WriteLine("Start");
 
-		share::RemoveFilesOutdated(DsConfig.GetOutGNSS());
-		share::RemoveFilesOutdated(DsConfig.GetOutGNSS(), dev::settings::FileNameTempPrefix);
-
-		const share::config::port::tUART_Config UARTConfig = DsConfig.GetUART();
-		dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
-
-		Thread_ioc = std::thread([&ioc]() { ioc.run(); });
-
-		auto [DsHW, Status] = dev::state::Init(Port, DsConfig);
-
-		std::cout << DsHW.ToString() << '\n'; // [TBD] write into log
-
-		if (Status != dev::state::tStatus::None)
+	const auto StopIO = [&ioc, &iocThread]()
 		{
-			// [TBD] Handle the error!
+			ioc.stop();
+			if (iocThread.joinable())
+				iocThread.join();
+		};
+
+	const auto HandleError = [&log, &StopIO](dev::state::tStatus status)
+		{
+			log.WriteLine(dev::state::ToString(status));
+			StopIO();
+			std::this_thread::sleep_for(std::chrono::seconds(10)); // [#]
+		};
+
+	while (true)
+	{
+		try
+		{
+			const share::config::port::tUART_Config UARTConfig = config.GetUART();
+			dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
+
+			ioc.restart(); // It's necessary after ioc.stop().
+			iocThread = std::thread([&ioc, &log]() {
+				try
+				{
+					ioc.run();
+				}
+				catch (const std::exception& e)
+				{
+					log.WriteLine(std::string("ioc thread: ") + e.what());
+				}
+				});
+
+			auto [DsHW, Status] = dev::state::Init(Port, config);
+			if (Status != dev::state::tStatus::None)
+			{
+				HandleError(Status);
+				continue;
+			}
+			log.WriteLine(DsHW.ToString());
+			Status = dev::state::Receive(Port, config, DsHW, log);
+			if (Status != dev::state::tStatus::None)
+			{
+				HandleError(Status);
+				continue;
+			}
+		}
+		catch (std::exception& e)
+		{
+			log.WriteLine(e.what());
+			std::cerr << e.what() << '\n';
+			break;
 		}
 
-		Status = dev::state::Receive(Port, DsConfig, DsHW);
-		if (Status != dev::state::tStatus::None)
-		{
-			// [TBD] Handle the error!
-		}
-
-		// [TBD] Error Handling or exit
-
-	}
-	//catch(...){}
-	catch (std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-		ExitCode = utils::exit_code::EX_IOERR; // [TBD] check it
+		StopIO();
 	}
 
-	ioc.stop();
-	if (Thread_ioc.joinable())
-		Thread_ioc.join();
+	//StopIO();
 
-	return ExitCode;
+	return utils::exit_code::EX_OK;
 }

@@ -1,12 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // utilsPacketNMEAPayload
-// 2020-01-31, 2026-01-17 refact.
-// C++17
+// 2020-01-31 - 2026-11-03
+// C++20
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "utilsPacketNMEA.h"
 #include "utilsPacketNMEAType.h"
+
+#include <chrono>
 
 namespace utils
 {
@@ -549,7 +550,7 @@ struct tContentZDA : public type::tTypeVerified	// Time & Date
 	TDay Day;								// Day, 01 to 31
 	TMonth Month;							// Month, 01 to 12
 	TYear Year;								// Year, (for MTK 3333 from 1980 to 2079)
-	TLocalZoneHours LocalZoneHours;			// Offset from UTC, 00 to ±13 hrs
+	TLocalZoneHours LocalZoneHours;			// Offset from UTC, 00 to ï¿½13 hrs
 	TLocalZoneMinutes LocalZoneMinutes;		// Offset from UTC, 00 to +59
 
 	tContentZDA() = default;
@@ -576,12 +577,9 @@ struct tContentZDA : public type::tTypeVerified	// Time & Date
 	std::pair<std::time_t, std::uint32_t> GetDateTime() const
 	{
 		auto [DtSec, Milliseconds] = utils::packet::nmea::type::hide::SplitDouble(Time.GetValue(), 3); // 3 -> milliseconds
-		tm DT{};
-		DT.tm_year = Year.GetValue() - 1900;
-		DT.tm_mon = Month.GetValue() - 1;
-		DT.tm_mday = Day.GetValue();
-		std::time_t DateTime = mktime(&DT);
-		return { DateTime + DtSec, Milliseconds };
+		std::chrono::year_month_day date(std::chrono::year(Year.GetValue()), std::chrono::month(Month.GetValue()), std::chrono::day(Day.GetValue()));
+		auto dateTime = std::chrono::sys_days(date) + std::chrono::seconds(DtSec);
+		return { std::chrono::system_clock::to_time_t(dateTime), Milliseconds};
 	}
 
 	std::vector<std::string> GetPayload() const
@@ -682,24 +680,39 @@ namespace mtk_eb800a // MT3339	AXN_3.8
 	using tQuality = type::tQualityNoNull;									// 0
 	using tSatQty = type::tUIntNoNull<2>;									// 0 - 99
 	using tSatID = type::tUIntFixed<2>;										// 00		Satellite ID (GPS: 1-32, SBAS 33-64 (33=PRN120), GLONASS: 65-96) 
-	using tHDOP = type::tUFloatPrecisionFixed<2, 2>;							// ?.00
+	using tHDOP = type::tUFloatPrecisionFixed<2, 2>;						// ?.00
 	using tAltitude = type::tFloatPrecisionFixedUnitNoNull<5, 3>;			// ?.000,M
 	using tGeoidSeparation = type::tFloatPrecisionFixedUnitNoNull<4, 3>;	// ?.000,M
 	using tDiffAge = type::tUFloatPrecisionFixed<3, 1>;						// 0.0 - 999.9			[?]
 	using tDiffStation = type::tUIntFixed<4>;								// 0000 - 9999
 	using tSpeed = type::tUFloatPrecisionFixedNoNull<4, 2>;					// 0.00 - 9999.99
-	using tCourse = type::tUFloatPrecisionFixedNoNull<3, 2>;					// 0.00 - 999.99
+	using tCourse = type::tUFloatPrecisionFixedNoNull<3, 2>;				// 0.00 - 999.99
 	using tMode = type::tModeNoNull;										// A
 	using tDay = type::tUIntFixedNoNull<2>;									// 00
 	using tMonth = type::tUIntFixedNoNull<2>;								// 00
 	using tYear = type::tUIntFixedNoNull<4>;								// 1980
-	using tLocalZoneHours = type::tIntFixed<2>;								// 00 to ±13 hrs
+	using tLocalZoneHours = type::tIntFixed<2>;								// 00 to ï¿½13 hrs
 	using tLocalZoneMinutes = type::tUIntFixed<2>;							// 00 to +59
+
+namespace gsv
+{
+	// $GPGSV,1,1,01,01,35,,*??
+
+	using tMsgQty = type::tUIntFixedNoNull<1>;								// 0		Total number of messages, 1 to 9
+	using tMsgNum = type::tUIntFixedNoNull<1>;								// 0		Message number, 1 to 9
+	using tSatInViewQty = type::tUIntFixedNoNull<2>;						// 00 - 99
+	using tSatID = type::tUIntFixedNoNull<2>;								// 00		Satellite ID (GPS: 1-32, SBAS 33-64 (33=PRN120), GLONASS: 65-96) 
+	using tElevation = type::tUIntFixed<2>;									// 00		Degree (Maximum 90)
+	using tAzimuth = type::tUIntFixed<3>;									// 000		Degree (Range 0 to 359)
+	using tSNR = type::tUIntFixed<2>;										// 00		SNR (C/No) 00-99 dB-Hz, null when not tracking
+
+	using tContentGSV = base::tContentGSV<tMsgQty, tMsgNum, tSatInViewQty, tSatID, tElevation, tAzimuth, tSNR>;
+}
 
 	using tContentGGA = base::tContentGGA<tTime, tLatitude, tLongitude, tQuality, tSatQty, tHDOP, tAltitude, tGeoidSeparation, tDiffAge, tDiffStation>;
 	using tContentGLL = base::tContentGLL8<tLatitude, tLongitude, tTime, tMode>;
 	using tContentGSA = base::tContentGSA<tSatID, tHDOP>;
-	using tContentGSV = generic::tContentGSV;
+	using tContentGSV = gsv::tContentGSV;
 	using tContentRMC = base::tContentRMC13<tTime, tLatitude, tLongitude, tSpeed, tCourse, tDate, tMode>;
 	using tContentVTG = base::tContentVTG10<tCourse, tSpeed, tMode>;
 	using tContentZDA = base::tContentZDA<tTime, tDay, tMonth, tYear, tLocalZoneHours, tLocalZoneMinutes>;
@@ -764,7 +777,7 @@ namespace mtk_sc872_a // MT3333	AXN_3.84
 	using tDay = type::tUIntFixedNoNull<2>;									// 00
 	using tMonth = type::tUIntFixedNoNull<2>;								// 00
 	using tYear = type::tUIntFixedNoNull<4>;								// 1980
-	using tLocalZoneHours = type::tIntFixed<2>;								// 00 to ±13 hrs
+	using tLocalZoneHours = type::tIntFixed<2>;								// 00 to ï¿½13 hrs
 	using tLocalZoneMinutes = type::tUIntFixed<2>;							// 00 to +59
 
 	using tContentGGA = base::tContentGGA<tTime, tLatitude, tLongitude, tQuality, tSatQty, tHDOP, tAltitude, tGeoidSeparation, tDiffAge, tDiffStation>;
@@ -795,7 +808,7 @@ namespace sirf_gsu_7x
 	using tDay = type::tUIntFixedNoNull<2>;								// 00
 	using tMonth = type::tUIntFixedNoNull<2>;							// 00
 	using tYear = type::tUIntFixedNoNull<4>;							// 1980
-	using tLocalZoneHours = type::tIntFixed<2>;							// 00 to ±13 hrs	(not supported)
+	using tLocalZoneHours = type::tIntFixed<2>;							// 00 to ï¿½13 hrs	(not supported)
 	using tLocalZoneMinutes = type::tUIntFixed<2>;						// 00 to +59		(not supported)
 	
 	using tContentGGA = base::tContentGGA<tTime, tLatitude, tLongitude, tQuality, tSatQty, tHDOP, tAltitude, tGeoidSeparation, tDiffAge, tDiffStation>;

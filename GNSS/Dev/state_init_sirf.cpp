@@ -1,6 +1,5 @@
-#include "devStateInit.h"
-
-#include "devStatePolicy.h"
+#include "state_init.h"
+#include "state_policy.h"
 
 #include <utilsPacketNMEAPayload.h>
 #include <utilsPacketNMEAPayloadPSRF.h>
@@ -68,7 +67,7 @@ std::optional<tDataSetHW> TrySiRF_Parse(const std::vector<sirf_legacy::tContentP
 	return DataSetHW;
 }
 
-std::optional<std::pair<tDataSetHW, tStatus>> TrySiRF(tPortUART& port, const tDataSetConfig& dsConfig)
+std::optional<std::pair<tDataSetHW, tStatus>> TrySiRF(tPortUART& port, const tConfig& dsConfig)
 {
 	port.Send("$PSRF101,0,0,0,0,0,0,12,1*15\xd\xa"); // Hot Restart
 	//port.Send("$PSRF101,0,0,0,0,0,0,12,2*16\xd\xa"); // Warm Restart

@@ -1,5 +1,6 @@
 #include "utilsTime.h"
 
+#include <chrono>
 #include <iomanip>
 #include <sstream>
 
@@ -19,10 +20,12 @@ tDateTime tDateTime::Now()
 
 tDateTime tDateTime::Parse(const std::string& value, const std::string& format)
 {
-	tm DateTime{};
+	std::chrono::sys_seconds tp;
 	std::istringstream iss(value);
-	iss >> std::get_time(&DateTime, format.c_str());
-	return tDateTime{ mktime(&DateTime) };
+	iss >> std::chrono::parse(format, tp);
+	if (iss.fail())
+		return {};
+	return std::chrono::system_clock::to_time_t(tp);
 }
 
 tDateTime tDateTime::Parse(const std::string& value)
@@ -35,22 +38,16 @@ tDateTime tDateTime::ParsePath(const std::string& value)
 	return Parse(value, g_format_path);
 }
 
-tm tDateTime::GetTM() const
+std::string tDateTime::ToString(std::string format) const
 {
-	tm TmBuf;
+	std::tm tm;
 #ifdef _WIN32
-	localtime_s(&TmBuf, &Value);
+	gmtime_s(&tm, &Value);
 #else // _WIN32
-	localtime_r(&Value, &TmBuf);
+	gmtime_r(&Value, &tm);
 #endif // _WIN32
-	return TmBuf;
-}
-
-std::string tDateTime::ToString(const std::string& format) const
-{
-	tm TmBuf = GetTM();
 	std::ostringstream oss;
-	oss << std::put_time(&TmBuf, format.c_str());
+	oss << std::put_time(&tm, format.c_str());
 	return oss.str();
 }
 

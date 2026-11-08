@@ -108,7 +108,7 @@ protected:
 	//void SetDelay(std::uint16_t val) { m_Delay = val; }
 };
 
-class tUART : public tTWRClient
+/*class tUART : public tTWRClient
 {
 public:
 	tUART(boost::asio::io_context& ioc, const std::string& id, std::uint32_t baudRate)
@@ -180,7 +180,7 @@ protected:
 	//void SetDelay(std::uint16_t val) { m_Delay = val; }
 
 	//std::vector<std::uint8_t> Transaction(const std::vector<std::uint8_t>& tx);
-};
+};*/
 
 }
 }
