@@ -73,6 +73,12 @@ std::optional<std::pair<tDataSetHW, tStatus>> TryMTK(tPortUART& port, const tCon
 		return { { DataSetHW, tStatus::InitSetBaudrate } };
 
 	port.Send("$PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0*29\xd\xa"); // GLL,RMC,VTG,GGA,GSA,GSV,...,ZDA once a second
+	std::vector<tContentACK> Resp = ReceiveResponse<tPacketNMEA, tContentACK>(port, 1);
+	if (Resp.empty())
+		return { { DataSetHW, tStatus::InitNotResponded } };
+	if (Resp[0].Status.GetValue() != static_cast<std::uint8_t>(tContentACK::tStatus::Succeeded))
+		return { { DataSetHW, tStatus::InitFailed } };
+	
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	return { { DataSetHW, tStatus::None } };

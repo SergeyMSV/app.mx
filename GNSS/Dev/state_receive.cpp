@@ -244,6 +244,7 @@ std::string ToString(tStatus a_status)
 	case tStatus::InitSetBaudrate: return "init.: the baudrate is not appropriate";
 	case tStatus::InitNotSupported: return "init.: the equipment is not supported";
 	case tStatus::InitNotResponded: return "init.: the equipment does not respond";
+	case tStatus::InitFailed: return "init.: the response is not successful";
 	case tStatus::ReceiveNotSupportedChip: return "recv.: the chip is not supported";
 	case tStatus::ReceiveNotSupportedModel: return "recv.: the equipment model is not supported";
 	case tStatus::Unknown:
