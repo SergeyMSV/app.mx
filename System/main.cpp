@@ -5,9 +5,9 @@
 
 int main()
 {
-	std::thread Thread_RTC([]() { dev::ThreadRTC(); });
+	std::thread rtcThread([]() { dev::ThreadRTC(); });
 
-	Thread_RTC.join();
+	rtcThread.join();
 
 	return utils::exit_code::EX_OK;
 }
