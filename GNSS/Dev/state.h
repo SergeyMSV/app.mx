@@ -17,6 +17,7 @@ enum class tStatus
 	InitSetBaudrate,
 	InitNotSupported,
 	InitNotResponded,
+	InitFailed,
 	//InitNotReceived,
 	ReceiveNotSupportedChip,
 	ReceiveNotSupportedModel,
