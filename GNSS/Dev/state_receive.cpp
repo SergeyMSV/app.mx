@@ -49,7 +49,11 @@ public:
 				std::cout << " " << MsgOpt->GetID();
 #endif // GNSS_TEST
 				this->m_DataSetGNSS.Altitude = MsgOpt->Altitude.GetValue();
-				this->m_DataSetGNSS.HDOP = MsgOpt->HDOP.GetValue();
+				switch (MsgOpt->GNSS.Value)
+				{
+				case utils::packet::nmea::type::tGNSS_State::GPS: this->m_DataSetGNSS.GpHDOP = MsgOpt->HDOP.GetValue(); break; // for GPS receivers
+				case utils::packet::nmea::type::tGNSS_State::GlobalNavigation: this->m_DataSetGNSS.GnHDOP = MsgOpt->HDOP.GetValue(); break;
+				}
 				return this->CheckOrder(TPolicy::NumGGA);
 			}
 		}
@@ -73,7 +77,11 @@ public:
 #ifdef GNSS_TEST
 				std::cout << " " << MsgOpt->GetID();
 #endif // GNSS_TEST
-				//...
+				switch (MsgOpt->GNSS.Value)
+				{
+				case utils::packet::nmea::type::tGNSS_State::GPS: this->m_DataSetGNSS.GpHDOP = MsgOpt->HDOP.GetValue(); break;
+				case utils::packet::nmea::type::tGNSS_State::GLONASS: this->m_DataSetGNSS.GlHDOP = MsgOpt->HDOP.GetValue(); break;
+				}
 				return this->CheckOrder(TPolicy::NumGSA);
 			}
 		}
