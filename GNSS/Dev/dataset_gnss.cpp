@@ -41,11 +41,13 @@ std::string tDataSetGNSS::ToJSON() const
 		SStr << ",\n \"spd\": " << *Speed;
 	if (Course.has_value())
 		SStr << ",\n \"crs\": " << *Course;
-	if (HDOP.has_value())
-	{
-		SStr.precision(1);
-		SStr << ",\n \"hdop\": " << *HDOP;
-	}
+	SStr.precision(1);
+	if (GnHDOP.has_value())
+		SStr << ",\n \"hdop\": " << *GnHDOP;
+	if (GpHDOP.has_value())
+		SStr << ",\n \"gps_hdop\": " << *GpHDOP;
+	if (GlHDOP.has_value())
+		SStr << ",\n \"glo_hdop\": " << *GlHDOP;
 
 	SStr << ",\n \"sats\": [";
 	if (!Satellites.empty())
