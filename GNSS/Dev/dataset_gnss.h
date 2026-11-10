@@ -33,7 +33,9 @@ struct tDataSetGNSS
 	std::optional<double> Altitude;
 	std::optional<double> Speed;
 	std::optional<double> Course;
-	std::optional<double> HDOP;
+	std::optional<double> GnHDOP;
+	std::optional<double> GpHDOP;
+	std::optional<double> GlHDOP;
 	std::string Mode;
 
 	struct tSatellite
