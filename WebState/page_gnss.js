@@ -65,7 +65,7 @@ exports.GetPageData = function () {
 
         if (Math.abs(utcNow - utcFile) > g_confMXGNSS.NaviValidityPeriod) { // The file is outdated, the containing data is not interesting.
             data.status = Object.assign({}, sc_utils_status.GNSS.NoData); // copying the object
-            data.status.class = 'text_red';
+            data.status.class = 'text-red';
         }
         // The file is not outdated but UTC in the containing data is not correct (e.g. GPS spoofing).
         //else if (Math.abs(utcNow - utcGNSS) > g_confMXGNSS.NaviValidityPeriod) {
@@ -74,7 +74,7 @@ exports.GetPageData = function () {
         else if (Math.abs(utcFile - utcGNSS) > 1000) { // if the difference between utcFile and utcGNSS is more then 1 s - it doesn't seem to be all right.
             data.status = Object.assign({}, sc_utils_status.GNSS.TimeError); // copying the object
             data.status.text += ': ' + sc_utils.PeriodToString(utcGNSS - utcFile);
-            data.status.class = 'text_orange';
+            data.status.class = 'text-green';
         }
         else {
             data.status = Object.assign({}, gnssData.valid == 'A' ? sc_utils_status.GNSS.Valid : sc_utils_status.GNSS.Invalid); // copying the object
@@ -125,11 +125,11 @@ function GetSatStatus(a_gnssData) {
 
     function GetSatsClass(a_qty) {
         if (a_qty.all == 0 || a_qty.used == 0)
-            return 'text_red';
+            return 'text-red';
         if (a_qty.used <= 2)
-            return 'text_orange';
+            return 'text-green';
         if (a_qty.used <= 3)
-            return 'text_yellow';
+            return 'text-yellow';
         return undefined; // default class
     }
 
