@@ -8,22 +8,22 @@ td {
     white-space: break-spaces;
 }
 
-.text_blue {
+.text-blue {
     color: blue;
 }
 
-.text_green {
+.text-green {
     color: green;
 }
 
-.text_orange {
+.text-orange {
     color: orange;
 }
 
-.text_red {
+.text-red {
     color: red;
 }
 
-.text_yellow {
+.text-yellow {
     color: yellow;
 }

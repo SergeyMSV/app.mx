@@ -67,17 +67,6 @@ exports.GetPosSpdShort = function (a_gnss) {
     return "";
 }
 
-exports.GetQuality = function (a_gnss) {
-    let hdop = a_gnss.hdop;
-    if (hdop > 99.9)
-        hdop = 99.9;
-    try {
-        return hdop.toFixed(1).toString(10).padStart(4, '0');
-    }
-    catch { }
-    return "";
-}
-
 function RetrieveUTC(a_gnssUTC) {
     const utcDateTime = a_gnssUTC.split(' ');
     if (utcDateTime.length != 2)
@@ -95,7 +84,7 @@ const g_gnssStatus = {
     NoData: { text: 'no data', text_class: '', color: 'orange' },
     FileNameError: { text: 'file name format', text_class: '', color: 'orange' },
     FormatError: { text: 'data format', text_class: '', color: 'orange' },
-    TimeError: { text: 'time', text_class: 'text_orange', color: 'orange' }, // e.g. GPS spoofing
+    TimeError: { text: 'time', text_class: 'text-orange', color: 'orange' }, // e.g. GPS spoofing
     Invalid: { text: 'not valid', text_class: '', color: 'yellow' },
     Valid: { text: '', color: 'green' },
 }
@@ -121,4 +110,39 @@ exports.GetStatus = function (a_gnss, a_utcCapture) {
     }
 
     return Object.assign({}, a_gnss.valid == 'A' ? g_gnssStatus.Valid : g_gnssStatus.Invalid);
+}
+
+function GetHtmlTextColorClass(a_color) {
+    if (a_color === "")
+        return "";
+    return `text-${a_color}`;
+}
+
+exports.SetValid = function (a_data, a_id, a_valid) {
+    a_data.input[a_id] = a_valid;
+    a_data.class[a_id] = GetHtmlTextColorClass(a_valid === "A" ? "" : "orange");
+}
+
+exports.SetHDOP = function (a_data, a_id, a_hdop) {
+    try {
+        if (a_hdop === undefined || a_hdop > 99.9 || a_hdop == 0) {
+            a_data.input[a_id] = "--.-";
+            a_data.class[a_id] = "";
+            return;
+        }
+        a_data.input[a_id] = a_hdop.toFixed(1).toString(10).padStart(4, ' ');
+        if (a_hdop == 0)
+            a_data.class[a_id] = GetHtmlTextColorClass("red");
+        //else if (a_hdop < 1)
+        //    a_data.class[a_id] = GetHtmlTextColorClass("green");
+        //else if (a_hdop < 2)
+        //    a_data.class[a_id] = GetHtmlTextColorClass("blue");
+        else if (a_hdop < 5)
+            a_data.class[a_id] = GetHtmlTextColorClass("");
+        else if (a_hdop < 10)
+            a_data.class[a_id] = GetHtmlTextColorClass("yellow");
+        else
+            a_data.class[a_id] = GetHtmlTextColorClass("orange");
+    }
+    catch { }
 }
