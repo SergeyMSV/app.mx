@@ -10,10 +10,7 @@ namespace dev
 namespace state
 {
 
-namespace placeholder
-{
-using tContentZDA = utils::packet::nmea::sirf_gsu_7x::tContentZDA;
-}
+class tContentNotSupported {};
 
 constexpr int tContentSet_Msg_Last = 100;
 constexpr int tContentSet_Msg_Skip = -1;
@@ -112,7 +109,7 @@ struct tPolicySiRF_LR9548S : public tPolicySiRF
 	using tContentGSV = utils::packet::nmea::sirf_lr9548s::tContentGSV;
 	using tContentRMC = utils::packet::nmea::sirf_lr9548s::tContentRMC;
 	using tContentVTG = utils::packet::nmea::sirf_lr9548s::tContentVTG;
-	using tContentZDA = placeholder::tContentZDA; // The receiver doesn't support ZDA, therefore any similar type of message is acceptable just as a placeholder.
+	using tContentZDA = tContentNotSupported;
 };
 
 }
