@@ -1,5 +1,29 @@
 {
-  "platform": {
-    "id": "win"
+  "pid": "win",
+  "out": {
+    "path": "/tmpram",
+    "qtyMax": 2
+  },
+  "log": {
+    "path": "/tmpram",
+    "capacity": 102400,
+    "qtyMax": 2
+  },
+  "port": {
+    "uart_mxgnss": {
+      "id_win": "COM1",
+      "id_opio": "/dev/ttyS1",
+      "br": 9600
+    },
+    "uart_mxgnss1": {
+      "id_win": "COM1",
+      "id_opio": "/dev/ttyS1",
+      "br": 9600
+    },
+    "uart_mxgnss2": {
+      "id_win": "COM4",
+      "id_opio": "/dev/ttyS2",
+      "br": 9600
+    }
   }
 }

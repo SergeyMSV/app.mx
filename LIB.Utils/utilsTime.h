@@ -1,9 +1,13 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// utilsTime
+// 2025-05-01 - 2026-11-03
+// C++20
+///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include <chrono>
 #include <string>
 
-#include <time.h>
+#include <ctime>
 
 namespace utils
 {
@@ -16,7 +20,7 @@ class tDateTime
 
 public:
 	tDateTime() = default;
-	tDateTime(time_t val) :Value(val) {} // it is not explicit
+	tDateTime(std::time_t val) :Value(val) {} // it is not explicit
 
 	static tDateTime Now();
 
@@ -24,9 +28,7 @@ public:
 	static tDateTime Parse(const std::string& value);
 	static tDateTime ParsePath(const std::string& value);
 
-	tm GetTM() const;
-
-	std::string ToString(const std::string& format) const;
+	std::string ToString(std::string format) const;
 	std::string ToString() const;
 	std::string ToStringPath() const;
 };

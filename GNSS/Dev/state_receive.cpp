@@ -1,10 +1,14 @@
-#include "devDataSetGNSS.h"
-#include "devState.h"
-#include "devStatePolicy.h"
+#include "dataset_gnss.h"
+#include "state.h"
+#include "state_policy.h"
+
+#include <shareUtilsFile.h>
 
 #include <optional>
 
-#include <iostream> // [TEST]
+#ifdef GNSS_TEST
+#include <iostream>
+#endif // GNSS_TEST
 
 namespace dev
 {
@@ -20,13 +24,15 @@ class tContentSet
 	tDataSetGNSS m_DataSetGNSS{};
 
 public:
-	bool operator()(const tPacketNMEA& packet)
+	bool operator()(const tPacketNMEA& packet, tLog& a_log)
 	{
 		{
 			std::optional<typename TPolicy::tContentGSV> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentGSV>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
-				//std::cout << " " << MsgOpt->GetID();
+#ifdef GNSS_TEST
+				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				for (const auto& i : MsgOpt->Sats)
 				{
 					this->m_DataSetGNSS.Satellites.emplace_back(static_cast<std::uint8_t>(i.ID.GetValue()), static_cast<std::uint8_t>(i.Elevation.GetValue()), static_cast<std::uint16_t>(i.Azimuth.GetValue()), static_cast<std::uint8_t>(i.SNR.GetValue()));
@@ -39,8 +45,11 @@ public:
 			std::optional<typename TPolicy::tContentGGA> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentGGA>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
-				//std::cout << " " << MsgOpt->GetID();
+#ifdef GNSS_TEST
+				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				this->m_DataSetGNSS.Altitude = MsgOpt->Altitude.GetValue();
+				this->m_DataSetGNSS.HDOP = MsgOpt->HDOP.GetValue();
 				return this->CheckOrder(TPolicy::NumGGA);
 			}
 		}
@@ -49,7 +58,9 @@ public:
 			std::optional<typename TPolicy::tContentGLL> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentGLL>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
+#ifdef GNSS_TEST
 				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				//...
 				return this->CheckOrder(TPolicy::NumGLL);
 			}
@@ -59,7 +70,9 @@ public:
 			std::optional<typename TPolicy::tContentGSA> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentGSA>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
+#ifdef GNSS_TEST
 				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				//...
 				return this->CheckOrder(TPolicy::NumGSA);
 			}
@@ -69,6 +82,9 @@ public:
 			std::optional<typename TPolicy::tContentRMC> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentRMC>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
+#ifdef GNSS_TEST
+				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				if (TPolicy::ReceiverModel == tReceiverModel::SiRF_LR9548S) // This receiver doesn't support ZDA.
 				{
 					auto [DtSec, DtMSec] = utils::packet::nmea::type::hide::SplitDouble(MsgOpt->Time.GetValue(), 3); // 3 -> milliseconds
@@ -93,7 +109,9 @@ public:
 			std::optional<typename TPolicy::tContentVTG> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentVTG>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
 			{
+#ifdef GNSS_TEST
 				std::cout << " " << MsgOpt->GetID();
+#endif // GNSS_TEST
 				//...
 				return this->CheckOrder(TPolicy::NumVTG);
 			}
@@ -118,13 +136,12 @@ public:
 			return false;
 		}
 
+		std::string msgFaulty = "ER:";
 		for (auto& item : PacketFoundPayload)
-			//for (auto& item : packet.GetPayloadValue())
 		{
-			//utils::packet::nmea::generic::tContentGSV GSV(item);
-			std::cout << " " << item;
+			msgFaulty += " " + item;
 		}
-		std::cout << '\n';
+		a_log.WriteLine(msgFaulty);
 		return false;
 	}
 
@@ -153,13 +170,13 @@ public:
 };
 
 template <typename TContentSet>
-tStatus ReceiveInternal(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetHW& dsHW)
+tStatus ReceiveInternal(tPortUART& a_port, const tConfig& a_config, const tDataSetHW& a_dsHW, tLog& a_log)
 {
 	TContentSet ContentSet;
 	std::vector<std::uint8_t> DataRaw;
 	while (true)
 	{
-		const std::vector<std::uint8_t> Data = port.GetReceived();
+		const std::vector<std::uint8_t> Data = a_port.GetReceived();
 		if (Data.empty())
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -171,15 +188,17 @@ tStatus ReceiveInternal(tPortUART& port, const tDataSetConfig& dsConfig, const t
 			std::optional<tPacketNMEA> PacketFoundOpt = tPacketNMEA::Find(DataRaw);
 			if (!PacketFoundOpt.has_value())
 				break;
-			if (ContentSet(*PacketFoundOpt))
+			if (ContentSet(*PacketFoundOpt, a_log))
 			{
 				std::optional<tDataSetGNSS> DataSetGNSSOpt = ContentSet.GetDataSetGNSS();
 				if (DataSetGNSSOpt.has_value())
 				{
-					DataSetGNSSOpt->ReceiverModel = dsHW.Model;
-
-					//DataSetGNSSOpt->ToFile(dsConfig.GetOutGNSS()); // [TBD] - block it for windows
+					DataSetGNSSOpt->ReceiverModel = a_dsHW.Model;
+#ifdef GNSS_TEST
 					std::cout << " -> " << DataSetGNSSOpt->ToString() << '\n';
+#else // GNSS_TEST
+					share::SaveOutFile(a_config.GetOutFile(), DataSetGNSSOpt->ToJSON());
+#endif // GNSS_TEST
 				}
 				ContentSet = {};
 			}
@@ -188,25 +207,25 @@ tStatus ReceiveInternal(tPortUART& port, const tDataSetConfig& dsConfig, const t
 	return tStatus::Unknown; // [TBD] check it - Actially it shouldn't be here.
 }
 
-tStatus Receive(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetHW& dsHW)
+tStatus Receive(tPortUART& a_port, const tConfig& a_dsConfig, const tDataSetHW& a_dsHW, tLog& a_log)
 {
-	if (dsHW.Chip == "MTK")
+	if (a_dsHW.Chip == "MTK")
 	{
-		switch (dsHW.ModelID)
+		switch (a_dsHW.ModelID)
 		{
-		case tReceiverModel::MTK_SC872_A: return ReceiveInternal<tContentSet<tPolicyMTK_SC872_A>>(port, dsConfig, dsHW);
-		case tReceiverModel::MTK_EB_800A: return ReceiveInternal<tContentSet<tPolicyMTK_EB_800A>>(port, dsConfig, dsHW);
+		case tReceiverModel::MTK_SC872_A: return ReceiveInternal<tContentSet<tPolicyMTK_SC872_A>>(a_port, a_dsConfig, a_dsHW, a_log);
+		case tReceiverModel::MTK_EB_800A: return ReceiveInternal<tContentSet<tPolicyMTK_EB_800A>>(a_port, a_dsConfig, a_dsHW, a_log);
 		default: break;
 		}
 		return tStatus::ReceiveNotSupportedModel;
 	}
 
-	if (dsHW.Chip == "SiRF")
+	if (a_dsHW.Chip == "SiRF")
 	{
-		switch (dsHW.ModelID)
+		switch (a_dsHW.ModelID)
 		{
-		case tReceiverModel::SiRF_GSU_7x: return ReceiveInternal<tContentSet<tPolicySiRF_GSU_7x>>(port, dsConfig, dsHW);
-		case tReceiverModel::SiRF_LR9548S: return ReceiveInternal<tContentSet<tPolicySiRF_LR9548S>>(port, dsConfig, dsHW);
+		case tReceiverModel::SiRF_GSU_7x: return ReceiveInternal<tContentSet<tPolicySiRF_GSU_7x>>(a_port, a_dsConfig, a_dsHW, a_log);
+		case tReceiverModel::SiRF_LR9548S: return ReceiveInternal<tContentSet<tPolicySiRF_LR9548S>>(a_port, a_dsConfig, a_dsHW, a_log);
 		default: break;
 		}
 		return tStatus::ReceiveNotSupportedModel;
@@ -215,6 +234,22 @@ tStatus Receive(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetH
 	// [TBD] generic
 
 	return tStatus::ReceiveNotSupportedChip;
+}
+
+std::string ToString(tStatus a_status)
+{
+	switch (a_status)
+	{
+	case tStatus::None: return "";
+	case tStatus::InitSetBaudrate: return "init.: the baudrate is not appropriate";
+	case tStatus::InitNotSupported: return "init.: the equipment is not supported";
+	case tStatus::InitNotResponded: return "init.: the equipment does not respond";
+	case tStatus::ReceiveNotSupportedChip: return "recv.: the chip is not supported";
+	case tStatus::ReceiveNotSupportedModel: return "recv.: the equipment model is not supported";
+	case tStatus::Unknown:
+	default:
+		return "an unknown error has occurred";
+	}
 }
 
 }

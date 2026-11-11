@@ -2,17 +2,17 @@
 
 #include "shareConfig.h"
 
-#include <deque>
 #include <mutex>
 #include <string>
 
 namespace share
 {
 
-class tLogFileLine
+#ifdef LIB_SHARE_DEPRECATED
+class tLogFileLine // DEPRECATED, use utils::log::tLogFile instead
 {
 	std::string m_FilePath;
-	std::mutex m_FileMtx;
+	mutable std::mutex m_FileMtx;
 
 public:
 	tLogFileLine() = delete;
@@ -21,13 +21,14 @@ public:
 	tLogFileLine(const tLogFileLine&&) = delete;
 	~tLogFileLine();
 	
-	void Write(const std::string& msg);
+	void Write(const std::string& msg) const;
+	void WriteLine(const std::string& msg) const;
 
 private:
-	void WriteData(const std::string& msg);
+	void WriteData(const std::string& msg) const;
 };
+#endif // LIB_SHARE_DEPRECATED
 
-std::deque<std::string> GetFilePaths(const share::config::tOutFile& conf);
 void RemoveFilesOutdated(const share::config::tOutFile& conf);
 
 bool SaveOutFile(const share::config::tOutFile& a_conf, const std::string& a_data);

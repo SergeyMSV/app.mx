@@ -2,9 +2,9 @@
 
 #include <devConfig.h>
 
-#include "devDataSetConfig.h"
-#include "devDataSetHW.h"
-#include "devPortUART.h"
+#include "config.h"
+#include "dataset_hw.h"
+#include "port_uart.h"
 
 namespace dev
 {
@@ -25,8 +25,10 @@ enum class tStatus
 	Unknown = 0xFF,
 };
 
-std::pair<tDataSetHW, tStatus> Init(tPortUART& port, const tDataSetConfig& dsConfig);
-tStatus Receive(tPortUART& port, const tDataSetConfig& dsConfig, const tDataSetHW& dsHW);
+std::pair<tDataSetHW, tStatus> Init(tPortUART& port, const tConfig& dsConfig);
+tStatus Receive(tPortUART& a_port, const tConfig& a_dsConfig, const tDataSetHW& a_dsHW, tLog& a_log);
+
+std::string ToString(tStatus a_status);
 
 }
 }
