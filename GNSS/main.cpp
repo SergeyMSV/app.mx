@@ -19,57 +19,52 @@ int main(int argc, char* argv[])
 	if (config.GetUART().IsWrong())
 		return utils::exit_code::EX_CONFIG;
 
-	boost::asio::io_context ioc;
-	std::thread iocThread;
-
 	const share::config::tOutFileCap logConfig = config.GetLog();
 	tLog log(logConfig.Path, logConfig.QtyMax, logConfig.Prefix, logConfig.Capacity);
 	log.WriteLine("Start");
 
-	const auto StopIO = [&ioc, &iocThread]()
-		{
-			ioc.stop();
-			if (iocThread.joinable())
-				iocThread.join();
-		};
-
-	const auto HandleError = [&log, &StopIO](dev::state::tStatus status)
-		{
-			log.WriteLine(dev::state::ToString(status));
-			StopIO();
-			std::this_thread::sleep_for(std::chrono::seconds(10)); // [#]
-		};
-
-	while (true)
-	{
+	boost::asio::io_context ioc;
+	auto work_guard = boost::asio::make_work_guard(ioc);
+	std::thread iocThread = std::thread([&ioc, &log]() {
 		try
 		{
-			const share::config::port::tUART_Config UARTConfig = config.GetUART();
-			dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
+			ioc.run();
+		}
+		catch (const std::exception& e)
+		{
+			log.WriteLine(std::string("ioc thread: ") + e.what());
+		}
+		});
 
-			ioc.restart(); // It's necessary after ioc.stop().
-			iocThread = std::thread([&ioc, &log]() {
-				try
-				{
-					ioc.run();
-				}
-				catch (const std::exception& e)
-				{
-					log.WriteLine(std::string("ioc thread: ") + e.what());
-				}
-				});
+	const share::config::port::tUART_Config UARTConfig = config.GetUART();
+
+	bool restart = false;
+	while (true)
+	{
+		if (restart)
+		{
+			std::this_thread::sleep_for(std::chrono::seconds(10)); // [#]
+		}
+		else
+		{
+			restart = true;
+		}
+
+		try
+		{
+			dev::tPortUART Port(ioc, UARTConfig.ID, UARTConfig.BR);
 
 			auto [DsHW, Status] = dev::state::Init(Port, config);
 			if (Status != dev::state::tStatus::None)
 			{
-				HandleError(Status);
+				log.WriteLine(dev::state::ToString(Status));
 				continue;
 			}
 			log.WriteLine(DsHW.ToString());
 			Status = dev::state::Receive(Port, config, DsHW, log);
 			if (Status != dev::state::tStatus::None)
 			{
-				HandleError(Status);
+				log.WriteLine(dev::state::ToString(Status));
 				continue;
 			}
 		}
@@ -79,11 +74,10 @@ int main(int argc, char* argv[])
 			std::cerr << e.what() << '\n';
 			break;
 		}
-
-		StopIO();
 	}
-
-	//StopIO();
-
+	work_guard.reset();
+	ioc.stop();
+	if (iocThread.joinable())
+		iocThread.join();
 	return utils::exit_code::EX_OK;
 }
