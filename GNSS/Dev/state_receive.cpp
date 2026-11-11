@@ -2,8 +2,6 @@
 #include "state.h"
 #include "state_policy.h"
 
-#include <shareUtilsFile.h>
-
 #include <optional>
 
 #ifdef GNSS_TEST
@@ -125,6 +123,7 @@ public:
 			}
 		}
 
+		if constexpr (!std::is_same_v<TPolicy::tContentZDA, tContentNotSupported>)
 		{
 			std::optional<typename TPolicy::tContentZDA> MsgOpt = utils::packet::nmea::Parse<typename TPolicy::tContentZDA>(packet.GetPayloadValue());
 			if (MsgOpt.has_value())
