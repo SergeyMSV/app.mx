@@ -23,6 +23,8 @@ enum class tStatus
 	ReceiveNotSupportedModel,
 	//NoDataReceived,
 
+	RestartDetected,
+
 	Unknown = 0xFF,
 };
 

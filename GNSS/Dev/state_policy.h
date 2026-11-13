@@ -40,6 +40,7 @@ struct tPolicyMTK_EB_800A : public tPolicyMTK
 	using tContentRMC = utils::packet::nmea::mtk_eb800a::tContentRMC;
 	using tContentVTG = utils::packet::nmea::mtk_eb800a::tContentVTG;
 	using tContentZDA = utils::packet::nmea::mtk_eb800a::tContentZDA;
+	using tContentP = utils::packet::nmea::mtk::tContentPMTK;
 };
 
 struct tPolicyMTK_SC872_A : public tPolicyMTK
@@ -59,6 +60,7 @@ struct tPolicyMTK_SC872_A : public tPolicyMTK
 	using tContentRMC = utils::packet::nmea::mtk_sc872_a::tContentRMC;
 	using tContentVTG = utils::packet::nmea::mtk_sc872_a::tContentVTG;
 	using tContentZDA = utils::packet::nmea::mtk_sc872_a::tContentZDA;
+	using tContentP = tContentNotSupported;
 };
 
 struct tPolicySiRF
@@ -86,11 +88,7 @@ struct tPolicySiRF_GSU_7x : public tPolicySiRF
 	using tContentRMC = utils::packet::nmea::sirf_gsu_7x::tContentRMC;
 	using tContentVTG = utils::packet::nmea::sirf_gsu_7x::tContentVTG;
 	using tContentZDA = utils::packet::nmea::sirf_gsu_7x::tContentZDA;
-
-	//static constexpr double Default_Latitude = 36.0;
-	//static constexpr double Default_Longitude = 136.0;
-	//static constexpr double Default_Speed = 9999.99;
-	//static constexpr double Default_Course = 999.99;
+	using tContentP = tContentNotSupported;
 };
 
 struct tPolicySiRF_LR9548S : public tPolicySiRF
@@ -110,6 +108,7 @@ struct tPolicySiRF_LR9548S : public tPolicySiRF
 	using tContentRMC = utils::packet::nmea::sirf_lr9548s::tContentRMC;
 	using tContentVTG = utils::packet::nmea::sirf_lr9548s::tContentVTG;
 	using tContentZDA = tContentNotSupported;
+	using tContentP = tContentNotSupported;
 };
 
 }
