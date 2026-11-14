@@ -21,7 +21,11 @@ enum class tStatus
 	//InitNotReceived,
 	ReceiveNotSupportedChip,
 	ReceiveNotSupportedModel,
+
 	//NoDataReceived,
+	NoCompleteSequenceNMEA,
+
+	RestartDetected,
 
 	Unknown = 0xFF,
 };

@@ -1,14 +1,10 @@
 #pragma once
 #include <devConfig.h>
 
-#include "dev/config.h"
-
-#include <utilsPacketNMEAType.h>
-
-#include <ctime>
-#include <mutex>
 #include <optional>
 #include <string>
+
+#include <ctime>
 
 namespace dev
 {

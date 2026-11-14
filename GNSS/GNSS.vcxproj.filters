@@ -166,6 +166,15 @@
     <ClInclude Include="dev\state_policy.h">
       <Filter>dev</Filter>
     </ClInclude>
+    <ClInclude Include="dev\state_receive.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\state_receive_mtk.h">
+      <Filter>dev</Filter>
+    </ClInclude>
+    <ClInclude Include="dev\state_receive_sirf.h">
+      <Filter>dev</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Readme.txt" />

@@ -39,6 +39,12 @@ static std::vector<TContent> ReceiveResponse(tPortUART& port, int maxQty)
 	return Contents;
 }
 
+template <typename TPacket, typename TContent>
+static std::vector<TContent> ReceiveResponse(tPortUART& port)
+{
+	return ReceiveResponse<TPacket, TContent>(port, 1);
+}
+
 template <typename TPacket>
 static bool ReceiveAnyNMEA(tPortUART& port)
 {
