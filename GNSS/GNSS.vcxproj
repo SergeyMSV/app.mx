@@ -239,6 +239,9 @@
     <ClInclude Include="dev\state.h" />
     <ClInclude Include="dev\state_init.h" />
     <ClInclude Include="dev\state_policy.h" />
+    <ClInclude Include="dev\state_receive.h" />
+    <ClInclude Include="dev\state_receive_mtk.h" />
+    <ClInclude Include="dev\state_receive_sirf.h" />
     <ClInclude Include="libConfig.h" />
   </ItemGroup>
   <ItemGroup>

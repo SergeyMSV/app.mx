@@ -60,7 +60,7 @@ struct tPolicyMTK_SC872_A : public tPolicyMTK
 	using tContentRMC = utils::packet::nmea::mtk_sc872_a::tContentRMC;
 	using tContentVTG = utils::packet::nmea::mtk_sc872_a::tContentVTG;
 	using tContentZDA = utils::packet::nmea::mtk_sc872_a::tContentZDA;
-	using tContentP = tContentNotSupported;
+	using tContentP = tContentNotSupported;// utils::packet::nmea::mtk::tContentPMTK;
 };
 
 struct tPolicySiRF
@@ -88,7 +88,7 @@ struct tPolicySiRF_GSU_7x : public tPolicySiRF
 	using tContentRMC = utils::packet::nmea::sirf_gsu_7x::tContentRMC;
 	using tContentVTG = utils::packet::nmea::sirf_gsu_7x::tContentVTG;
 	using tContentZDA = utils::packet::nmea::sirf_gsu_7x::tContentZDA;
-	using tContentP = tContentNotSupported;
+	using tContentP = utils::packet::nmea::sirf::tContentPSRF;
 };
 
 struct tPolicySiRF_LR9548S : public tPolicySiRF
