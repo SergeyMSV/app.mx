@@ -190,9 +190,11 @@ private:
 	static std::string MakeLogMsg(const std::string& caption, const T& payload)
 	{
 		std::string msg = caption + ":";
-		for (auto& item : payload)
+		for (std::size_t i = 0; i < payload.size(); ++i)
 		{
-			msg += " " + item;
+			if (i > 0)
+				msg += ',';
+			msg += payload[i];
 		}
 		return msg;
 	}

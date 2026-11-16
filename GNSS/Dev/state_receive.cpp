@@ -58,7 +58,7 @@ tStatus ReceiveInternal(tPortUART& a_port, const tConfig& a_config, const tDataS
 			}
 		}
 	}
-	return tStatus::Unknown; // [TBD] check it - Actially it shouldn't be here.
+	return tStatus::Unknown;
 }
 
 tStatus Receive(tPortUART& a_port, const tConfig& a_dsConfig, const tDataSetHW& a_dsHW, tLog& a_log)

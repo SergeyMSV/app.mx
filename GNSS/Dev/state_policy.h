@@ -60,7 +60,7 @@ struct tPolicyMTK_SC872_A : public tPolicyMTK
 	using tContentRMC = utils::packet::nmea::mtk_sc872_a::tContentRMC;
 	using tContentVTG = utils::packet::nmea::mtk_sc872_a::tContentVTG;
 	using tContentZDA = utils::packet::nmea::mtk_sc872_a::tContentZDA;
-	using tContentP = tContentNotSupported;// utils::packet::nmea::mtk::tContentPMTK;
+	using tContentP = utils::packet::nmea::mtk::tContentPMTK;
 };
 
 struct tPolicySiRF
