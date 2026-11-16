@@ -107,6 +107,10 @@ public:
 				{
 					auto [DtSec, DtMSec] = utils::packet::nmea::type::hide::SplitDouble(MsgOpt->Time.GetValue(), 3); // 3 -> milliseconds
 					this->m_DataSetGNSS.DateTime = { MsgOpt->Date.GetValue() + DtSec ,  DtMSec };
+					// if the year turned out to be obviously implausible, add 1024 weeks
+					// 1024 weeks = 7168 days ≈ 19 years 225 days
+					//if (year < current_year - 20)
+					//	date += std::chrono::days(7168);
 				}
 
 				this->m_DataSetGNSS.Valid = MsgOpt->Status.GetValue();
