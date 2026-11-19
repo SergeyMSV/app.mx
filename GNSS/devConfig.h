@@ -20,8 +20,9 @@ namespace dev
 namespace settings
 {
 	//constexpr std::string_view Host{ "127.0.0.1" };
-	constexpr char Host[] = "127.0.0.1";
+	//constexpr char Host[] = "127.0.0.1";
 	//constexpr char Host[] = "192.168.10.162";
+	constexpr char Host[] = "192.168.10.161";
 
 namespace network_udp
 {
