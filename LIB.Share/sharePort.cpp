@@ -2,6 +2,8 @@
 
 #ifdef MXTWR_CLIENT
 
+#include <algorithm>
+#include <iomanip>
 #include <sstream>
 
 #include <boost/property_tree/ptree.hpp>
@@ -130,6 +132,13 @@ void tTWRClient::TransactionJSON_UART_Send(tTWREndpoint ep, const std::string& t
 void tTWRClient::TransactionJSON_UART_Send(tTWREndpoint ep, const std::vector<std::uint8_t>& tx)
 {
 	TransactionJSON(MakeCmdJSON(ep, "send", std::string(tx.begin(), tx.end())));
+}
+
+void tTWRClient::TransactionJSON_UART_SendBin(tTWREndpoint ep, const std::vector<std::uint8_t>& tx)
+{
+	std::stringstream sstr;
+	std::for_each(tx.begin(), tx.end(), [&sstr](std::uint8_t val) { sstr << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(val); });
+	TransactionJSON(MakeCmdJSON(ep, "send_bin", sstr.str()));
 }
 
 tTWRPacketRsp tTWRClient::Transaction(const tTWRPacketCmd& cmd)

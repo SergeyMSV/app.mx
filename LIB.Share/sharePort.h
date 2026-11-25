@@ -69,6 +69,7 @@ public:
 	std::vector<std::uint8_t> TransactionJSON_UART_Receive(tTWREndpoint ep);
 	void TransactionJSON_UART_Send(tTWREndpoint ep, const std::string& tx);
 	void TransactionJSON_UART_Send(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
+	void TransactionJSON_UART_SendBin(tTWREndpoint ep, const std::vector<std::uint8_t>& tx);
 
 private:
 	template <typename T, std::size_t PacketSizeMax>

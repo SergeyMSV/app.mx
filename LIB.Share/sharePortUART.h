@@ -60,6 +60,14 @@ public:
 		return true;
 	}
 
+	bool SendBin(const std::vector<std::uint8_t>& data)
+	{
+		if (data.empty())
+			return false;
+		TransactionJSON_UART_SendBin(MXTWR_EP_UART, data);
+		return true;
+	}
+
 	std::uint32_t GetBaudRate() const
 	{
 		//if (!m_Port.is_open())
